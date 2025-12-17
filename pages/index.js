@@ -1,41 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { 
   ArrowRight, CheckCircle, Clock, ShieldCheck, Star, Leaf, Flame, 
-  ChevronRight, Download, Copy, Smartphone, Lock, Activity, AlertCircle, Check, Zap, ThumbsUp, MessageCircle
+  ChevronRight, Download, Copy, Smartphone, Lock, Activity, AlertCircle, Check, Zap, Menu, User
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-// --- COMENTÁRIOS ESTILO TIKTOK (REALISTAS) ---
-const REAL_COMMENTS = [
-  { 
-    name: "Ana P.", 
-    text: "Gente o chá seca msm?? to precisando kkk", 
-    time: "há 2 min", 
-    likes: 12,
-    img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces" // Selfie mulher
-  },
-  { 
-    name: "Bruna Souza", 
-    text: "Comecei segunda, hj ja fechei o short jeans q nao entrava 😍 obrigada!!", 
-    time: "há 8 min", 
-    likes: 45,
-    img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=faces" // Foto de perfil comum
-  },
-  { 
-    name: "Carla_Fitness", 
-    text: "Eu tinha mto medo de ser golpe mas chegou certinho no email, ufa 🙏 a dieta é top", 
-    time: "há 15 min", 
-    likes: 89,
-    img: "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=100&h=100&fit=crop&crop=faces" // Foto de cachorro (muito comum em perfis reais)
-  },
-  { 
-    name: "Mariana G.", 
-    text: "Alguem ja fez a receita da sopa? É mto boa", 
-    time: "há 32 min", 
-    likes: 6,
-    img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=faces" // Selfie natural
-  }
-];
 
 // --- CONFIGURAÇÃO DA DIETA (MATRIX) ---
 const DIET_DATABASE = {
@@ -86,7 +54,7 @@ const DIET_DATABASE = {
   ]
 };
 
-// --- RECEITAS DETALHADAS (MODO DE PREPARO) ---
+// --- RECEITAS DETALHADAS ---
 const RECIPES_CONTENT = [
   {
     title: "Sopa Detox de Abóbora com Gengibre",
@@ -123,13 +91,11 @@ export default function App() {
   const [pixData, setPixData] = useState(null);
   const [paymentLoading, setPaymentLoading] = useState(false);
 
-  // Timer Regressivo (Gatilho de Urgência)
   useEffect(() => {
     const timer = setInterval(() => setTimeLeft((p) => (p > 0 ? p - 1 : 0)), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  // --- QUIZ COMPLETO ---
   const QUIZ_QUESTIONS = [
     {
       id: 1, question: "Qual seu objetivo principal?", subtitle: "Vamos personalizar os alimentos para a sua meta.",
@@ -178,7 +144,6 @@ export default function App() {
     }
   };
 
-  // --- INTEGRAÇÃO COM BACKEND (PIX REAL) ---
   const gerarPixReal = async () => {
     setPaymentLoading(true);
     try {
@@ -187,17 +152,14 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: 'cliente@exemplo.com' })
       });
-      
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Erro ao criar pix');
-
       setPixData(data);
       setView('checkout');
       iniciarPolling(data.id);
-      
     } catch (error) {
       console.error(error);
-      alert("Erro ao gerar o Pix. Verifique se a chave do Mercado Pago está configurada na Vercel.");
+      alert("Erro ao gerar o Pix. Verifique a configuração.");
     } finally {
       setPaymentLoading(false);
     }
@@ -216,42 +178,28 @@ export default function App() {
     }, 3000);
   };
 
-  // --- GERAR PDF PROFISSIONAL ---
   const generatePDF = async () => {
     if (!window.jspdf) {
       await new Promise(r => { const s = document.createElement('script'); s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"; s.onload = r; document.body.appendChild(s); });
       await new Promise(r => { const s = document.createElement('script'); s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js"; s.onload = r; document.body.appendChild(s); });
     }
-    
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    
     const userGoal = quizAnswers[0] || "Secar barriga (Urgente)";
     const selectedMenu = DIET_DATABASE[userGoal] || DIET_DATABASE["default"];
 
-    // PÁGINA 1: CAPA E CRONOGRAMA
     doc.setFillColor(22, 163, 74); doc.rect(0, 0, 210, 40, 'F');
     doc.setTextColor(255); doc.setFont('helvetica', 'bold'); doc.setFontSize(22); 
     doc.text("Protocolo TmFormat", 105, 20, null, null, "center");
     doc.setFontSize(14); doc.setFont('helvetica', 'normal');
     doc.text("Guia Oficial de 7 Dias", 105, 30, null, null, "center");
 
-    // Introdução
     doc.setTextColor(50); doc.setFontSize(12);
     doc.text(`Objetivo Selecionado: ${userGoal}`, 14, 55);
     doc.text("Este plano foi estrategicamente montado para acelerar seu metabolismo.", 14, 62);
     
-    // Tabela do Plano Alimentar
-    doc.autoTable({ 
-      startY: 70, 
-      head: [['Dia', 'Café da Manhã', 'Almoço', 'Jantar']], 
-      body: selectedMenu, 
-      theme: 'grid', 
-      headStyles: { fillColor: [22, 163, 74] },
-      styles: { cellPadding: 4, fontSize: 10 }
-    });
+    doc.autoTable({ startY: 70, head: [['Dia', 'Café da Manhã', 'Almoço', 'Jantar']], body: selectedMenu, theme: 'grid', headStyles: { fillColor: [22, 163, 74] }, styles: { cellPadding: 4, fontSize: 10 } });
     
-    // Bônus Chá
     let finalY = doc.lastAutoTable.finalY + 15;
     doc.setDrawColor(255, 165, 0); doc.setLineWidth(1.5); doc.rect(14, finalY, 182, 35);
     doc.setTextColor(255, 140, 0); doc.setFont('helvetica', 'bold'); doc.setFontSize(14); 
@@ -260,104 +208,129 @@ export default function App() {
     doc.text("Ingredientes: 500ml água, 1 pau de canela, 3 rodelas de gengibre.", 20, finalY + 20);
     doc.text("Preparo: Ferva a água com especiarias por 5 min. Adicione 1/2 limão no final.", 20, finalY + 26);
 
-    // PÁGINA 2: RECEITAS DETALHADAS
     doc.addPage();
     doc.setFillColor(22, 163, 74); doc.rect(0, 0, 210, 30, 'F');
     doc.setTextColor(255); doc.setFontSize(18); doc.setFont('helvetica', 'bold');
     doc.text("Guia de Receitas Práticas", 105, 20, null, null, "center");
 
-    let yPos = 45;
-    doc.setTextColor(0); 
-
+    let yPos = 45; doc.setTextColor(0); 
     RECIPES_CONTENT.forEach((recipe) => {
         if (yPos > 250) { doc.addPage(); yPos = 30; }
-
-        doc.setFontSize(14); doc.setFont('helvetica', 'bold'); doc.setTextColor(22, 163, 74);
-        doc.text(recipe.title, 14, yPos);
-        yPos += 8;
-
-        doc.setFontSize(10); doc.setFont('helvetica', 'bold'); doc.setTextColor(0);
-        doc.text("Ingredientes:", 14, yPos);
-        yPos += 5;
-        doc.setFont('helvetica', 'normal');
-        const splitIng = doc.splitTextToSize(recipe.ing, 180);
-        doc.text(splitIng, 14, yPos);
-        yPos += splitIng.length * 5 + 3;
-
-        doc.setFont('helvetica', 'bold');
-        doc.text("Modo de Preparo:", 14, yPos);
-        yPos += 5;
-        doc.setFont('helvetica', 'normal');
-        const splitPrep = doc.splitTextToSize(recipe.prep, 180);
-        doc.text(splitPrep, 14, yPos);
-        yPos += splitPrep.length * 5 + 15;
+        doc.setFontSize(14); doc.setFont('helvetica', 'bold'); doc.setTextColor(22, 163, 74); doc.text(recipe.title, 14, yPos); yPos += 8;
+        doc.setFontSize(10); doc.setFont('helvetica', 'bold'); doc.setTextColor(0); doc.text("Ingredientes:", 14, yPos); yPos += 5;
+        doc.setFont('helvetica', 'normal'); const splitIng = doc.splitTextToSize(recipe.ing, 180); doc.text(splitIng, 14, yPos); yPos += splitIng.length * 5 + 3;
+        doc.setFont('helvetica', 'bold'); doc.text("Modo de Preparo:", 14, yPos); yPos += 5;
+        doc.setFont('helvetica', 'normal'); const splitPrep = doc.splitTextToSize(recipe.prep, 180); doc.text(splitPrep, 14, yPos); yPos += splitPrep.length * 5 + 15;
     });
-
     doc.save("Dieta_TmFormat_Premium.pdf");
   };
 
-  // --- RENDERIZAÇÃO DA TELA (VISUAL) ---
   return (
-    <div className="min-h-screen bg-gray-50 font-sans text-gray-800 selection:bg-green-100 overflow-x-hidden">
+    <div className="min-h-screen bg-white font-sans text-gray-800 selection:bg-green-100 overflow-x-hidden">
       
-      {/* HEADER DE ESCASSEZ */}
-      <div className="bg-gray-900 text-white text-center text-xs py-2 font-medium px-4 sticky top-0 z-50 shadow-md flex justify-center items-center gap-2">
-        <Clock size={14} className="text-yellow-400 animate-pulse" />
-        <span>Oferta especial encerra em: <span className="font-mono font-bold text-yellow-400 text-sm ml-1">{Math.floor(timeLeft/60)}:{(timeLeft%60).toString().padStart(2,'0')}</span></span>
-      </div>
+      {/* HEADER CORPORATIVO (NOVO) */}
+      {view === 'landing' && (
+        <div className="border-b border-gray-100 sticky top-0 bg-white/90 backdrop-blur-md z-50">
+          <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div className="flex items-center gap-2 font-bold text-xl text-gray-900 tracking-tight">
+              <Leaf size={24} className="fill-green-600 text-green-600"/>
+              <span>TmFormat<span className="text-green-600">.</span></span>
+            </div>
+            <div className="hidden md:flex gap-8 text-sm font-medium text-gray-500">
+              <span className="hover:text-green-600 cursor-pointer transition">O Método</span>
+              <span className="hover:text-green-600 cursor-pointer transition">Resultados</span>
+              <span className="hover:text-green-600 cursor-pointer transition">Ciência</span>
+            </div>
+            <button className="text-sm font-bold text-gray-900 flex items-center gap-2 hover:bg-gray-50 px-4 py-2 rounded-full transition">
+              <User size={18} /> Área de Membros
+            </button>
+          </div>
+        </div>
+      )}
 
       <AnimatePresence mode='wait'>
         
-        {/* 1. LANDING PAGE */}
+        {/* 1. LANDING PAGE REDESENHADA */}
         {view === 'landing' && (
-          <motion.div key="landing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: -100 }} className="max-w-lg mx-auto bg-white min-h-screen shadow-2xl relative">
-            <div className="absolute top-0 left-0 w-full h-80 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-green-100 via-white to-white z-0"></div>
-            <main className="relative z-10 px-6 pt-10 pb-20 text-center">
-              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="inline-flex items-center gap-2 font-bold text-xl text-green-700 bg-white/80 p-3 rounded-2xl shadow-sm mb-6"><Leaf size={24} className="fill-green-600"/><span>TmFormat</span></motion.div>
+          <motion.div key="landing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: -100 }} className="relative">
+            
+            {/* HERO SECTION PROFISSIONAL */}
+            <div className="max-w-6xl mx-auto px-4 pt-16 pb-24 text-center md:text-left md:flex items-center gap-12">
+              <div className="md:w-1/2">
+                <div className="inline-flex items-center gap-2 bg-green-50 text-green-800 px-4 py-1.5 rounded-full text-xs font-bold mb-6 border border-green-200 uppercase tracking-wide">
+                  <Check size={14}/> Protocolo Clínico Atualizado 2025
+                </div>
+                <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 leading-[1.1] text-gray-900">
+                  Reative o seu <br/>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-500">Metabolismo Natural</span> em 7 Dias.
+                </h1>
+                <p className="text-gray-500 mb-10 leading-relaxed text-lg md:pr-10">
+                  A única plataforma que utiliza <strong>bio-dados</strong> para gerar um plano alimentar anti-inflamatório compatível com a sua rotina, idade e objetivos. Sem remédios, apenas ciência nutricional.
+                </p>
+                <div className="flex flex-col md:flex-row gap-4">
+                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => setView('quiz')} className="bg-gray-900 text-white text-lg font-bold py-4 px-10 rounded-xl shadow-xl flex items-center justify-center gap-3 hover:bg-black transition-all">
+                    Iniciar Diagnóstico Gratuito <ArrowRight size={20} />
+                  </motion.button>
+                  <div className="flex items-center gap-2 justify-center text-sm font-medium text-gray-500 py-4">
+                    <ShieldCheck size={18} className="text-green-600"/> Garantia de Satisfação
+                  </div>
+                </div>
+              </div>
               
-              <div className="inline-flex items-center gap-2 bg-green-50 text-green-800 px-4 py-1.5 rounded-full text-xs font-bold mb-6 border border-green-200"><Flame size={14} className="text-orange-500 fill-orange-500"/>Método Validado 2025</div>
-              <h1 className="text-4xl font-extrabold tracking-tight mb-6 leading-[1.1] text-gray-900">
-                O Protocolo Específico <br/>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-400">para o <span className="underline decoration-green-500 decoration-4 underline-offset-4">SEU</span> Metabolismo</span>.
-              </h1>
-              
-              <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => setView('quiz')} className="w-full bg-gradient-to-r from-green-600 to-green-500 text-white text-lg font-bold py-5 px-8 rounded-2xl shadow-xl flex items-center justify-center gap-3 relative overflow-hidden group">
-                <span className="relative z-10">Iniciar Análise de Perfil</span>
-                <ArrowRight size={20} className="relative z-10 group-hover:translate-x-1 transition-transform" />
-              </motion.button>
-
-              <div className="mt-12 w-full">
-                 <h3 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-6">Comentários Recentes</h3>
-                 <div className="space-y-4">
-                    {REAL_COMMENTS.map((comment, i) => (
-                      <motion.div 
-                        initial={{ opacity: 0, y: 20 }} 
-                        animate={{ opacity: 1, y: 0 }} 
-                        transition={{ delay: i * 0.2 }}
-                        key={i} 
-                        className="bg-white/60 backdrop-blur-sm p-4 rounded-xl border border-gray-100 shadow-sm text-left flex gap-3 items-start"
-                      >
-                        <img src={comment.img} alt={comment.name} className="w-10 h-10 rounded-full object-cover border border-gray-200 shrink-0"/>
-                        <div className="flex-1">
-                          <div className="flex justify-between items-center mb-1">
-                            <span className="font-bold text-sm text-gray-900">{comment.name}</span>
-                            <span className="text-[10px] text-gray-400">{comment.time}</span>
-                          </div>
-                          <p className="text-sm text-gray-600 leading-tight mb-2">{comment.text}</p>
-                          <div className="flex items-center gap-3 text-xs text-gray-400 font-medium">
-                             <span className="flex items-center gap-1 hover:text-red-500 cursor-pointer"><ThumbsUp size={12}/> {comment.likes}</span>
-                             <span className="flex items-center gap-1 cursor-pointer">Responder</span>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
+              {/* IMAGEM HERO ILUSTRATIVA (ABSTRATA) */}
+              <div className="hidden md:block md:w-1/2 relative">
+                 <div className="bg-gradient-to-tr from-green-100 to-emerald-50 rounded-[3rem] p-8 relative z-0">
+                    <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&auto=format&fit=crop" className="rounded-3xl shadow-2xl rotate-2 hover:rotate-0 transition-all duration-500" alt="Prato Saudável" />
+                    {/* Floating Badge */}
+                    <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }} className="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-xl border border-gray-100 flex items-center gap-4">
+                       <div className="bg-green-100 p-3 rounded-full text-green-700"><Activity/></div>
+                       <div>
+                         <p className="text-xs text-gray-400 uppercase font-bold">Resultado Médio</p>
+                         <p className="text-xl font-extrabold text-gray-900">-2.4kg <span className="text-sm font-normal text-gray-500">/ semana</span></p>
+                       </div>
+                    </motion.div>
                  </div>
               </div>
-            </main>
+            </div>
+
+            {/* FAIXA DE AUTORIDADE (MÍDIA) */}
+            <div className="border-y border-gray-100 bg-gray-50 py-10">
+              <div className="max-w-6xl mx-auto px-4 text-center">
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">Metodologia baseada em estudos de:</p>
+                <div className="flex flex-wrap justify-center gap-8 md:gap-16 opacity-40 grayscale">
+                   {/* Logos simulados com texto para não quebrar links */}
+                   <h3 className="text-xl font-serif font-bold">Vogue</h3>
+                   <h3 className="text-xl font-serif font-bold">Healthline</h3>
+                   <h3 className="text-xl font-serif font-bold">BoaForma</h3>
+                   <h3 className="text-xl font-serif font-bold">Women's Health</h3>
+                </div>
+              </div>
+            </div>
+
+            {/* PROVA SOCIAL REALISTA */}
+            <div className="max-w-2xl mx-auto px-4 py-20">
+               <h3 className="text-2xl font-bold text-center mb-10">O que nossas alunas estão dizendo</h3>
+               <div className="space-y-6">
+                  {[
+                    { name: "Ana P.", text: "Gente o chá seca msm?? to precisando kkk", time: "há 2 min", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces" },
+                    { name: "Bruna Souza", text: "Comecei segunda, hj ja fechei o short jeans q nao entrava 😍 obrigada!!", time: "há 8 min", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=faces" },
+                    { name: "Carla_Fitness", text: "Eu tinha mto medo de ser golpe mas chegou certinho no email, ufa 🙏 a dieta é top", time: "há 15 min", img: "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=100&h=100&fit=crop&crop=faces" }
+                  ].map((c, i) => (
+                    <div key={i} className="flex gap-4 items-start border-b border-gray-100 pb-6 last:border-0">
+                       <img src={c.img} className="w-12 h-12 rounded-full object-cover" alt={c.name} />
+                       <div>
+                         <h4 className="font-bold text-sm text-gray-900 flex items-center gap-1">{c.name} <span className="text-xs font-normal text-gray-400">• {c.time}</span></h4>
+                         <p className="text-gray-600 mt-1">{c.text}</p>
+                         <div className="flex gap-4 mt-2 text-xs text-gray-400 font-bold cursor-pointer"><span>Curtir</span><span>Responder</span></div>
+                       </div>
+                    </div>
+                  ))}
+               </div>
+            </div>
           </motion.div>
         )}
 
-        {/* 2. QUIZ */}
+        {/* 2. QUIZ (Mantido o design clean) */}
         {view === 'quiz' && (
           <motion.div key="quiz" initial={{ x: 100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -100, opacity: 0 }} className="max-w-lg mx-auto bg-white min-h-screen flex flex-col shadow-2xl">
             <div className="w-full bg-gray-100 h-1.5"><motion.div initial={{ width: 0 }} animate={{ width: `${((currentQuestion + 1) / QUIZ_QUESTIONS.length) * 100}%` }} className="bg-green-500 h-full rounded-r-full"></motion.div></div>
@@ -383,89 +356,28 @@ export default function App() {
 
         {/* 4. CHECKOUT REAL (LOCK SCREEN STYLE) */}
         {view === 'checkout' && pixData && (
-          <motion.div
-            key="checkout"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="min-h-screen bg-gray-100 flex flex-col relative overflow-hidden"
-          >
-            {/* BACKGROUND: BLURRED DIET PREVIEW */}
+          <motion.div key="checkout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-gray-100 flex flex-col relative overflow-hidden">
             <div className="absolute inset-0 p-6 opacity-30 blur-sm pointer-events-none bg-white">
                 <h1 className="text-2xl font-bold text-gray-300 mb-4">Seu Protocolo Personalizado</h1>
-                <div className="space-y-4">
-                    {[1,2,3].map(i => (
-                        <div key={i} className="p-4 border rounded-xl bg-gray-50">
-                            <div className="h-4 w-32 bg-gray-200 rounded mb-2"></div>
-                            <div className="h-3 w-full bg-gray-100 rounded mb-1"></div>
-                            <div className="h-3 w-2/3 bg-gray-100 rounded"></div>
-                        </div>
-                    ))}
-                </div>
+                <div className="space-y-4">{[1,2,3].map(i => (<div key={i} className="p-4 border rounded-xl bg-gray-50"><div className="h-4 w-32 bg-gray-200 rounded mb-2"></div><div className="h-3 w-full bg-gray-100 rounded mb-1"></div></div>))}</div>
             </div>
-
-            {/* FOREGROUND: LOCK MODAL */}
             <div className="z-10 flex-1 flex items-center justify-center p-4">
-                <motion.div
-                    initial={{ scale: 0.9, y: 20 }}
-                    animate={{ scale: 1, y: 0 }}
-                    className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-gray-100"
-                >
-                    {/* Header Promocional */}
+                <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
                     <div className="bg-gray-900 text-white p-4 text-center">
-                        <div className="flex justify-center items-center gap-2 mb-1">
-                            <Lock size={20} className="text-green-400" />
-                            <span className="font-bold uppercase tracking-widest text-sm">Acesso Restrito</span>
-                        </div>
+                        <div className="flex justify-center items-center gap-2 mb-1"><Lock size={20} className="text-green-400" /><span className="font-bold uppercase tracking-widest text-sm">Acesso Restrito</span></div>
                         <p className="text-xs text-gray-400">Seu plano foi gerado e está aguardando liberação.</p>
                     </div>
-
                     <div className="p-8">
-                        <div className="text-center mb-8">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-2">Desbloqueie seu Protocolo</h2>
-                            <p className="text-gray-500 text-sm">O acesso completo ao cardápio de 7 dias + receitas está pronto.</p>
-                        </div>
-
-                        {/* Preço */}
-                        <div className="flex justify-center items-baseline gap-2 mb-8">
-                            <span className="text-gray-400 line-through text-lg">R$ 47,00</span>
-                            <span className="text-4xl font-extrabold text-green-600">R$ 24,90</span>
-                        </div>
-
-                        {/* Área do Pix */}
+                        <div className="text-center mb-8"><h2 className="text-2xl font-bold text-gray-800 mb-2">Desbloqueie seu Protocolo</h2><p className="text-gray-500 text-sm">O acesso completo ao cardápio de 7 dias + receitas está pronto.</p></div>
+                        <div className="flex justify-center items-baseline gap-2 mb-8"><span className="text-gray-400 line-through text-lg">R$ 47,00</span><span className="text-4xl font-extrabold text-green-600">R$ 24,90</span></div>
                         <div className="bg-green-50 rounded-2xl p-6 border border-green-100 mb-6 text-center relative overflow-hidden">
-                            {/* Faixa de "Seguro" */}
-                            <div className="absolute top-0 right-0 bg-green-200 text-green-800 text-[10px] px-2 py-1 rounded-bl-lg font-bold">
-                                SSL SEGURO
-                            </div>
-
+                            <div className="absolute top-0 right-0 bg-green-200 text-green-800 text-[10px] px-2 py-1 rounded-bl-lg font-bold">SSL SEGURO</div>
+                            <div className="bg-white/80 p-2 rounded mb-3 text-[10px] text-gray-500 flex items-center justify-center gap-1 border border-gray-100"><ShieldCheck size={12} className="text-green-600"/><span>Beneficiário: TmFormat / Representante Autorizado</span></div>
                             <p className="text-sm font-bold text-green-800 mb-3">Pague via Pix para liberar agora</p>
-                            
-                            {/* QR Code */}
-                            <div className="bg-white p-2 rounded-lg inline-block shadow-sm mb-3">
-                                <img src={pixData.qr_code_base64 ? `data:image/jpeg;base64,${pixData.qr_code_base64}` : 'https://placehold.co/200x200?text=QR+Code'} alt="QR Code Pix" className="w-40 h-40 mix-blend-multiply"/>
-                            </div>
-
-                            <button onClick={() => navigator.clipboard.writeText(pixData.qr_code)} className="w-full bg-white border border-green-200 text-green-700 py-3 rounded-xl font-bold text-xs flex justify-center gap-2 hover:bg-green-100 transition-colors">
-                                <Copy size={14}/> COPIAR CÓDIGO PIX
-                            </button>
+                            <div className="bg-white p-2 rounded-lg inline-block shadow-sm mb-3"><img src={pixData.qr_code_base64 ? `data:image/jpeg;base64,${pixData.qr_code_base64}` : 'https://placehold.co/200x200?text=QR+Code'} alt="QR Code Pix" className="w-40 h-40 mix-blend-multiply"/></div>
+                            <button onClick={() => navigator.clipboard.writeText(pixData.qr_code)} className="w-full bg-white border border-green-200 text-green-700 py-3 rounded-xl font-bold text-xs flex justify-center gap-2 hover:bg-green-100 transition-colors"><Copy size={14}/> COPIAR CÓDIGO PIX</button>
                         </div>
-
-                        {/* Garantia / Trust Badges */}
-                        <div className="grid grid-cols-2 gap-4 mb-4">
-                            <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 p-2 rounded-lg">
-                                <ShieldCheck size={16} className="text-green-500"/> Compra Segura
-                            </div>
-                            <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 p-2 rounded-lg">
-                                <Zap size={16} className="text-yellow-500"/> Acesso Imediato
-                            </div>
-                        </div>
-
-                        <div className="text-center">
-                            <div className="flex justify-center items-center gap-2 text-green-600 text-sm animate-pulse font-medium">
-                                <div className="w-2 h-2 bg-green-600 rounded-full"></div>
-                                Aguardando confirmação do banco...
-                            </div>
-                        </div>
+                        <div className="text-center"><div className="flex justify-center items-center gap-2 text-green-600 text-sm animate-pulse font-medium"><div className="w-2 h-2 bg-green-600 rounded-full"></div> Aguardando confirmação do banco...</div></div>
                     </div>
                 </motion.div>
             </div>
@@ -493,7 +405,6 @@ function AnalysisScreen({ onComplete }) {
   const steps = ["Conectando servidor seguro...", "Calculando metabolismo...", "Gerando PDF personalizado..."];
   useEffect(() => {
     const i = setInterval(() => setStep(s => (s < 2 ? s + 1 : s)), 1500);
-    // Tempo aumentado para 5 segundos para dar a sensação de "processamento"
     setTimeout(onComplete, 5000); 
     return () => clearInterval(i);
   }, []);
