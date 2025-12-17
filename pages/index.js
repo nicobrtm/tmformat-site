@@ -1,9 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { 
   ArrowRight, CheckCircle, Clock, ShieldCheck, Star, Leaf, Flame, 
-  ChevronRight, Download, Copy, Smartphone, Lock, Activity, AlertCircle, Check, Zap
+  ChevronRight, Download, Copy, Smartphone, Lock, Activity, AlertCircle, Check, Zap, ThumbsUp, MessageCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+// --- COMENTÁRIOS ESTILO TIKTOK (REALISTAS) ---
+const REAL_COMMENTS = [
+  { 
+    name: "Ana P.", 
+    text: "Gente o chá seca msm?? to precisando kkk", 
+    time: "há 2 min", 
+    likes: 12,
+    img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces" // Selfie mulher
+  },
+  { 
+    name: "Bruna Souza", 
+    text: "Comecei segunda, hj ja fechei o short jeans q nao entrava 😍 obrigada!!", 
+    time: "há 8 min", 
+    likes: 45,
+    img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=faces" // Foto de perfil comum
+  },
+  { 
+    name: "Carla_Fitness", 
+    text: "Eu tinha mto medo de ser golpe mas chegou certinho no email, ufa 🙏 a dieta é top", 
+    time: "há 15 min", 
+    likes: 89,
+    img: "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=100&h=100&fit=crop&crop=faces" // Foto de cachorro (muito comum em perfis reais)
+  },
+  { 
+    name: "Mariana G.", 
+    text: "Alguem ja fez a receita da sopa? É mto boa", 
+    time: "há 32 min", 
+    likes: 6,
+    img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=faces" // Selfie natural
+  }
+];
 
 // --- CONFIGURAÇÃO DA DIETA (MATRIX) ---
 const DIET_DATABASE = {
@@ -284,31 +316,42 @@ export default function App() {
               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="inline-flex items-center gap-2 font-bold text-xl text-green-700 bg-white/80 p-3 rounded-2xl shadow-sm mb-6"><Leaf size={24} className="fill-green-600"/><span>TmFormat</span></motion.div>
               
               <div className="inline-flex items-center gap-2 bg-green-50 text-green-800 px-4 py-1.5 rounded-full text-xs font-bold mb-6 border border-green-200"><Flame size={14} className="text-orange-500 fill-orange-500"/>Método Validado 2025</div>
-              <h1 className="text-4xl font-extrabold tracking-tight mb-6 leading-[1.1] text-gray-900">O fim do <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-400">Inchaço Abdominal</span>.</h1>
+              <h1 className="text-4xl font-extrabold tracking-tight mb-6 leading-[1.1] text-gray-900">
+                O Protocolo Específico <br/>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-400">para o <span className="underline decoration-green-500 decoration-4 underline-offset-4">SEU</span> Metabolismo</span>.
+              </h1>
               
               <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => setView('quiz')} className="w-full bg-gradient-to-r from-green-600 to-green-500 text-white text-lg font-bold py-5 px-8 rounded-2xl shadow-xl flex items-center justify-center gap-3 relative overflow-hidden group">
                 <span className="relative z-10">Iniciar Análise de Perfil</span>
                 <ArrowRight size={20} className="relative z-10 group-hover:translate-x-1 transition-transform" />
               </motion.button>
 
-              <div className="mt-12 bg-white/60 backdrop-blur-md p-4 rounded-2xl border border-gray-100 shadow-sm">
-                 <div className="flex items-center gap-4 mb-3">
-                    <div className="flex -space-x-4">
-                      {/* FOTOS REAIS DE ALUNAS */}
-                      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces" alt="Aluna" className="w-10 h-10 rounded-full border-2 border-white object-cover" />
-                      <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=faces" alt="Aluna" className="w-10 h-10 rounded-full border-2 border-white object-cover" />
-                      <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=100&h=100&fit=crop&crop=faces" alt="Aluna" className="w-10 h-10 rounded-full border-2 border-white object-cover" />
-                      <div className="w-10 h-10 rounded-full border-2 border-white bg-green-100 flex items-center justify-center text-xs font-bold text-green-700">+12k</div>
-                    </div>
-                    <div className="text-xs text-left">
-                      <div className="flex items-center gap-1">
-                        <div className="flex text-yellow-400 mb-0.5"><Star size={12} fill="currentColor"/><Star size={12} fill="currentColor"/><Star size={12} fill="currentColor"/><Star size={12} fill="currentColor"/><Star size={12} fill="currentColor"/></div>
-                        <span className="text-blue-500 font-bold flex items-center gap-0.5"><CheckCircle size={10} /> Verificado</span>
-                      </div>
-                      <span className="text-gray-600 font-medium">4.9/5 por <span className="text-gray-900 font-bold">12.438 alunas</span></span>
-                    </div>
+              <div className="mt-12 w-full">
+                 <h3 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-6">Comentários Recentes</h3>
+                 <div className="space-y-4">
+                    {REAL_COMMENTS.map((comment, i) => (
+                      <motion.div 
+                        initial={{ opacity: 0, y: 20 }} 
+                        animate={{ opacity: 1, y: 0 }} 
+                        transition={{ delay: i * 0.2 }}
+                        key={i} 
+                        className="bg-white/60 backdrop-blur-sm p-4 rounded-xl border border-gray-100 shadow-sm text-left flex gap-3 items-start"
+                      >
+                        <img src={comment.img} alt={comment.name} className="w-10 h-10 rounded-full object-cover border border-gray-200 shrink-0"/>
+                        <div className="flex-1">
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="font-bold text-sm text-gray-900">{comment.name}</span>
+                            <span className="text-[10px] text-gray-400">{comment.time}</span>
+                          </div>
+                          <p className="text-sm text-gray-600 leading-tight mb-2">{comment.text}</p>
+                          <div className="flex items-center gap-3 text-xs text-gray-400 font-medium">
+                             <span className="flex items-center gap-1 hover:text-red-500 cursor-pointer"><ThumbsUp size={12}/> {comment.likes}</span>
+                             <span className="flex items-center gap-1 cursor-pointer">Responder</span>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
                  </div>
-                 <p className="text-xs text-gray-500 italic text-left">"Eu achava que era mentira, mas desinchei 2kg logo na primeira semana. O suporte é ótimo!" - <strong>Julia M.</strong></p>
               </div>
             </main>
           </motion.div>
