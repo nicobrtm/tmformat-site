@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   ArrowRight, CheckCircle, Clock, ShieldCheck, Star, Leaf, Flame, 
-  ChevronRight, Download, Copy, Smartphone, Lock, Activity, AlertCircle, Check, Zap, Menu, User
+  ChevronRight, Download, Copy, Smartphone, Lock, Activity, AlertCircle, Check, Zap, Menu, User, X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -85,6 +85,7 @@ const RECIPES_CONTENT = [
 
 export default function App() {
   const [view, setView] = useState('landing');
+  const [showLogin, setShowLogin] = useState(false);
   const [quizAnswers, setQuizAnswers] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [timeLeft, setTimeLeft] = useState(600);
@@ -241,7 +242,10 @@ export default function App() {
               <span className="hover:text-green-600 cursor-pointer transition">Resultados</span>
               <span className="hover:text-green-600 cursor-pointer transition">Ciência</span>
             </div>
-            <button className="text-sm font-bold text-gray-900 flex items-center gap-2 hover:bg-gray-50 px-4 py-2 rounded-full transition">
+            <button 
+              onClick={() => setShowLogin(true)} 
+              className="text-sm font-bold text-gray-900 flex items-center gap-2 hover:bg-gray-50 px-4 py-2 rounded-full transition"
+            >
               <User size={18} /> Área de Membros
             </button>
           </div>
@@ -395,6 +399,61 @@ export default function App() {
           </motion.div>
         )}
 
+      </AnimatePresence>
+
+      {/* LOGIN MODAL */}
+      <AnimatePresence>
+        {showLogin && (
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+            onClick={(e) => e.target === e.currentTarget && setShowLogin(false)}
+          >
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }} 
+              animate={{ scale: 1, opacity: 1 }} 
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden"
+            >
+              <div className="p-6 relative">
+                <button onClick={() => setShowLogin(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                  <X size={20} />
+                </button>
+                
+                <div className="text-center mb-6">
+                  <div className="inline-flex items-center gap-2 font-bold text-xl text-green-700 mb-2">
+                    <Leaf size={24} className="fill-green-600"/> <span>TmFormat</span>
+                  </div>
+                  <h2 className="text-xl font-bold text-gray-900">Área do Aluno</h2>
+                  <p className="text-sm text-gray-500">Digite seus dados para entrar.</p>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase mb-1">E-mail</label>
+                    <input type="email" placeholder="seu@email.com" className="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-green-500 outline-none" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Senha</label>
+                    <input type="password" placeholder="••••••••" className="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-green-500 outline-none" />
+                  </div>
+                  <button onClick={() => alert("Você ainda não possui um plano ativo. Realize a compra para liberar seu acesso.")} className="w-full bg-green-600 text-white font-bold py-3 rounded-xl hover:bg-green-700 transition">
+                    Entrar na Plataforma
+                  </button>
+                </div>
+
+                <div className="mt-6 text-center text-xs text-gray-400">
+                  Ainda não é aluno? <button onClick={() => {setShowLogin(false); setView('quiz');}} className="text-green-600 font-bold hover:underline">Fazer análise gratuita</button>
+                </div>
+              </div>
+              <div className="bg-gray-50 p-4 text-center border-t border-gray-100">
+                <p className="text-xs text-gray-400 flex justify-center items-center gap-1"><Lock size={10}/> Ambiente Seguro</p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
       </AnimatePresence>
     </div>
   );
