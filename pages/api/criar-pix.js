@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     const payment = new Payment(client);
     
     const body = {
-      transaction_amount: 1.00, // VALOR DE TESTE (Altere para 24.90 quando for vender)
+      transaction_amount: 24.90, // VALOR DE TESTE (Altere para 24.90 quando for vender)
       description: 'Protocolo TmFormat - Teste',
       payment_method_id: 'pix',
       payer: {
