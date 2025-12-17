@@ -116,6 +116,7 @@ export default function App() {
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [userEmail, setUserEmail] = useState('');
   const [sendingEmail, setSendingEmail] = useState(false);
+  const [emailStatus, setEmailStatus] = useState('idle');
   
   const userEmailRef = useRef(userEmail);
   const quizAnswersRef = useRef(quizAnswers);
@@ -298,7 +299,6 @@ export default function App() {
     doc.save("Dieta_TmFormat_Premium.pdf");
   };
 
-  // Lógica de Geração do PDF
   const generatePDFContent = (doc, userGoal, selectedMenu) => {
     doc.setFillColor(22, 163, 74); doc.rect(0, 0, 210, 40, 'F');
     doc.setTextColor(255); doc.setFont('helvetica', 'bold'); doc.setFontSize(22); 
@@ -365,14 +365,33 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white font-sans text-gray-800 selection:bg-green-100 overflow-x-hidden">
-      {/* HEADER */}
-      <div className="bg-gray-900 text-white text-center text-xs py-2 font-medium px-4 sticky top-0 z-50 shadow-md flex justify-center items-center gap-2">
-        <Clock size={14} className="text-yellow-400 animate-pulse" />
-        <span>Oferta especial encerra em: <span className="font-mono font-bold text-yellow-400 text-sm ml-1">{Math.floor(timeLeft/60)}:{(timeLeft%60).toString().padStart(2,'0')}</span></span>
-      </div>
+      
+      {/* HEADER CORPORATIVO */}
+      {view === 'landing' && (
+        <div className="border-b border-gray-100 sticky top-0 bg-white/90 backdrop-blur-md z-50">
+          <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div className="flex items-center gap-2 font-bold text-xl text-gray-900 tracking-tight">
+              <Leaf size={24} className="fill-green-600 text-green-600"/>
+              <span>TmFormat<span className="text-green-600">.</span></span>
+            </div>
+            <div className="hidden md:flex gap-8 text-sm font-medium text-gray-500">
+              <span className="hover:text-green-600 cursor-pointer transition">O Método</span>
+              <span className="hover:text-green-600 cursor-pointer transition">Resultados</span>
+              <span className="hover:text-green-600 cursor-pointer transition">Ciência</span>
+            </div>
+            <button 
+              onClick={() => setShowLogin(true)} 
+              className="text-sm font-bold text-gray-900 flex items-center gap-2 hover:bg-gray-50 px-4 py-2 rounded-full transition"
+            >
+              <User size={18} /> Área de Membros
+            </button>
+          </div>
+        </div>
+      )}
 
       <AnimatePresence mode='wait'>
-        {/* ... (Landing, Quiz, Analyzing, Capture Email mantidos iguais) ... */}
+        
+        {/* 1. LANDING PAGE */}
         {view === 'landing' && (
           <motion.div key="landing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: -100 }} className="relative">
             <div className="max-w-6xl mx-auto px-4 pt-10 md:pt-16 pb-24 text-center md:text-left md:flex items-center gap-12">
@@ -438,6 +457,7 @@ export default function App() {
           </motion.div>
         )}
 
+        {/* 2. QUIZ */}
         {view === 'quiz' && (
           <motion.div key="quiz" initial={{ x: 100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -100, opacity: 0 }} className="max-w-lg mx-auto bg-white min-h-screen flex flex-col shadow-2xl">
             <div className="w-full bg-gray-100 h-1.5"><motion.div initial={{ width: 0 }} animate={{ width: `${((currentQuestion + 1) / QUIZ_QUESTIONS.length) * 100}%` }} className="bg-green-500 h-full rounded-r-full"></motion.div></div>
@@ -458,8 +478,10 @@ export default function App() {
           </motion.div>
         )}
 
+        {/* 3. ANALISANDO */}
         {view === 'analyzing' && <AnalysisScreen onComplete={() => setView('capture_email')} />}
 
+        {/* 4. CAPTURA DE EMAIL */}
         {view === 'capture_email' && (
             <motion.div key="email" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-md mx-auto min-h-screen flex flex-col justify-center p-6 text-center">
                 <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"><Mail size={40} className="text-green-600"/></div>
