@@ -255,21 +255,21 @@ export default function App() {
           <motion.div key="landing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: -100 }} className="relative">
             
             {/* HERO SECTION PROFISSIONAL */}
-            <div className="max-w-6xl mx-auto px-4 pt-16 pb-24 text-center md:text-left md:flex items-center gap-12">
+            <div className="max-w-6xl mx-auto px-4 pt-10 md:pt-16 pb-24 text-center md:text-left md:flex items-center gap-12">
               <div className="md:w-1/2">
                 <div className="inline-flex items-center gap-2 bg-green-50 text-green-800 px-4 py-1.5 rounded-full text-xs font-bold mb-6 border border-green-200 uppercase tracking-wide">
                   <Check size={14}/> Protocolo Clínico Atualizado 2025
                 </div>
-                <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 leading-[1.1] text-gray-900">
-                  Reative o seu <br/>
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-500">Metabolismo Natural</span> em 7 Dias.
+                <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 leading-[1.1] text-gray-900">
+                  O Plano Nutricional Específico para o <br/>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-500"><span className="underline decoration-green-400 decoration-4 underline-offset-4">SEU</span> Metabolismo</span>.
                 </h1>
                 <p className="text-gray-500 mb-10 leading-relaxed text-lg md:pr-10">
                   A única plataforma que utiliza <strong>bio-dados</strong> para gerar um plano alimentar anti-inflamatório compatível com a sua rotina, idade e objetivos. Sem remédios, apenas ciência nutricional.
                 </p>
                 <div className="flex flex-col md:flex-row gap-4">
                   <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => setView('quiz')} className="bg-gray-900 text-white text-lg font-bold py-4 px-10 rounded-xl shadow-xl flex items-center justify-center gap-3 hover:bg-black transition-all">
-                    Iniciar Diagnóstico Gratuito <ArrowRight size={20} />
+                    Iniciar Análise de Perfil <ArrowRight size={20} />
                   </motion.button>
                   <div className="flex items-center gap-2 justify-center text-sm font-medium text-gray-500 py-4">
                     <ShieldCheck size={18} className="text-green-600"/> Garantia de Satisfação
@@ -277,12 +277,12 @@ export default function App() {
                 </div>
               </div>
               
-              {/* IMAGEM HERO ILUSTRATIVA (ABSTRATA) */}
-              <div className="hidden md:block md:w-1/2 relative">
-                 <div className="bg-gradient-to-tr from-green-100 to-emerald-50 rounded-[3rem] p-8 relative z-0">
-                    <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&auto=format&fit=crop" className="rounded-3xl shadow-2xl rotate-2 hover:rotate-0 transition-all duration-500" alt="Prato Saudável" />
+              {/* IMAGEM HERO ILUSTRATIVA (AGORA VISÍVEL NO MOBILE TAMBÉM) */}
+              <div className="w-full md:w-1/2 relative mt-12 md:mt-0">
+                 <div className="bg-gradient-to-tr from-green-100 to-emerald-50 rounded-[3rem] p-6 md:p-8 relative z-0">
+                    <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&auto=format&fit=crop" className="rounded-3xl shadow-2xl rotate-2 hover:rotate-0 transition-all duration-500 w-full" alt="Prato Saudável" />
                     {/* Floating Badge */}
-                    <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }} className="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-xl border border-gray-100 flex items-center gap-4">
+                    <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }} className="absolute -bottom-6 -left-0 md:-left-6 bg-white p-4 rounded-xl shadow-xl border border-gray-100 flex items-center gap-4">
                        <div className="bg-green-100 p-3 rounded-full text-green-700"><Activity/></div>
                        <div>
                          <p className="text-xs text-gray-400 uppercase font-bold">Resultado Médio</p>
@@ -372,7 +372,7 @@ export default function App() {
                         <div className="flex justify-center items-baseline gap-2 mb-8"><span className="text-gray-400 line-through text-lg">R$ 47,00</span><span className="text-4xl font-extrabold text-green-600">R$ 24,90</span></div>
                         <div className="bg-green-50 rounded-2xl p-6 border border-green-100 mb-6 text-center relative overflow-hidden">
                             <div className="absolute top-0 right-0 bg-green-200 text-green-800 text-[10px] px-2 py-1 rounded-bl-lg font-bold">SSL SEGURO</div>
-                            <div className="bg-white/80 p-2 rounded mb-3 text-[10px] text-gray-500 flex items-center justify-center gap-1 border border-gray-100"><ShieldCheck size={12} className="text-green-600"/><span>Beneficiário: TmFormat / Representante Autorizado</span></div>
+                            <div className="bg-white/80 p-2 rounded mb-3 text-[10px] text-gray-500 flex items-center justify-center gap-1 border border-gray-100"><ShieldCheck size={12} className="text-green-600"/><span>Beneficiário: Nicolas Durgante / Representante Autorizado</span></div>
                             <p className="text-sm font-bold text-green-800 mb-3">Pague via Pix para liberar agora</p>
                             <div className="bg-white p-2 rounded-lg inline-block shadow-sm mb-3"><img src={pixData.qr_code_base64 ? `data:image/jpeg;base64,${pixData.qr_code_base64}` : 'https://placehold.co/200x200?text=QR+Code'} alt="QR Code Pix" className="w-40 h-40 mix-blend-multiply"/></div>
                             <button onClick={() => navigator.clipboard.writeText(pixData.qr_code)} className="w-full bg-white border border-green-200 text-green-700 py-3 rounded-xl font-bold text-xs flex justify-center gap-2 hover:bg-green-100 transition-colors"><Copy size={14}/> COPIAR CÓDIGO PIX</button>
