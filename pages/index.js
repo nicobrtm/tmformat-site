@@ -7,10 +7,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 // --- CONFIGURAÇÃO ---
 const DIET_DATABASE = {
-  "Secar barriga (Urgente)": [['01', 'Ovos + Café', 'Frango + Salada', 'Sopa Detox'], ['02', 'Iogurte + Chia', 'Peixe + Brócolis', 'Omelete']],
-  "Desinchar o corpo todo": [['01', 'Suco Verde', 'Peixe + Arroz', 'Sopa Abóbora'], ['02', 'Melão', 'Frango + Aspargos', 'Salada Pepino']],
-  "Melhorar digestão": [['01', 'Mamão', 'Frango + Quiabo', 'Sopa Legumes'], ['02', 'Iogurte', 'Peixe + Purê', 'Creme Aipim']],
-  "Perder peso na balança": [['01', 'Pão Integral', 'Arroz + Feijão', 'Sanduíche'], ['02', 'Tapioca', 'Macarrão Int.', 'Salada Frutas']]
+  "Secar barriga (Urgente)": [['01', 'Ovos + Café', 'Frango + Salada', 'Sopa Detox'], ['02', 'Iogurte + Chia', 'Peixe + Brócolis', 'Omelete'], ['03', 'Abacate + Ovos', 'Carne Moída + Abobrinha', 'Caldo de Ossos'], ['04', 'Café com Óleo de Coco', 'Sobrecoxa Assada + Couve', 'Creme de Chuchu'], ['05', 'Queijo Coalho Grelhado', 'Lombo Suíno + Repolho', 'Salada de Atum'], ['06', 'Ovos Cozidos + Castanhas', 'Frango ao Curry + Couve-flor', 'Wrap de Alface'], ['07', 'Panqueca Low Carb', 'Peixe Assado + Espinafre', 'Sopa de Abóbora']],
+  "Desinchar o corpo todo": [['01', 'Suco Verde', 'Peixe + Arroz', 'Sopa Abóbora'], ['02', 'Melão', 'Frango + Aspargos', 'Salada Pepino'], ['03', 'Mamão + Linhaça', 'Salmão + Batata Doce', 'Creme de Cenoura'], ['04', 'Chá de Hibisco + Torrada', 'Carne Magra + Chuchu', 'Omelete com Espinafre'], ['05', 'Abacaxi com Canela', 'Filé de Tilápia + Salada', 'Sopa de Legumes'], ['06', 'Melancia + Queijo Branco', 'Frango Desfiado + Purê', 'Salada Caprese'], ['07', 'Água de Coco + Castanhas', 'Peixe Assado + Tomate', 'Caldo Verde Light']],
+  "Melhorar digestão": [['01', 'Mamão', 'Frango + Quiabo', 'Sopa Legumes'], ['02', 'Iogurte', 'Peixe + Purê', 'Creme Aipim'], ['03', 'Banana Cozida + Canela', 'Carne de Panela + Cenoura', 'Ovos Mexidos Leves'], ['04', 'Suco de Laranja Lima', 'Arroz Bem Cozido + Frango', 'Sopa de Canja'], ['05', 'Maçã Cozida', 'Peixe Grelhado + Purê Moranga', 'Caldo de Feijão (s/ grão)'], ['06', 'Pera Cozida', 'Frango Desfiado + Polenta', 'Creme de Espinafre'], ['07', 'Gelatina Natural', 'Peixe Assado + Batata', 'Sopa de Legumes']],
+  "Perder peso na balança": [['01', 'Pão Integral', 'Arroz + Feijão', 'Sanduíche'], ['02', 'Tapioca', 'Macarrão Int.', 'Salada Frutas'], ['03', 'Cuscuz + Ovos', 'Batata Doce + Peixe', 'Iogurte + Granola'], ['04', 'Panqueca de Banana', 'Escondidinho de Batata', 'Wrap Integral'], ['05', 'Vitamina de Frutas', 'Strogonoff Light + Arroz', 'Omelete Recheado'], ['06', 'Pão com Ricota', 'Carne Assada + Mandioca', 'Sopa de Feijão'], ['07', 'Crepioca de Frango', 'Feijoada Light + Couve', 'Mingau de Aveia']]
 };
 
 export default function App() {
@@ -160,52 +160,4 @@ function AnalysisScreen({ onComplete }) {
       <h2 className="text-xl font-bold">{steps[step]}</h2>
     </div>
   );
-}
-```
-
-#### 4. Crie uma pasta chamada `api` dentro de `pages`
-Dentro de `site-dieta/pages`, crie uma nova pasta `api`.
-
-#### 5. Arquivo `pages/api/criar-pix.js`
-Dentro da pasta `api`, crie o arquivo `criar-pix.js` com o código de **R$ 1,00** que te passei anteriormente.
-
-```javascript
-import { MercadoPagoConfig, Payment } from 'mercadopago';
-const client = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN });
-
-export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).end();
-  try {
-    const payment = new Payment(client);
-    const response = await payment.create({
-      body: {
-        transaction_amount: 1.00, // TESTE DE 1 REAL
-        description: 'Protocolo TmFormat',
-        payment_method_id: 'pix',
-        payer: { email: 'cliente@teste.com' }
-      }
-    });
-    res.status(200).json({
-      id: response.id,
-      qr_code: response.point_of_interaction.transaction_data.qr_code,
-      qr_code_base64: response.point_of_interaction.transaction_data.qr_code_base64
-    });
-  } catch (error) { res.status(500).json({ error: 'Erro Pix' }); }
-}
-```
-
-#### 6. Arquivo `pages/api/checar-status.js`
-Dentro da pasta `api`, crie `checar-status.js`.
-
-```javascript
-import { MercadoPagoConfig, Payment } from 'mercadopago';
-const client = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN });
-
-export default async function handler(req, res) {
-  const { id } = req.query;
-  try {
-    const payment = new Payment(client);
-    const response = await payment.get({ id });
-    res.status(200).json({ status: response.status });
-  } catch (error) { res.status(500).json({ error: 'Erro' }); }
 }
