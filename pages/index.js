@@ -54,7 +54,7 @@ const DIET_DATABASE = {
   ]
 };
 
-// --- RECEITAS DETALHADAS COM METADADOS ---
+// --- RECEITAS DETALHADAS ---
 const RECIPES_CONTENT = [
   {
     title: "Sopa Detox de Abóbora com Gengibre",
@@ -260,8 +260,6 @@ export default function App() {
             console.log("Email enviado!");
         } else {
             console.error("Falha no envio do email.");
-            // Não alertamos o usuário automaticamente para não quebrar o fluxo, 
-            // mas o botão de download manual está lá.
         }
     } catch (e) { 
         console.error("Erro no envio auto", e);
@@ -277,7 +275,6 @@ export default function App() {
     }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    
     const userGoal = quizAnswersRef.current[0] || "Secar barriga (Urgente)";
     const selectedMenu = DIET_DATABASE[userGoal] || DIET_DATABASE["default"];
 
@@ -299,9 +296,7 @@ export default function App() {
     doc.save("Dieta_TmFormat_Premium.pdf");
   };
 
-  // Lógica de Geração do PDF (Compartilhada entre download e email)
   const generatePDFContent = (doc, userGoal, selectedMenu) => {
-    // PÁGINA 1: CAPA E CRONOGRAMA
     doc.setFillColor(22, 163, 74); doc.rect(0, 0, 210, 40, 'F');
     doc.setTextColor(255); doc.setFont('helvetica', 'bold'); doc.setFontSize(22); 
     doc.text("Protocolo TmFormat", 105, 20, null, null, "center");
@@ -329,7 +324,6 @@ export default function App() {
     doc.text("Ingredientes: 500ml água, 1 pau de canela, 3 rodelas de gengibre.", 20, finalY + 20);
     doc.text("Preparo: Ferva a água com especiarias por 5 min. Adicione 1/2 limão no final.", 20, finalY + 26);
 
-    // PÁGINA 2: RECEITAS DETALHADAS (NOVO!)
     doc.addPage();
     doc.setFillColor(22, 163, 74); doc.rect(0, 0, 210, 30, 'F');
     doc.setTextColor(255); doc.setFontSize(18); doc.setFont('helvetica', 'bold');
@@ -339,18 +333,12 @@ export default function App() {
     
     RECIPES_CONTENT.forEach((recipe) => {
         if (yPos > 250) { doc.addPage(); yPos = 30; }
-
-        // Título da Receita
         doc.setFontSize(14); doc.setFont('helvetica', 'bold'); doc.setTextColor(22, 163, 74);
         doc.text(recipe.title, 14, yPos);
         yPos += 7;
-
-        // Metadados (Tempo, Fogo, Porções)
         doc.setFontSize(10); doc.setTextColor(100); doc.setFont('helvetica', 'bold');
         doc.text(`⏱ Tempo: ${recipe.time}  |  🔥 Fogo: ${recipe.temp}  |  🥣 Porções: ${recipe.portions}`, 14, yPos);
         yPos += 8;
-
-        // Ingredientes
         doc.setFontSize(10); doc.setFont('helvetica', 'bold'); doc.setTextColor(0);
         doc.text("Ingredientes:", 14, yPos);
         yPos += 5;
@@ -358,43 +346,24 @@ export default function App() {
         const splitIng = doc.splitTextToSize(recipe.ing, 180);
         doc.text(splitIng, 14, yPos);
         yPos += splitIng.length * 5 + 3;
-
-        // Modo de Preparo
         doc.setFont('helvetica', 'bold');
         doc.text("Modo de Preparo:", 14, yPos);
         yPos += 5;
         doc.setFont('helvetica', 'normal');
         const splitPrep = doc.splitTextToSize(recipe.prep, 180);
         doc.text(splitPrep, 14, yPos);
-        yPos += splitPrep.length * 5 + 15; // Espaço extra
+        yPos += splitPrep.length * 5 + 15;
     });
   };
 
   return (
     <div className="min-h-screen bg-white font-sans text-gray-800 selection:bg-green-100 overflow-x-hidden">
       
-      {/* HEADER CORPORATIVO */}
-      {view === 'landing' && (
-        <div className="border-b border-gray-100 sticky top-0 bg-white/90 backdrop-blur-md z-50">
-          <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div className="flex items-center gap-2 font-bold text-xl text-gray-900 tracking-tight">
-              <Leaf size={24} className="fill-green-600 text-green-600"/>
-              <span>TmFormat<span className="text-green-600">.</span></span>
-            </div>
-            <div className="hidden md:flex gap-8 text-sm font-medium text-gray-500">
-              <span className="hover:text-green-600 cursor-pointer transition">O Método</span>
-              <span className="hover:text-green-600 cursor-pointer transition">Resultados</span>
-              <span className="hover:text-green-600 cursor-pointer transition">Ciência</span>
-            </div>
-            <button 
-              onClick={() => setShowLogin(true)} 
-              className="text-sm font-bold text-gray-900 flex items-center gap-2 hover:bg-gray-50 px-4 py-2 rounded-full transition"
-            >
-              <User size={18} /> Área de Membros
-            </button>
-          </div>
-        </div>
-      )}
+      {/* HEADER DE ESCASSEZ */}
+      <div className="bg-gray-900 text-white text-center text-xs py-2 font-medium px-4 sticky top-0 z-50 shadow-md flex justify-center items-center gap-2">
+        <Clock size={14} className="text-yellow-400 animate-pulse" />
+        <span>Oferta especial encerra em: <span className="font-mono font-bold text-yellow-400 text-sm ml-1">{Math.floor(timeLeft/60)}:{(timeLeft%60).toString().padStart(2,'0')}</span></span>
+      </div>
 
       <AnimatePresence mode='wait'>
         
@@ -488,7 +457,7 @@ export default function App() {
         {/* 3. ANALISANDO */}
         {view === 'analyzing' && <AnalysisScreen onComplete={() => setView('capture_email')} />}
 
-        {/* 4. CAPTURA DE EMAIL (NOVO!) */}
+        {/* 4. CAPTURA DE EMAIL */}
         {view === 'capture_email' && (
             <motion.div key="email" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-md mx-auto min-h-screen flex flex-col justify-center p-6 text-center">
                 <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"><Mail size={40} className="text-green-600"/></div>
@@ -506,24 +475,98 @@ export default function App() {
             </motion.div>
         )}
 
-        {/* 5. CHECKOUT REAL */}
+        {/* 5. CHECKOUT REAL (LOCK SCREEN STYLE) */}
         {view === 'checkout' && pixData && (
-          <motion.div key="checkout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-md mx-auto min-h-screen p-6 text-center pt-20">
-             <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
-                <div className="flex justify-between items-center mb-6 border-b pb-4"><span className="text-gray-500 text-sm">Protocolo VIP</span><div className="text-right"><span className="text-xs text-red-400 line-through block">R$ 47,00</span><span className="text-2xl font-bold text-green-600">R$ 24,90</span></div></div>
-                <h2 className="text-xl font-bold mb-4 text-gray-800">Desbloqueie seu Protocolo</h2>
-                <div className="bg-green-50 p-6 rounded-xl border border-green-100 mb-4">
-                    <div className="bg-white/80 p-2 rounded mb-3 text-[10px] text-gray-500 flex items-center justify-center gap-1"><Check size={12}/> Beneficiário: Nicolas Durgante / Repr. Autorizado</div>
-                    <p className="text-sm font-bold text-green-800 mb-3 flex justify-center gap-2"><Smartphone size={16}/> Escaneie para pagar</p>
-                    <img src={pixData.qr_code_base64 ? `data:image/jpeg;base64,${pixData.qr_code_base64}` : 'https://placehold.co/200x200?text=QR+Code'} className="w-40 mx-auto mb-4 mix-blend-multiply rounded-lg"/>
-                    <button onClick={() => navigator.clipboard.writeText(pixData.qr_code)} className="bg-white border border-green-200 w-full py-3 rounded-xl text-xs font-bold text-green-700 hover:bg-green-100 transition">COPIAR CÓDIGO PIX</button>
+          <motion.div
+            key="checkout"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="min-h-screen bg-gray-100 flex flex-col relative overflow-hidden"
+          >
+            {/* BACKGROUND: BLURRED DIET PREVIEW */}
+            <div className="absolute inset-0 p-6 opacity-30 blur-sm pointer-events-none bg-white">
+                <h1 className="text-2xl font-bold text-gray-300 mb-4">Seu Protocolo Personalizado</h1>
+                <div className="space-y-4">
+                    {[1,2,3].map(i => (
+                        <div key={i} className="p-4 border rounded-xl bg-gray-50">
+                            <div className="h-4 w-32 bg-gray-200 rounded mb-2"></div>
+                            <div className="h-3 w-full bg-gray-100 rounded mb-1"></div>
+                            <div className="h-3 w-2/3 bg-gray-100 rounded"></div>
+                        </div>
+                    ))}
                 </div>
-                <div className="flex justify-center items-center gap-2 text-green-600 text-sm animate-pulse"><Activity size={16}/> Aguardando pagamento...</div>
-                {/* AVISO IMPORTANTE ANTI-FECHAMENTO */}
-                <div className="mt-4 p-3 bg-yellow-50 rounded-lg text-xs text-yellow-700 border border-yellow-100">
-                   <strong>Importante:</strong> Se sair desta tela, retorne para confirmar o recebimento do seu acesso.
-                </div>
-             </div>
+            </div>
+
+            {/* FOREGROUND: LOCK MODAL */}
+            <div className="z-10 flex-1 flex items-center justify-center p-4">
+                <motion.div
+                    initial={{ scale: 0.9, y: 20 }}
+                    animate={{ scale: 1, y: 0 }}
+                    className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-gray-100"
+                >
+                    {/* Header Promocional */}
+                    <div className="bg-gray-900 text-white p-4 text-center">
+                        <div className="flex justify-center items-center gap-2 mb-1">
+                            <Lock size={20} className="text-green-400" />
+                            <span className="font-bold uppercase tracking-widest text-sm">Acesso Restrito</span>
+                        </div>
+                        <p className="text-xs text-gray-400">Seu plano foi gerado e está aguardando liberação.</p>
+                    </div>
+
+                    <div className="p-8">
+                        <div className="text-center mb-8">
+                            <h2 className="text-2xl font-bold text-gray-800 mb-2">Desbloqueie seu Protocolo</h2>
+                            <p className="text-gray-500 text-sm">O acesso completo ao cardápio de 7 dias + receitas está pronto.</p>
+                        </div>
+
+                        {/* Preço */}
+                        <div className="flex justify-center items-baseline gap-2 mb-8">
+                            <span className="text-gray-400 line-through text-lg">R$ 47,00</span>
+                            <span className="text-4xl font-extrabold text-green-600">R$ 24,90</span>
+                        </div>
+
+                        {/* Área do Pix */}
+                        <div className="bg-green-50 rounded-2xl p-6 border border-green-100 mb-6 text-center relative overflow-hidden">
+                            <div className="absolute top-0 right-0 bg-green-200 text-green-800 text-[10px] px-2 py-1 rounded-bl-lg font-bold">SSL SEGURO</div>
+                            <div className="bg-white/80 p-2 rounded mb-3 text-[10px] text-gray-500 flex items-center justify-center gap-1 border border-gray-100">
+                                <ShieldCheck size={12} className="text-green-600"/>
+                                <span>Beneficiário: Nicolas Durgante / Repr. Autorizado</span>
+                            </div>
+                            <p className="text-sm font-bold text-green-800 mb-3">Pague via Pix para liberar agora</p>
+                            
+                            <div className="bg-white p-2 rounded-lg inline-block shadow-sm mb-3">
+                                <img src={pixData.qr_code_base64 ? `data:image/jpeg;base64,${pixData.qr_code_base64}` : 'https://placehold.co/200x200?text=QR+Code'} alt="QR Code Pix" className="w-40 h-40 mix-blend-multiply"/>
+                            </div>
+
+                            <button onClick={() => navigator.clipboard.writeText(pixData.qr_code)} className="w-full bg-white border border-green-200 text-green-700 py-3 rounded-xl font-bold text-xs flex justify-center gap-2 hover:bg-green-100 transition-colors">
+                                <Copy size={14}/> COPIAR CÓDIGO PIX
+                            </button>
+                        </div>
+
+                        {/* Garantia / Trust Badges */}
+                        <div className="grid grid-cols-2 gap-4 mb-4">
+                            <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 p-2 rounded-lg">
+                                <ShieldCheck size={16} className="text-green-500"/> Compra Segura
+                            </div>
+                            <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 p-2 rounded-lg">
+                                <Zap size={16} className="text-yellow-500"/> Acesso Imediato
+                            </div>
+                        </div>
+
+                        {/* AVISO IMPORTANTE ANTI-FECHAMENTO */}
+                        <div className="mt-4 p-3 bg-yellow-50 rounded-lg text-xs text-yellow-700 border border-yellow-100 text-center">
+                            <strong>Importante:</strong> Se sair desta tela, retorne para confirmar o recebimento do seu acesso.
+                        </div>
+
+                        <div className="text-center mt-4">
+                            <div className="flex justify-center items-center gap-2 text-green-600 text-sm animate-pulse font-medium">
+                                <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                                Aguardando confirmação do banco...
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
+            </div>
           </motion.div>
         )}
 
@@ -534,8 +577,10 @@ export default function App() {
                 <CheckCircle size={60} className="text-green-600 mx-auto mb-4"/>
                 <h2 className="text-2xl font-bold mb-2">Tudo Pronto!</h2>
                 <p className="text-gray-500 mb-6">Uma cópia também foi enviada para <strong>{userEmail}</strong>.</p>
-                <div className="text-xs text-gray-400 mb-6 bg-gray-50 p-2 rounded">
-                   {sendingEmail ? "Enviando e-mail automaticamente..." : "E-mail enviado com sucesso!"}
+                <div className={`text-xs mb-6 bg-gray-50 p-2 rounded ${emailStatus === 'error' ? 'text-red-500' : 'text-gray-400'}`}>
+                   {emailStatus === 'sending' && "Enviando e-mail automaticamente..."}
+                   {emailStatus === 'success' && "✅ E-mail enviado com sucesso!"}
+                   {emailStatus === 'error' && "⚠️ Erro ao enviar e-mail. Baixe abaixo."}
                 </div>
                 <button onClick={downloadManualPDF} className="w-full bg-green-600 text-white font-bold py-4 rounded-xl shadow-lg flex justify-center gap-2 hover:bg-green-700 transition">
                     BAIXAR AGORA <Download/>
@@ -543,6 +588,7 @@ export default function App() {
              </div>
           </motion.div>
         )}
+
       </AnimatePresence>
 
       {/* LOGIN MODAL */}
