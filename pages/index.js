@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   ArrowRight, CheckCircle, Clock, ShieldCheck, Star, Leaf, Flame, 
-  ChevronRight, Download, Copy, Smartphone, Lock, Activity, AlertCircle, Check
+  ChevronRight, Download, Copy, Smartphone, Lock, Activity, AlertCircle, Check, Zap
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -338,28 +338,93 @@ export default function App() {
         {/* 3. ANALISANDO */}
         {view === 'analyzing' && <AnalysisScreen onComplete={gerarPixReal} />}
 
-        {/* 4. CHECKOUT REAL */}
+        {/* 4. CHECKOUT REAL (LOCK SCREEN STYLE) */}
         {view === 'checkout' && pixData && (
-          <motion.div key="checkout" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-            <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden p-8 text-center">
-                <div className="flex justify-between items-center mb-6 border-b pb-4">
-                  <span className="text-gray-500 text-sm">Protocolo VIP</span>
-                  <div className="text-right"><span className="text-xs text-red-400 line-through block">R$ 47,00</span><span className="text-2xl font-bold text-green-600">R$ 24,90</span></div>
+          <motion.div
+            key="checkout"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="min-h-screen bg-gray-100 flex flex-col relative overflow-hidden"
+          >
+            {/* BACKGROUND: BLURRED DIET PREVIEW */}
+            <div className="absolute inset-0 p-6 opacity-30 blur-sm pointer-events-none bg-white">
+                <h1 className="text-2xl font-bold text-gray-300 mb-4">Seu Protocolo Personalizado</h1>
+                <div className="space-y-4">
+                    {[1,2,3].map(i => (
+                        <div key={i} className="p-4 border rounded-xl bg-gray-50">
+                            <div className="h-4 w-32 bg-gray-200 rounded mb-2"></div>
+                            <div className="h-3 w-full bg-gray-100 rounded mb-1"></div>
+                            <div className="h-3 w-2/3 bg-gray-100 rounded"></div>
+                        </div>
+                    ))}
                 </div>
-                
-                <div className="bg-green-50 rounded-2xl p-6 border border-green-100 mb-6">
-                  <p className="text-sm font-bold text-green-800 mb-4 flex justify-center gap-2"><Smartphone size={16}/> Escaneie para pagar</p>
-                  {/* Verifica se a imagem base64 veio corretamente, senão usa placeholder para não quebrar layout no teste local */}
-                  <img src={pixData.qr_code_base64 ? `data:image/jpeg;base64,${pixData.qr_code_base64}` : 'https://placehold.co/200x200?text=QR+Code'} alt="QR Code Pix" className="mx-auto w-48 rounded-lg mb-4 mix-blend-multiply"/>
-                  <button onClick={() => navigator.clipboard.writeText(pixData.qr_code)} className="w-full bg-white border border-green-200 text-green-700 py-3 rounded-xl font-bold text-xs flex justify-center gap-2 hover:bg-green-50"><Copy size={14}/> COPIAR CÓDIGO PIX</button>
-                </div>
+            </div>
 
-                <div className="bg-yellow-50 p-3 rounded-lg flex gap-3 text-left mb-4">
-                    <AlertCircle className="text-yellow-600 shrink-0" size={18}/>
-                    <p className="text-xs text-yellow-800">Pagamento seguro. Acesso liberado imediatamente após o Pix.</p>
-                </div>
-                
-                <div className="flex justify-center items-center gap-2 text-green-600 text-sm animate-pulse font-medium"><Activity size={16}/> Aguardando confirmação do banco...</div>
+            {/* FOREGROUND: LOCK MODAL */}
+            <div className="z-10 flex-1 flex items-center justify-center p-4">
+                <motion.div
+                    initial={{ scale: 0.9, y: 20 }}
+                    animate={{ scale: 1, y: 0 }}
+                    className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-gray-100"
+                >
+                    {/* Header Promocional */}
+                    <div className="bg-gray-900 text-white p-4 text-center">
+                        <div className="flex justify-center items-center gap-2 mb-1">
+                            <Lock size={20} className="text-green-400" />
+                            <span className="font-bold uppercase tracking-widest text-sm">Acesso Restrito</span>
+                        </div>
+                        <p className="text-xs text-gray-400">Seu plano foi gerado e está aguardando liberação.</p>
+                    </div>
+
+                    <div className="p-8">
+                        <div className="text-center mb-8">
+                            <h2 className="text-2xl font-bold text-gray-800 mb-2">Desbloqueie seu Protocolo</h2>
+                            <p className="text-gray-500 text-sm">O acesso completo ao cardápio de 7 dias + receitas está pronto.</p>
+                        </div>
+
+                        {/* Preço */}
+                        <div className="flex justify-center items-baseline gap-2 mb-8">
+                            <span className="text-gray-400 line-through text-lg">R$ 47,00</span>
+                            <span className="text-4xl font-extrabold text-green-600">R$ 24,90</span>
+                        </div>
+
+                        {/* Área do Pix */}
+                        <div className="bg-green-50 rounded-2xl p-6 border border-green-100 mb-6 text-center relative overflow-hidden">
+                            {/* Faixa de "Seguro" */}
+                            <div className="absolute top-0 right-0 bg-green-200 text-green-800 text-[10px] px-2 py-1 rounded-bl-lg font-bold">
+                                SSL SEGURO
+                            </div>
+
+                            <p className="text-sm font-bold text-green-800 mb-3">Pague via Pix para liberar agora</p>
+                            
+                            {/* QR Code */}
+                            <div className="bg-white p-2 rounded-lg inline-block shadow-sm mb-3">
+                                <img src={pixData.qr_code_base64 ? `data:image/jpeg;base64,${pixData.qr_code_base64}` : 'https://placehold.co/200x200?text=QR+Code'} alt="QR Code Pix" className="w-40 h-40 mix-blend-multiply"/>
+                            </div>
+
+                            <button onClick={() => navigator.clipboard.writeText(pixData.qr_code)} className="w-full bg-white border border-green-200 text-green-700 py-3 rounded-xl font-bold text-xs flex justify-center gap-2 hover:bg-green-100 transition-colors">
+                                <Copy size={14}/> COPIAR CÓDIGO PIX
+                            </button>
+                        </div>
+
+                        {/* Garantia / Trust Badges */}
+                        <div className="grid grid-cols-2 gap-4 mb-4">
+                            <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 p-2 rounded-lg">
+                                <ShieldCheck size={16} className="text-green-500"/> Compra Segura
+                            </div>
+                            <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 p-2 rounded-lg">
+                                <Zap size={16} className="text-yellow-500"/> Acesso Imediato
+                            </div>
+                        </div>
+
+                        <div className="text-center">
+                            <div className="flex justify-center items-center gap-2 text-green-600 text-sm animate-pulse font-medium">
+                                <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                                Aguardando confirmação do banco...
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
             </div>
           </motion.div>
         )}
