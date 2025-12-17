@@ -1,6 +1,6 @@
 {
   "name": "tmformat-app",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -13,7 +13,7 @@
     "react-dom": "18.3.1",
     "mercadopago": "^2.0.9",
     "lucide-react": "^0.378.0",
-    "framer-motion": "^11.2.0",
+    "framer-motion": "^11.2.0", 
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2"
   },
