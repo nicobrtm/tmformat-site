@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   ArrowRight, CheckCircle, Clock, ShieldCheck, Star, Leaf, Flame, 
-  ChevronRight, Download, Copy, Smartphone, Lock, Activity, AlertCircle, Check, Zap, Menu, User, X
+  ChevronRight, Download, Copy, Smartphone, Lock, Activity, AlertCircle, Check, Zap, Menu, User, X, Mail
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -83,20 +83,33 @@ const RECIPES_CONTENT = [
   }
 ];
 
+// --- COMENTÁRIOS ESTILO TIKTOK ---
+const REAL_COMMENTS = [
+  { name: "Ana P.", text: "Gente o chá seca msm?? to precisando kkk", time: "há 2 min", likes: 12, img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces" },
+  { name: "Bruna Souza", text: "Comecei segunda, hj ja fechei o short jeans q nao entrava 😍 obrigada!!", time: "há 8 min", likes: 45, img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=faces" },
+  { name: "Carla_Fitness", text: "Eu tinha mto medo de ser golpe mas chegou certinho no email, ufa 🙏 a dieta é top", time: "há 15 min", likes: 89, img: "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=100&h=100&fit=crop&crop=faces" }
+];
+
 export default function App() {
   const [view, setView] = useState('landing');
   const [showLogin, setShowLogin] = useState(false);
+  const [loginError, setLoginError] = useState('');
   const [quizAnswers, setQuizAnswers] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [timeLeft, setTimeLeft] = useState(600);
   const [pixData, setPixData] = useState(null);
   const [paymentLoading, setPaymentLoading] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
+  const [sendingEmail, setSendingEmail] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => setTimeLeft((p) => (p > 0 ? p - 1 : 0)), 1000);
     return () => clearInterval(timer);
   }, []);
 
+  useEffect(() => { if (!showLogin) setLoginError(''); }, [showLogin]);
+
+  // --- QUIZ COMPLETO ---
   const QUIZ_QUESTIONS = [
     {
       id: 1, question: "Qual seu objetivo principal?", subtitle: "Vamos personalizar os alimentos para a sua meta.",
@@ -141,17 +154,26 @@ export default function App() {
     if (currentQuestion < QUIZ_QUESTIONS.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
+      // VAI PARA A ANÁLISE ANTES DE PEDIR O EMAIL
       setView('analyzing');
     }
   };
 
-  const gerarPixReal = async () => {
+  // --- FLUXO DE PAGAMENTO ---
+  
+  // Passo 1: Captura Email e Gera Pix
+  const submitEmailAndPay = async () => {
+    if (!userEmail || !userEmail.includes('@')) {
+      alert("Por favor, digite um e-mail válido.");
+      return;
+    }
+    
     setPaymentLoading(true);
     try {
       const res = await fetch('/api/criar-pix', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: 'cliente@exemplo.com' })
+        body: JSON.stringify({ email: userEmail })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Erro ao criar pix');
@@ -160,7 +182,7 @@ export default function App() {
       iniciarPolling(data.id);
     } catch (error) {
       console.error(error);
-      alert("Erro ao gerar o Pix. Verifique a configuração.");
+      alert("Erro ao gerar o Pix.");
     } finally {
       setPaymentLoading(false);
     }
@@ -179,7 +201,7 @@ export default function App() {
     }, 3000);
   };
 
-  const generatePDF = async () => {
+  const generateAndSendPDF = async () => {
     if (!window.jspdf) {
       await new Promise(r => { const s = document.createElement('script'); s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"; s.onload = r; document.body.appendChild(s); });
       await new Promise(r => { const s = document.createElement('script'); s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js"; s.onload = r; document.body.appendChild(s); });
@@ -223,13 +245,27 @@ export default function App() {
         doc.setFont('helvetica', 'bold'); doc.text("Modo de Preparo:", 14, yPos); yPos += 5;
         doc.setFont('helvetica', 'normal'); const splitPrep = doc.splitTextToSize(recipe.prep, 180); doc.text(splitPrep, 14, yPos); yPos += splitPrep.length * 5 + 15;
     });
+    
+    // Baixa o PDF
     doc.save("Dieta_TmFormat_Premium.pdf");
+
+    // Envia o E-mail
+    setSendingEmail(true);
+    const pdfBlob = doc.output('datauristring');
+    try {
+        await fetch('/api/enviar-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: userEmail, pdfBase64: pdfBlob, nome: "Aluna" })
+        });
+    } catch (e) { console.error(e); } 
+    finally { setSendingEmail(false); }
   };
 
   return (
     <div className="min-h-screen bg-white font-sans text-gray-800 selection:bg-green-100 overflow-x-hidden">
       
-      {/* HEADER CORPORATIVO (NOVO) */}
+      {/* HEADER CORPORATIVO */}
       {view === 'landing' && (
         <div className="border-b border-gray-100 sticky top-0 bg-white/90 backdrop-blur-md z-50">
           <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
@@ -254,11 +290,9 @@ export default function App() {
 
       <AnimatePresence mode='wait'>
         
-        {/* 1. LANDING PAGE REDESENHADA */}
+        {/* 1. LANDING PAGE */}
         {view === 'landing' && (
           <motion.div key="landing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: -100 }} className="relative">
-            
-            {/* HERO SECTION PROFISSIONAL */}
             <div className="max-w-6xl mx-auto px-4 pt-10 md:pt-16 pb-24 text-center md:text-left md:flex items-center gap-12">
               <div className="md:w-1/2">
                 <div className="inline-flex items-center gap-2 bg-green-50 text-green-800 px-4 py-1.5 rounded-full text-xs font-bold mb-6 border border-green-200 uppercase tracking-wide">
@@ -281,11 +315,9 @@ export default function App() {
                 </div>
               </div>
               
-              {/* IMAGEM HERO ILUSTRATIVA (AGORA VISÍVEL NO MOBILE TAMBÉM) */}
               <div className="w-full md:w-1/2 relative mt-12 md:mt-0">
                  <div className="bg-gradient-to-tr from-green-100 to-emerald-50 rounded-[3rem] p-6 md:p-8 relative z-0">
                     <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&auto=format&fit=crop" className="rounded-3xl shadow-2xl rotate-2 hover:rotate-0 transition-all duration-500 w-full" alt="Prato Saudável" />
-                    {/* Floating Badge */}
                     <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }} className="absolute -bottom-6 -left-0 md:-left-6 bg-white p-4 rounded-xl shadow-xl border border-gray-100 flex items-center gap-4">
                        <div className="bg-green-100 p-3 rounded-full text-green-700"><Activity/></div>
                        <div>
@@ -297,29 +329,19 @@ export default function App() {
               </div>
             </div>
 
-            {/* FAIXA DE AUTORIDADE (MÍDIA) */}
             <div className="border-y border-gray-100 bg-gray-50 py-10">
               <div className="max-w-6xl mx-auto px-4 text-center">
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">Metodologia baseada em estudos de:</p>
                 <div className="flex flex-wrap justify-center gap-8 md:gap-16 opacity-40 grayscale">
-                   {/* Logos simulados com texto para não quebrar links */}
-                   <h3 className="text-xl font-serif font-bold">Vogue</h3>
-                   <h3 className="text-xl font-serif font-bold">Healthline</h3>
-                   <h3 className="text-xl font-serif font-bold">BoaForma</h3>
-                   <h3 className="text-xl font-serif font-bold">Women's Health</h3>
+                   <h3 className="text-xl font-serif font-bold">Vogue</h3><h3 className="text-xl font-serif font-bold">Healthline</h3><h3 className="text-xl font-serif font-bold">BoaForma</h3><h3 className="text-xl font-serif font-bold">Women's Health</h3>
                 </div>
               </div>
             </div>
 
-            {/* PROVA SOCIAL REALISTA */}
             <div className="max-w-2xl mx-auto px-4 py-20">
                <h3 className="text-2xl font-bold text-center mb-10">O que nossas alunas estão dizendo</h3>
                <div className="space-y-6">
-                  {[
-                    { name: "Ana P.", text: "Gente o chá seca msm?? to precisando kkk", time: "há 2 min", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces" },
-                    { name: "Bruna Souza", text: "Comecei segunda, hj ja fechei o short jeans q nao entrava 😍 obrigada!!", time: "há 8 min", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=faces" },
-                    { name: "Carla_Fitness", text: "Eu tinha mto medo de ser golpe mas chegou certinho no email, ufa 🙏 a dieta é top", time: "há 15 min", img: "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=100&h=100&fit=crop&crop=faces" }
-                  ].map((c, i) => (
+                  {REAL_COMMENTS.map((c, i) => (
                     <div key={i} className="flex gap-4 items-start border-b border-gray-100 pb-6 last:border-0">
                        <img src={c.img} className="w-12 h-12 rounded-full object-cover" alt={c.name} />
                        <div>
@@ -334,7 +356,7 @@ export default function App() {
           </motion.div>
         )}
 
-        {/* 2. QUIZ (Mantido o design clean) */}
+        {/* 2. QUIZ */}
         {view === 'quiz' && (
           <motion.div key="quiz" initial={{ x: 100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -100, opacity: 0 }} className="max-w-lg mx-auto bg-white min-h-screen flex flex-col shadow-2xl">
             <div className="w-full bg-gray-100 h-1.5"><motion.div initial={{ width: 0 }} animate={{ width: `${((currentQuestion + 1) / QUIZ_QUESTIONS.length) * 100}%` }} className="bg-green-500 h-full rounded-r-full"></motion.div></div>
@@ -356,100 +378,73 @@ export default function App() {
         )}
 
         {/* 3. ANALISANDO */}
-        {view === 'analyzing' && <AnalysisScreen onComplete={gerarPixReal} />}
+        {view === 'analyzing' && <AnalysisScreen onComplete={() => setView('capture_email')} />}
 
-        {/* 4. CHECKOUT REAL (LOCK SCREEN STYLE) */}
-        {view === 'checkout' && pixData && (
-          <motion.div key="checkout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-gray-100 flex flex-col relative overflow-hidden">
-            <div className="absolute inset-0 p-6 opacity-30 blur-sm pointer-events-none bg-white">
-                <h1 className="text-2xl font-bold text-gray-300 mb-4">Seu Protocolo Personalizado</h1>
-                <div className="space-y-4">{[1,2,3].map(i => (<div key={i} className="p-4 border rounded-xl bg-gray-50"><div className="h-4 w-32 bg-gray-200 rounded mb-2"></div><div className="h-3 w-full bg-gray-100 rounded mb-1"></div></div>))}</div>
-            </div>
-            <div className="z-10 flex-1 flex items-center justify-center p-4">
-                <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
-                    <div className="bg-gray-900 text-white p-4 text-center">
-                        <div className="flex justify-center items-center gap-2 mb-1"><Lock size={20} className="text-green-400" /><span className="font-bold uppercase tracking-widest text-sm">Acesso Restrito</span></div>
-                        <p className="text-xs text-gray-400">Seu plano foi gerado e está aguardando liberação.</p>
-                    </div>
-                    <div className="p-8">
-                        <div className="text-center mb-8"><h2 className="text-2xl font-bold text-gray-800 mb-2">Desbloqueie seu Protocolo</h2><p className="text-gray-500 text-sm">O acesso completo ao cardápio de 7 dias + receitas está pronto.</p></div>
-                        <div className="flex justify-center items-baseline gap-2 mb-8"><span className="text-gray-400 line-through text-lg">R$ 47,00</span><span className="text-4xl font-extrabold text-green-600">R$ 24,90</span></div>
-                        <div className="bg-green-50 rounded-2xl p-6 border border-green-100 mb-6 text-center relative overflow-hidden">
-                            <div className="absolute top-0 right-0 bg-green-200 text-green-800 text-[10px] px-2 py-1 rounded-bl-lg font-bold">SSL SEGURO</div>
-                            <div className="bg-white/80 p-2 rounded mb-3 text-[10px] text-gray-500 flex items-center justify-center gap-1 border border-gray-100"><ShieldCheck size={12} className="text-green-600"/><span>Beneficiário: Nicolas Durgante / Representante Autorizado</span></div>
-                            <p className="text-sm font-bold text-green-800 mb-3">Pague via Pix para liberar agora</p>
-                            <div className="bg-white p-2 rounded-lg inline-block shadow-sm mb-3"><img src={pixData.qr_code_base64 ? `data:image/jpeg;base64,${pixData.qr_code_base64}` : 'https://placehold.co/200x200?text=QR+Code'} alt="QR Code Pix" className="w-40 h-40 mix-blend-multiply"/></div>
-                            <button onClick={() => navigator.clipboard.writeText(pixData.qr_code)} className="w-full bg-white border border-green-200 text-green-700 py-3 rounded-xl font-bold text-xs flex justify-center gap-2 hover:bg-green-100 transition-colors"><Copy size={14}/> COPIAR CÓDIGO PIX</button>
-                        </div>
-                        <div className="text-center"><div className="flex justify-center items-center gap-2 text-green-600 text-sm animate-pulse font-medium"><div className="w-2 h-2 bg-green-600 rounded-full"></div> Aguardando confirmação do banco...</div></div>
-                    </div>
-                </motion.div>
-            </div>
-          </motion.div>
+        {/* 4. CAPTURA DE EMAIL (NOVO!) */}
+        {view === 'capture_email' && (
+            <motion.div key="email" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-md mx-auto min-h-screen flex flex-col justify-center p-6 text-center">
+                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"><Mail size={40} className="text-green-600"/></div>
+                <h2 className="text-2xl font-bold mb-2">Onde devemos enviar seu plano?</h2>
+                <p className="text-gray-500 mb-6">Seu protocolo foi gerado com sucesso! Digite seu melhor e-mail para receber a cópia de segurança.</p>
+                <input 
+                    type="email" 
+                    placeholder="seu@email.com" 
+                    className="w-full border border-gray-300 rounded-xl p-4 mb-4 text-lg focus:ring-2 focus:ring-green-500 outline-none"
+                    value={userEmail}
+                    onChange={(e) => setUserEmail(e.target.value)}
+                />
+                <button onClick={submitEmailAndPay} className="w-full bg-green-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-green-700 transition">IR PARA O PAGAMENTO</button>
+                <p className="text-xs text-gray-400 mt-4 flex justify-center gap-1"><Lock size={12}/> Seus dados estão seguros e não enviaremos spam.</p>
+            </motion.div>
         )}
 
-        {/* 5. SUCESSO */}
-        {view === 'success' && (
-          <motion.div key="success" initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="min-h-screen bg-green-50 flex flex-col items-center justify-center p-6 text-center">
-             <div className="bg-white w-full max-w-sm rounded-[2.5rem] shadow-2xl p-8">
-                <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"><CheckCircle size={48} className="text-green-600" /></div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Compra Confirmada!</h2>
-                <button onClick={generatePDF} className="w-full bg-green-600 text-white font-bold py-4 rounded-xl shadow-lg mt-6 flex justify-center gap-2 hover:bg-green-700"><Download size={20}/> BAIXAR PROTOCOLO</button>
+        {/* 5. CHECKOUT REAL */}
+        {view === 'checkout' && pixData && (
+          <motion.div key="checkout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-md mx-auto min-h-screen p-6 text-center pt-20">
+             <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
+                <div className="flex justify-between items-center mb-6 border-b pb-4"><span className="text-gray-500 text-sm">Protocolo VIP</span><div className="text-right"><span className="text-xs text-red-400 line-through block">R$ 47,00</span><span className="text-2xl font-bold text-green-600">R$ 24,90</span></div></div>
+                <h2 className="text-xl font-bold mb-4 text-gray-800">Desbloqueie seu Protocolo</h2>
+                <div className="bg-green-50 p-6 rounded-xl border border-green-100 mb-4">
+                    <div className="bg-white/80 p-2 rounded mb-3 text-[10px] text-gray-500 flex items-center justify-center gap-1"><Check size={12}/> Beneficiário: Nicolas Durgante / Repr. Autorizado</div>
+                    <p className="text-sm font-bold text-green-800 mb-3 flex justify-center gap-2"><Smartphone size={16}/> Escaneie para pagar</p>
+                    <img src={pixData.qr_code_base64 ? `data:image/jpeg;base64,${pixData.qr_code_base64}` : 'https://placehold.co/200x200?text=QR+Code'} className="w-40 mx-auto mb-4 mix-blend-multiply rounded-lg"/>
+                    <button onClick={() => navigator.clipboard.writeText(pixData.qr_code)} className="bg-white border border-green-200 w-full py-3 rounded-xl text-xs font-bold text-green-700 hover:bg-green-100 transition">COPIAR CÓDIGO PIX</button>
+                </div>
+                <div className="flex justify-center items-center gap-2 text-green-600 text-sm animate-pulse"><Activity size={16}/> Aguardando pagamento...</div>
              </div>
           </motion.div>
         )}
 
+        {/* 6. SUCESSO */}
+        {view === 'success' && (
+          <motion.div key="success" initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="max-w-md mx-auto min-h-screen flex flex-col justify-center p-6 text-center">
+             <div className="bg-white rounded-[2.5rem] shadow-2xl p-8">
+                <CheckCircle size={60} className="text-green-600 mx-auto mb-4"/>
+                <h2 className="text-2xl font-bold mb-2">Tudo Pronto!</h2>
+                <p className="text-gray-500 mb-6">Uma cópia também foi enviada para <strong>{userEmail}</strong>.</p>
+                <button onClick={generateAndSendPDF} className="w-full bg-green-600 text-white font-bold py-4 rounded-xl shadow-lg flex justify-center gap-2 hover:bg-green-700 transition">
+                    {sendingEmail ? 'Enviando...' : 'BAIXAR AGORA'} <Download/>
+                </button>
+             </div>
+          </motion.div>
+        )}
       </AnimatePresence>
 
       {/* LOGIN MODAL */}
       <AnimatePresence>
         {showLogin && (
-          <motion.div 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-            onClick={(e) => e.target === e.currentTarget && setShowLogin(false)}
-          >
-            <motion.div 
-              initial={{ scale: 0.95, opacity: 0 }} 
-              animate={{ scale: 1, opacity: 1 }} 
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden"
-            >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && setShowLogin(false)}>
+            <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
               <div className="p-6 relative">
-                <button onClick={() => setShowLogin(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-                  <X size={20} />
-                </button>
-                
-                <div className="text-center mb-6">
-                  <div className="inline-flex items-center gap-2 font-bold text-xl text-green-700 mb-2">
-                    <Leaf size={24} className="fill-green-600"/> <span>TmFormat</span>
-                  </div>
-                  <h2 className="text-xl font-bold text-gray-900">Área do Aluno</h2>
-                  <p className="text-sm text-gray-500">Digite seus dados para entrar.</p>
-                </div>
-
+                <button onClick={() => setShowLogin(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><X size={20} /></button>
+                <div className="text-center mb-6"><h2 className="text-xl font-bold text-gray-900">Área do Aluno</h2><p className="text-sm text-gray-500">Digite seus dados para entrar.</p></div>
                 <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-bold text-gray-700 uppercase mb-1">E-mail</label>
-                    <input type="email" placeholder="seu@email.com" className="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-green-500 outline-none" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Senha</label>
-                    <input type="password" placeholder="••••••••" className="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-green-500 outline-none" />
-                  </div>
-                  <button onClick={() => alert("Você ainda não possui um plano ativo. Realize a compra para liberar seu acesso.")} className="w-full bg-green-600 text-white font-bold py-3 rounded-xl hover:bg-green-700 transition">
-                    Entrar na Plataforma
-                  </button>
+                  <AnimatePresence>{loginError && (<motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="bg-red-50 border border-red-100 text-red-600 p-3 rounded-lg text-xs flex items-start gap-2"><AlertCircle size={14} className="shrink-0 mt-0.5" /><span>{loginError}</span></motion.div>)}</AnimatePresence>
+                  <div><label className="block text-xs font-bold text-gray-700 uppercase mb-1">E-mail</label><input type="email" placeholder="seu@email.com" className="w-full border border-gray-300 rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-green-500"/></div>
+                  <div><label className="block text-xs font-bold text-gray-700 uppercase mb-1">Senha</label><input type="password" placeholder="••••••••" className="w-full border border-gray-300 rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-green-500"/></div>
+                  <button onClick={() => setLoginError("Você ainda não possui um plano ativo. Realize a compra para liberar seu acesso.")} className="w-full bg-green-600 text-white font-bold py-3 rounded-xl hover:bg-green-700 transition">Entrar na Plataforma</button>
                 </div>
-
-                <div className="mt-6 text-center text-xs text-gray-400">
-                  Ainda não é aluno? <button onClick={() => {setShowLogin(false); setView('quiz');}} className="text-green-600 font-bold hover:underline">Fazer análise gratuita</button>
-                </div>
-              </div>
-              <div className="bg-gray-50 p-4 text-center border-t border-gray-100">
-                <p className="text-xs text-gray-400 flex justify-center items-center gap-1"><Lock size={10}/> Ambiente Seguro</p>
+                <div className="mt-6 text-center text-xs text-gray-400">Ainda não é aluno? <button onClick={() => {setShowLogin(false); setView('quiz');}} className="text-green-600 font-bold hover:underline">Fazer análise gratuita</button></div>
               </div>
             </motion.div>
           </motion.div>
@@ -460,20 +455,6 @@ export default function App() {
 }
 
 function AnalysisScreen({ onComplete }) {
-  const [step, setStep] = useState(0);
-  const steps = ["Conectando servidor seguro...", "Calculando metabolismo...", "Gerando PDF personalizado..."];
-  useEffect(() => {
-    const i = setInterval(() => setStep(s => (s < 2 ? s + 1 : s)), 1500);
-    setTimeout(onComplete, 5000); 
-    return () => clearInterval(i);
-  }, []);
-  return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8 text-center">
-      <div className="relative w-24 h-24 mb-8">
-         <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} className="w-full h-full border-4 border-gray-100 border-t-green-500 rounded-full"/>
-         <Leaf className="absolute inset-0 m-auto text-green-500" size={24}/>
-      </div>
-      <h2 className="text-xl font-bold text-gray-800">{steps[step]}</h2>
-    </div>
-  );
+  useEffect(() => { setTimeout(onComplete, 3000); }, []);
+  return <div className="min-h-screen flex items-center justify-center"><div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div></div>;
 }
