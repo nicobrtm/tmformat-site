@@ -1,0 +1,19 @@
+{
+  "name": "tmformat-app",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "mercadopago": "^2.0.0",
+    "lucide-react": "^0.292.0",
+    "framer-motion": "^10.16.4",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.1"
+  }
+}
