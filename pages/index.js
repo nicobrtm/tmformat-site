@@ -54,21 +54,51 @@ const DIET_DATABASE = {
   ]
 };
 
-// --- RECEITAS DETALHADAS ---
+// --- RECEITAS DETALHADAS COM METADADOS ---
 const RECIPES_CONTENT = [
   {
     title: "Sopa Detox de Abóbora com Gengibre",
-    ing: "• 1/2 abóbora cabotiá descascada\n• 1 pedaço de gengibre (3cm)\n• 1 cebola e 2 dentes de alho\n• Azeite e sal a gosto",
-    prep: "1. Refogue a cebola e o alho no azeite.\n2. Adicione a abóbora em cubos e cubra com água.\n3. Cozinhe até amolecer bem.\n4. Bata no liquidificador com o gengibre.\n5. Volte para a panela, acerte o sal e sirva."
+    time: "40 min",
+    temp: "Fogo Médio",
+    portions: "2 pratos",
+    ing: "• 1/2 abóbora cabotiá descascada\n• 1 pedaço de gengibre (3cm)\n• 1 cebola picada\n• 2 dentes de alho amassados\n• 1 colher (sopa) de azeite\n• Sal e pimenta a gosto\n• 500ml de água fervente",
+    prep: "1. Numa panela, aqueça o azeite e refogue a cebola e o alho até dourarem.\n2. Adicione a abóbora em cubos e refogue por 2 minutos.\n3. Cubra com a água fervente e deixe cozinhar até a abóbora desmanchar (aprox. 25 min).\n4. Espere amornar e bata no liquidificador com o gengibre descascado.\n5. Volte para a panela, acerte o sal e aqueça antes de servir."
   },
   {
-    title: "Suco Verde Desinchaço",
-    ing: "• 1 folha de couve manteiga\n• 1 maçã pequena com casca\n• Suco de 1/2 limão\n• 1 pedaço pequeno de gengibre\n• 200ml de água gelada",
-    prep: "1. Higienize bem as folhas e a maçã.\n2. Bata todos os ingredientes no liquidificador.\n3. Coe se preferir (mas sem coar tem mais fibras).\n4. Beba imediatamente em jejum."
+    title: "Suco Verde Desinchaço Turbo",
+    time: "5 min",
+    temp: "Gelado",
+    portions: "1 copo grande",
+    ing: "• 1 folha de couve manteiga (sem o talo grosso)\n• 1 maçã pequena com casca\n• Suco de 1/2 limão\n• 1 pedaço pequeno de gengibre\n• 200ml de água gelada ou água de coco",
+    prep: "1. Higienize bem as folhas de couve e a maçã.\n2. Pique a maçã retirando as sementes.\n3. Coloque todos os ingredientes no liquidificador.\n4. Bata por 2 minutos na potência máxima até ficar homogêneo.\n5. Beba imediatamente sem coar para aproveitar as fibras."
+  },
+  {
+    title: "Panqueca Low Carb de Banana",
+    time: "10 min",
+    temp: "Fogo Baixo",
+    portions: "2 panquecas",
+    ing: "• 1 banana madura amassada\n• 2 ovos inteiros\n• 1 colher (chá) de canela em pó\n• Óleo de coco para untar",
+    prep: "1. Num prato fundo, amasse bem a banana com um garfo.\n2. Adicione os ovos e bata bem com um garfo até misturar tudo.\n3. Misture a canela.\n4. Aqueça uma frigideira antiaderente untada com um pouco de óleo de coco em fogo baixo.\n5. Despeje pequenas porções da massa e deixe dourar (cerca de 2 min de cada lado)."
+  },
+  {
+    title: "Crepioca Fit de Frango",
+    time: "15 min",
+    temp: "Fogo Médio",
+    portions: "1 unidade",
+    ing: "• 1 ovo\n• 2 colheres (sopa) de goma de tapioca\n• 1 pitada de sal\n• 1 colher (sopa) de requeijão light (na massa)\n• Recheio: 3 colheres de frango desfiado temperado",
+    prep: "1. Numa tigela, misture o ovo, a tapioca, o sal e o requeijão. Bata bem até ficar liso.\n2. Aqueça uma frigideira antiaderente levemente untada.\n3. Despeje a massa e espalhe girando a frigideira.\n4. Quando a massa soltar do fundo e firmar, vire.\n5. Coloque o frango em metade da massa, dobre ao meio e deixe dourar mais um pouco."
+  },
+  {
+    title: "Molho de Salada Anti-inflamatório",
+    time: "2 min",
+    temp: "Ambiente",
+    portions: "4 porções",
+    ing: "• 3 colheres (sopa) de azeite extra virgem\n• 1 colher (sopa) de mostarda amarela\n• Suco de 1/2 limão\n• 1 colher (café) de cúrcuma (açafrão)\n• Pimenta do reino a gosto",
+    prep: "1. Coloque todos os ingredientes num pote de vidro pequeno com tampa.\n2. Feche o pote e chacoalhe vigorosamente até o molho ficar cremoso e emulsionado.\n3. Sirva sobre saladas verdes ou legumes cozidos."
   }
 ];
 
-// --- COMENTÁRIOS ESTILO TIKTOK ---
+// --- COMENTÁRIOS ---
 const REAL_COMMENTS = [
   { name: "Ana P.", text: "Gente o chá seca msm?? to precisando kkk", time: "há 2 min", likes: 12, img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces" },
   { name: "Bruna Souza", text: "Comecei segunda, hj ja fechei o short jeans q nao entrava 😍 obrigada!!", time: "há 8 min", likes: 45, img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=faces" },
@@ -87,7 +117,6 @@ export default function App() {
   const [userEmail, setUserEmail] = useState('');
   const [sendingEmail, setSendingEmail] = useState(false);
   
-  // Ref para garantir que a função de envio tenha acesso aos estados mais recentes
   const userEmailRef = useRef(userEmail);
   const quizAnswersRef = useRef(quizAnswers);
 
@@ -101,7 +130,6 @@ export default function App() {
     return () => clearInterval(timer);
   }, []);
 
-  // --- MEMÓRIA ANTI-REFRESH (PERSISTÊNCIA) ---
   useEffect(() => {
     const savedEmail = localStorage.getItem('tmformat_email');
     if (savedEmail) setUserEmail(savedEmail);
@@ -111,7 +139,8 @@ export default function App() {
       const parsedPix = JSON.parse(savedPix);
       setPixData(parsedPix);
       setView('checkout');
-      iniciarPolling(parsedPix.id); // Reinicia a verificação se der refresh
+      verificarStatusIndividual(parsedPix.id);
+      iniciarPolling(parsedPix.id); 
     }
   }, []);
 
@@ -171,10 +200,7 @@ export default function App() {
       alert("Por favor, digite um e-mail válido.");
       return;
     }
-    
-    // Salva o email na memória
     localStorage.setItem('tmformat_email', userEmail);
-
     setPaymentLoading(true);
     try {
       const res = await fetch('/api/criar-pix', { 
@@ -184,11 +210,8 @@ export default function App() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Erro ao criar pix');
-      
       setPixData(data);
-      // Salva o pix na memória
       localStorage.setItem('tmformat_pix_data', JSON.stringify(data));
-      
       setView('checkout');
       iniciarPolling(data.id);
     } catch (error) {
@@ -199,44 +222,54 @@ export default function App() {
     }
   };
 
+  const verificarStatusIndividual = async (id) => {
+    try {
+      const res = await fetch(`/api/checar-status?id=${id}`);
+      const data = await res.json();
+      if (data.status === 'approved') {
+        localStorage.removeItem('tmformat_pix_data');
+        setView('success');
+        handleAutoSendEmail();
+        return true;
+      }
+    } catch (e) { console.error("Erro na verificação", e); }
+    return false;
+  };
+
   const iniciarPolling = (id) => {
     const interval = setInterval(async () => {
-      try {
-        const res = await fetch(`/api/checar-status?id=${id}`);
-        const data = await res.json();
-        if (data.status === 'approved') {
-          clearInterval(interval);
-          localStorage.removeItem('tmformat_pix_data'); // Limpa dados temporários
-          setView('success');
-          // Dispara o email AUTOMATICAMENTE assim que aprova
-          handleAutoSendEmail();
-        }
-      } catch (e) { console.error("Erro no polling", e); }
+      const aprovado = await verificarStatusIndividual(id);
+      if (aprovado) clearInterval(interval);
     }, 3000);
   };
 
-  // --- NOVA FUNÇÃO DE ENVIO AUTOMÁTICO ---
   const handleAutoSendEmail = async () => {
-    // Usa referências para pegar o valor mais atual mesmo dentro do intervalo
     const currentEmail = userEmailRef.current || localStorage.getItem('tmformat_email');
     if (!currentEmail) return;
 
     setSendingEmail(true);
-    // Gera o PDF silenciosamente (sem baixar)
     const pdfBlob = await generatePDFBlob(); 
     
     try {
-        await fetch('/api/enviar-email', {
+        const response = await fetch('/api/enviar-email', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: currentEmail, pdfBase64: pdfBlob, nome: "Aluna" })
         });
-        console.log("Email enviado automaticamente!");
-    } catch (e) { console.error("Erro no envio auto", e); } 
-    finally { setSendingEmail(false); }
+        if (response.ok) {
+            console.log("Email enviado!");
+        } else {
+            console.error("Falha no envio do email.");
+            // Não alertamos o usuário automaticamente para não quebrar o fluxo, 
+            // mas o botão de download manual está lá.
+        }
+    } catch (e) { 
+        console.error("Erro no envio auto", e);
+    } finally { 
+        setSendingEmail(false); 
+    }
   };
 
-  // Função auxiliar que só gera os dados do PDF (para enviar por email)
   const generatePDFBlob = async () => {
     if (!window.jspdf) {
       await new Promise(r => { const s = document.createElement('script'); s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"; s.onload = r; document.body.appendChild(s); });
@@ -244,41 +277,97 @@ export default function App() {
     }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
+    
     const userGoal = quizAnswersRef.current[0] || "Secar barriga (Urgente)";
     const selectedMenu = DIET_DATABASE[userGoal] || DIET_DATABASE["default"];
 
-    doc.setFillColor(22, 163, 74); doc.rect(0, 0, 210, 40, 'F');
-    doc.setTextColor(255); doc.setFont('helvetica', 'bold'); doc.setFontSize(22); 
-    doc.text("Protocolo TmFormat", 105, 20, null, null, "center");
-    
-    doc.setTextColor(50); doc.setFontSize(12); doc.text(`Objetivo: ${userGoal}`, 14, 50);
-    doc.autoTable({ startY: 70, head: [['Dia', 'Café da Manhã', 'Almoço', 'Jantar']], body: selectedMenu, theme: 'grid', headStyles: { fillColor: [22, 163, 74] } });
-    
-    // ... (restante do conteúdo do PDF igual) ...
-    doc.addPage();
-    let yPos = 40; doc.setTextColor(0); 
-    RECIPES_CONTENT.forEach((recipe) => {
-        doc.setFontSize(14); doc.setFont('helvetica', 'bold'); doc.text(recipe.title, 14, yPos); yPos += 10;
-        doc.setFontSize(10); doc.setFont('helvetica', 'normal'); 
-        const split = doc.splitTextToSize(recipe.ing + "\n" + recipe.prep, 180);
-        doc.text(split, 14, yPos); yPos += split.length * 5 + 10;
-    });
-
+    generatePDFContent(doc, userGoal, selectedMenu);
     return doc.output('datauristring');
   };
 
-  // Função de Baixar Manual (Botão)
   const downloadManualPDF = async () => {
+    if (!window.jspdf) {
+      await new Promise(r => { const s = document.createElement('script'); s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"; s.onload = r; document.body.appendChild(s); });
+      await new Promise(r => { const s = document.createElement('script'); s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js"; s.onload = r; document.body.appendChild(s); });
+    }
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF(); 
-    // ... (mesma lógica de geração visual, simplificada aqui para não repetir código, na prática usa a mesma base) ...
-    // Para simplificar, vou reusar a lógica mas salvar
+    const doc = new jsPDF();
     const userGoal = quizAnswers[0] || "Secar barriga (Urgente)";
     const selectedMenu = DIET_DATABASE[userGoal] || DIET_DATABASE["default"];
-    doc.setFillColor(22, 163, 74); doc.rect(0, 0, 210, 40, 'F');
-    doc.setTextColor(255); doc.setFontSize(22); doc.text("Protocolo TmFormat", 105, 20, null, null, "center");
-    doc.autoTable({ startY: 70, head: [['Dia', 'Café', 'Almoço', 'Jantar']], body: selectedMenu, theme: 'grid', headStyles: { fillColor: [22, 163, 74] } });
+    
+    generatePDFContent(doc, userGoal, selectedMenu);
     doc.save("Dieta_TmFormat_Premium.pdf");
+  };
+
+  // Lógica de Geração do PDF (Compartilhada entre download e email)
+  const generatePDFContent = (doc, userGoal, selectedMenu) => {
+    // PÁGINA 1: CAPA E CRONOGRAMA
+    doc.setFillColor(22, 163, 74); doc.rect(0, 0, 210, 40, 'F');
+    doc.setTextColor(255); doc.setFont('helvetica', 'bold'); doc.setFontSize(22); 
+    doc.text("Protocolo TmFormat", 105, 20, null, null, "center");
+    doc.setFontSize(14); doc.setFont('helvetica', 'normal');
+    doc.text("Guia Oficial de 7 Dias", 105, 30, null, null, "center");
+
+    doc.setTextColor(50); doc.setFontSize(12);
+    doc.text(`Objetivo Selecionado: ${userGoal}`, 14, 55);
+    doc.text("Este plano foi estrategicamente montado para acelerar seu metabolismo.", 14, 62);
+    
+    doc.autoTable({ 
+      startY: 70, 
+      head: [['Dia', 'Café da Manhã', 'Almoço', 'Jantar']], 
+      body: selectedMenu, 
+      theme: 'grid', 
+      headStyles: { fillColor: [22, 163, 74] },
+      styles: { cellPadding: 4, fontSize: 10 }
+    });
+    
+    let finalY = doc.lastAutoTable.finalY + 15;
+    doc.setDrawColor(255, 165, 0); doc.setLineWidth(1.5); doc.rect(14, finalY, 182, 35);
+    doc.setTextColor(255, 140, 0); doc.setFont('helvetica', 'bold'); doc.setFontSize(14); 
+    doc.text("BÔNUS: Chá Secreto (Jejum)", 20, finalY + 10);
+    doc.setTextColor(0); doc.setFont('helvetica', 'normal'); doc.setFontSize(10); 
+    doc.text("Ingredientes: 500ml água, 1 pau de canela, 3 rodelas de gengibre.", 20, finalY + 20);
+    doc.text("Preparo: Ferva a água com especiarias por 5 min. Adicione 1/2 limão no final.", 20, finalY + 26);
+
+    // PÁGINA 2: RECEITAS DETALHADAS (NOVO!)
+    doc.addPage();
+    doc.setFillColor(22, 163, 74); doc.rect(0, 0, 210, 30, 'F');
+    doc.setTextColor(255); doc.setFontSize(18); doc.setFont('helvetica', 'bold');
+    doc.text("Guia de Receitas Práticas", 105, 20, null, null, "center");
+
+    let yPos = 45; 
+    
+    RECIPES_CONTENT.forEach((recipe) => {
+        if (yPos > 250) { doc.addPage(); yPos = 30; }
+
+        // Título da Receita
+        doc.setFontSize(14); doc.setFont('helvetica', 'bold'); doc.setTextColor(22, 163, 74);
+        doc.text(recipe.title, 14, yPos);
+        yPos += 7;
+
+        // Metadados (Tempo, Fogo, Porções)
+        doc.setFontSize(10); doc.setTextColor(100); doc.setFont('helvetica', 'bold');
+        doc.text(`⏱ Tempo: ${recipe.time}  |  🔥 Fogo: ${recipe.temp}  |  🥣 Porções: ${recipe.portions}`, 14, yPos);
+        yPos += 8;
+
+        // Ingredientes
+        doc.setFontSize(10); doc.setFont('helvetica', 'bold'); doc.setTextColor(0);
+        doc.text("Ingredientes:", 14, yPos);
+        yPos += 5;
+        doc.setFont('helvetica', 'normal');
+        const splitIng = doc.splitTextToSize(recipe.ing, 180);
+        doc.text(splitIng, 14, yPos);
+        yPos += splitIng.length * 5 + 3;
+
+        // Modo de Preparo
+        doc.setFont('helvetica', 'bold');
+        doc.text("Modo de Preparo:", 14, yPos);
+        yPos += 5;
+        doc.setFont('helvetica', 'normal');
+        const splitPrep = doc.splitTextToSize(recipe.prep, 180);
+        doc.text(splitPrep, 14, yPos);
+        yPos += splitPrep.length * 5 + 15; // Espaço extra
+    });
   };
 
   return (
@@ -432,7 +521,7 @@ export default function App() {
                 <div className="flex justify-center items-center gap-2 text-green-600 text-sm animate-pulse"><Activity size={16}/> Aguardando pagamento...</div>
                 {/* AVISO IMPORTANTE ANTI-FECHAMENTO */}
                 <div className="mt-4 p-3 bg-yellow-50 rounded-lg text-xs text-yellow-700 border border-yellow-100">
-                   <strong>Importante:</strong> Após pagar no seu banco, aguarde nesta tela por alguns segundos para a confirmação automática.
+                   <strong>Importante:</strong> Se sair desta tela, retorne para confirmar o recebimento do seu acesso.
                 </div>
              </div>
           </motion.div>
