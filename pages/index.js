@@ -6,13 +6,83 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 // --- CONFIGURAÇÃO DA DIETA (MATRIX) ---
-// Este banco de dados permite entregar o PDF correto sem gastar com IA
+// Atualizei os nomes para parecerem mais apetitosos na tabela
 const DIET_DATABASE = {
-  "Secar barriga (Urgente)": [['01', 'Ovos + Café', 'Frango + Salada', 'Sopa Detox'], ['02', 'Iogurte + Chia', 'Peixe + Brócolis', 'Omelete'], ['03', 'Abacate + Ovos', 'Carne Moída + Abobrinha', 'Caldo de Ossos'], ['04', 'Café com Óleo de Coco', 'Sobrecoxa Assada + Couve', 'Creme de Chuchu'], ['05', 'Queijo Coalho Grelhado', 'Lombo Suíno + Repolho', 'Salada de Atum'], ['06', 'Ovos Cozidos + Castanhas', 'Frango ao Curry + Couve-flor', 'Wrap de Alface'], ['07', 'Panqueca Low Carb', 'Peixe Assado + Espinafre', 'Sopa de Abóbora']],
-  "Desinchar o corpo todo": [['01', 'Suco Verde', 'Peixe + Arroz', 'Sopa Abóbora'], ['02', 'Melão', 'Frango + Aspargos', 'Salada Pepino'], ['03', 'Mamão + Linhaça', 'Salmão + Batata Doce', 'Creme de Cenoura'], ['04', 'Chá de Hibisco + Torrada', 'Carne Magra + Chuchu', 'Omelete com Espinafre'], ['05', 'Abacaxi com Canela', 'Filé de Tilápia + Salada', 'Sopa de Legumes'], ['06', 'Melancia + Queijo Branco', 'Frango Desfiado + Purê', 'Salada Caprese'], ['07', 'Água de Coco + Castanhas', 'Peixe Assado + Tomate', 'Caldo Verde Light']],
-  // Fallback para outros objetivos
-  "default": [['01', 'Mamão', 'Frango + Quiabo', 'Sopa Legumes'], ['02', 'Iogurte', 'Peixe + Purê', 'Creme Aipim'], ['03', 'Banana Cozida', 'Carne de Panela', 'Ovos Mexidos'], ['04', 'Suco Laranja', 'Arroz + Frango', 'Sopa Canja'], ['05', 'Maçã Cozida', 'Peixe Grelhado', 'Caldo Feijão'], ['06', 'Pera', 'Frango + Polenta', 'Creme Espinafre'], ['07', 'Gelatina', 'Peixe Assado', 'Sopa Legumes']]
+  "Secar barriga (Urgente)": [
+    ['01', 'Ovos Mexidos Cremosos + Café', 'Filé de Frango Grelhado + Salada Verde', 'Sopa Detox de Abóbora'], 
+    ['02', 'Iogurte Natural + Chia', 'Peixe Assado com Ervas + Brócolis', 'Omelete de Forno com Legumes'], 
+    ['03', 'Abacate Amassado + Ovos', 'Carne Moída Refogada + Abobrinha', 'Caldo de Ossos (Colágeno)'], 
+    ['04', 'Café Turbo (Óleo de Coco)', 'Sobrecoxa Assada + Couve Refogada', 'Creme de Chuchu com Gengibre'], 
+    ['05', 'Queijo Coalho Grelhado', 'Lombo Suíno + Repolho Roxo', 'Salada de Atum com Ovos'], 
+    ['06', 'Ovos Cozidos + Castanhas', 'Frango ao Curry + Arroz de Couve-flor', 'Wrap de Alface com Frango'], 
+    ['07', 'Panqueca Low Carb', 'Peixe Assado + Espinafre', 'Sopa Detox Verde']
+  ],
+  "Desinchar o corpo todo": [
+    ['01', 'Suco Verde Detox + 2 Ovos', 'Peixe ao Molho de Coco + Arroz Integral', 'Sopa Creme de Abóbora'], 
+    ['02', 'Melão com Hortelã', 'Frango Grelhado + Aspargos', 'Salada Refrescante de Pepino'], 
+    ['03', 'Mamão com Linhaça', 'Salmão Assado + Purê de Batata Doce', 'Creme de Cenoura com Gengibre'], 
+    ['04', 'Chá de Hibisco + Torrada', 'Iscas de Carne + Chuchu', 'Omelete com Espinafre'], 
+    ['05', 'Abacaxi com Canela', 'Filé de Tilápia + Mix de Folhas', 'Sopa de Legumes Anti-inflamatória'], 
+    ['06', 'Melancia + Queijo Branco', 'Frango Desfiado + Purê de Mandioca', 'Salada Caprese (Tomate e Manjericão)'], 
+    ['07', 'Água de Coco + Castanhas', 'Peixe Assado + Tomate Confit', 'Caldo Verde Light (Sem Batata)']
+  ],
+  "Melhorar digestão": [
+    ['01', 'Mamão + Psyllium + Chá de Hortelã', 'Frango Grelhado + Quiabo Refogado', 'Sopa de Legumes Batida'],
+    ['02', 'Iogurte Natural + Ameixa Seca', 'Peixe Cozido + Purê de Batata', 'Creme de Aipim com Frango'],
+    ['03', 'Banana Cozida + Canela', 'Carne de Panela + Cenoura Cozida', 'Ovos Mexidos Leves'],
+    ['04', 'Suco de Laranja Lima', 'Arroz Bem Cozido + Frango Desfiado', 'Canja de Galinha (Sem Pele)'],
+    ['05', 'Maçã Cozida sem Casca', 'Peixe Grelhado + Purê de Moranga', 'Caldo de Feijão (Coado)'],
+    ['06', 'Pera Cozida', 'Frango Desfiado + Polenta Mole', 'Creme de Espinafre'],
+    ['07', 'Gelatina Natural', 'Peixe Assado + Batata Cozida', 'Sopa Leve de Legumes']
+  ],
+  "Perder peso na balança": [
+    ['01', 'Pão Integral + Ovos Mexidos', 'Arroz + Feijão + Frango Grelhado', 'Sanduíche Natural de Atum'],
+    ['02', 'Tapioca com Queijo Branco', 'Macarrão Integral + Carne Moída', 'Salada de Frutas com Iogurte'],
+    ['03', 'Cuscuz + Ovos', 'Batata Doce Assada + Peixe', 'Iogurte + Granola sem Açúcar'],
+    ['04', 'Panqueca de Banana e Aveia', 'Escondidinho de Batata + Carne', 'Wrap Integral de Frango'],
+    ['05', 'Vitamina de Frutas Vermelhas', 'Strogonoff Light + Arroz Integral', 'Omelete Recheado com Queijo'],
+    ['06', 'Pão com Ricota Temperada', 'Carne Assada + Mandioca Cozida', 'Sopa de Feijão com Legumes'],
+    ['07', 'Crepioca de Frango', 'Feijoada Light + Couve + Laranja', 'Mingau de Aveia com Cacau']
+  ],
+  "default": [
+    ['01', 'Mamão + Aveia', 'Frango Grelhado + Quiabo', 'Sopa de Legumes Variados'], 
+    ['02', 'Iogurte + Frutas Vermelhas', 'Peixe Cozido + Purê Rústico', 'Creme de Aipim com Carne'], 
+    ['03', 'Banana Cozida com Canela', 'Carne de Panela + Cenoura', 'Ovos Mexidos com Tomate'], 
+    ['04', 'Suco de Laranja Lima', 'Arroz Soltinho + Frango Assado', 'Canja de Galinha Nutritiva'], 
+    ['05', 'Maçã Cozida', 'Peixe Grelhado + Salada Colorida', 'Caldo de Feijão (só o caldinho)'], 
+    ['06', 'Pera Fatiada', 'Frango com Polenta Mole', 'Creme de Espinafre'], 
+    ['07', 'Gelatina Natural', 'Peixe Assado com Batatas', 'Sopa Leve de Legumes']
+  ]
 };
+
+// --- RECEITAS DETALHADAS (MODO DE PREPARO) ---
+const RECIPES_CONTENT = [
+  {
+    title: "Sopa Detox de Abóbora com Gengibre",
+    ing: "• 1/2 abóbora cabotiá descascada\n• 1 pedaço de gengibre (3cm)\n• 1 cebola e 2 dentes de alho\n• Azeite e sal a gosto",
+    prep: "1. Refogue a cebola e o alho no azeite.\n2. Adicione a abóbora em cubos e cubra com água.\n3. Cozinhe até amolecer bem.\n4. Bata no liquidificador com o gengibre.\n5. Volte para a panela, acerte o sal e sirva."
+  },
+  {
+    title: "Suco Verde Desinchaço",
+    ing: "• 1 folha de couve manteiga\n• 1 maçã pequena com casca\n• Suco de 1/2 limão\n• 1 pedaço pequeno de gengibre\n• 200ml de água gelada",
+    prep: "1. Higienize bem as folhas e a maçã.\n2. Bata todos os ingredientes no liquidificador.\n3. Coe se preferir (mas sem coar tem mais fibras).\n4. Beba imediatamente em jejum."
+  },
+  {
+    title: "Panqueca Low Carb (Sem Farinha)",
+    ing: "• 1 banana madura amassada\n• 2 ovos inteiros\n• Canela a gosto",
+    prep: "1. Amasse a banana e misture bem com os ovos batidos.\n2. Aqueça uma frigideira antiaderente untada com óleo de coco.\n3. Despeje a massa e doure dos dois lados.\n4. Sirva com um fio de mel se desejar."
+  },
+  {
+    title: "Crepioca Fit",
+    ing: "• 1 ovo\n• 2 colheres de sopa de goma de tapioca\n• 1 pitada de sal\n• Recheio: Queijo branco ou Frango",
+    prep: "1. Misture o ovo e a tapioca com um garfo até ficar homogêneo.\n2. Despeje na frigideira quente como se fosse uma panqueca.\n3. Quando soltar do fundo, vire, coloque o recheio e dobre."
+  },
+  {
+    title: "Molho de Salada Anti-inflamatório",
+    ing: "• 3 colheres de azeite extra virgem\n• 1 colher de mostarda\n• Suco de 1/2 limão\n• Curcuma (açafrão) e pimenta do reino",
+    prep: "1. Misture tudo vigorosamente com um garfo até emulsionar (ficar cremoso).\n2. Jogue sobre as folhas verdes na hora de comer."
+  }
+];
 
 export default function App() {
   const [view, setView] = useState('landing');
@@ -28,7 +98,7 @@ export default function App() {
     return () => clearInterval(timer);
   }, []);
 
-  // --- QUIZ COMPLETO (PREMIUM) ---
+  // --- QUIZ COMPLETO ---
   const QUIZ_QUESTIONS = [
     {
       id: 1, question: "Qual seu objetivo principal?", subtitle: "Vamos personalizar os alimentos para a sua meta.",
@@ -69,7 +139,6 @@ export default function App() {
   const gerarPixReal = async () => {
     setPaymentLoading(true);
     try {
-      // Chama a API que criamos no passo anterior (/pages/api/criar-pix.js)
       const res = await fetch('/api/criar-pix', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -77,7 +146,6 @@ export default function App() {
       });
       
       const data = await res.json();
-      
       if (!res.ok) throw new Error(data.error || 'Erro ao criar pix');
 
       setPixData(data);
@@ -86,7 +154,7 @@ export default function App() {
       
     } catch (error) {
       console.error(error);
-      alert("Erro ao gerar o Pix. Se estiver testando localmente, certifique-se de que o backend está rodando.");
+      alert("Erro ao gerar o Pix. Verifique se a chave do Mercado Pago está configurada na Vercel.");
     } finally {
       setPaymentLoading(false);
     }
@@ -105,9 +173,8 @@ export default function App() {
     }, 3000);
   };
 
-  // --- GERAR PDF ---
+  // --- GERAR PDF PROFISSIONAL ---
   const generatePDF = async () => {
-    // Carrega a biblioteca de PDF sob demanda (para não pesar o site)
     if (!window.jspdf) {
       await new Promise(r => { const s = document.createElement('script'); s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"; s.onload = r; document.body.appendChild(s); });
       await new Promise(r => { const s = document.createElement('script'); s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js"; s.onload = r; document.body.appendChild(s); });
@@ -117,27 +184,74 @@ export default function App() {
     const doc = new jsPDF();
     
     const userGoal = quizAnswers[0] || "Secar barriga (Urgente)";
+    // Seleção robusta do cardápio:
     const selectedMenu = DIET_DATABASE[userGoal] || DIET_DATABASE["default"];
 
-    // Capa e Títulos
+    // PÁGINA 1: CAPA E CRONOGRAMA
+    // Header Verde
     doc.setFillColor(22, 163, 74); doc.rect(0, 0, 210, 40, 'F');
-    doc.setTextColor(255); doc.setFontSize(22); doc.text("Protocolo TmFormat", 105, 25, null, null, "center");
-    doc.setTextColor(50); doc.setFontSize(12); doc.text(`Objetivo: ${userGoal}`, 14, 50);
+    doc.setTextColor(255); doc.setFont('helvetica', 'bold'); doc.setFontSize(22); 
+    doc.text("Protocolo TmFormat", 105, 20, null, null, "center");
+    doc.setFontSize(14); doc.setFont('helvetica', 'normal');
+    doc.text("Guia Oficial de 7 Dias", 105, 30, null, null, "center");
+
+    // Introdução
+    doc.setTextColor(50); doc.setFontSize(12);
+    doc.text(`Objetivo Selecionado: ${userGoal}`, 14, 55);
+    doc.text("Este plano foi estrategicamente montado para acelerar seu metabolismo.", 14, 62);
     
     // Tabela do Plano Alimentar
     doc.autoTable({ 
-      startY: 60, 
-      head: [['Dia', 'Café', 'Almoço', 'Jantar']], 
+      startY: 70, 
+      head: [['Dia', 'Café da Manhã', 'Almoço', 'Jantar']], 
       body: selectedMenu, 
       theme: 'grid', 
-      headStyles: { fillColor: [22, 163, 74] } 
+      headStyles: { fillColor: [22, 163, 74] },
+      styles: { cellPadding: 4, fontSize: 10 }
     });
     
-    // Bônus
-    const finalY = doc.lastAutoTable.finalY + 15;
+    // Bônus Chá (Fim da página 1)
+    let finalY = doc.lastAutoTable.finalY + 15;
     doc.setDrawColor(255, 165, 0); doc.setLineWidth(1.5); doc.rect(14, finalY, 182, 35);
-    doc.setTextColor(255, 140, 0); doc.setFontSize(14); doc.text("BÓNUS: Chá Secreto (Jejum)", 20, finalY + 10);
-    doc.setTextColor(0); doc.setFontSize(10); doc.text("Ferver 500ml água com gengibre e canela. Adicionar limão no final.", 20, finalY + 20);
+    doc.setTextColor(255, 140, 0); doc.setFont('helvetica', 'bold'); doc.setFontSize(14); 
+    doc.text("BÔNUS: Chá Secreto (Jejum)", 20, finalY + 10);
+    doc.setTextColor(0); doc.setFont('helvetica', 'normal'); doc.setFontSize(10); 
+    doc.text("Ingredientes: 500ml água, 1 pau de canela, 3 rodelas de gengibre.", 20, finalY + 20);
+    doc.text("Preparo: Ferva a água com especiarias por 5 min. Adicione 1/2 limão no final.", 20, finalY + 26);
+
+    // PÁGINA 2: RECEITAS DETALHADAS
+    doc.addPage();
+    doc.setFillColor(22, 163, 74); doc.rect(0, 0, 210, 30, 'F');
+    doc.setTextColor(255); doc.setFontSize(18); doc.setFont('helvetica', 'bold');
+    doc.text("Guia de Receitas Práticas", 105, 20, null, null, "center");
+
+    let yPos = 45;
+    doc.setTextColor(0); 
+
+    RECIPES_CONTENT.forEach((recipe) => {
+        // Se a página estiver acabando, cria nova
+        if (yPos > 250) { doc.addPage(); yPos = 30; }
+
+        doc.setFontSize(14); doc.setFont('helvetica', 'bold'); doc.setTextColor(22, 163, 74);
+        doc.text(recipe.title, 14, yPos);
+        yPos += 8;
+
+        doc.setFontSize(10); doc.setFont('helvetica', 'bold'); doc.setTextColor(0);
+        doc.text("Ingredientes:", 14, yPos);
+        yPos += 5;
+        doc.setFont('helvetica', 'normal');
+        const splitIng = doc.splitTextToSize(recipe.ing, 180);
+        doc.text(splitIng, 14, yPos);
+        yPos += splitIng.length * 5 + 3;
+
+        doc.setFont('helvetica', 'bold');
+        doc.text("Modo de Preparo:", 14, yPos);
+        yPos += 5;
+        doc.setFont('helvetica', 'normal');
+        const splitPrep = doc.splitTextToSize(recipe.prep, 180);
+        doc.text(splitPrep, 14, yPos);
+        yPos += splitPrep.length * 5 + 15; // Espaço extra para próxima receita
+    });
 
     doc.save("Dieta_TmFormat_Premium.pdf");
   };
@@ -207,7 +321,7 @@ export default function App() {
             <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden p-8 text-center">
                 <div className="flex justify-between items-center mb-6 border-b pb-4">
                   <span className="text-gray-500 text-sm">Protocolo VIP</span>
-                  <div className="text-right"><span className="text-xs text-red-400 line-through block">R$ 97,00</span><span className="text-2xl font-bold text-green-600">R$ 1,00</span></div>
+                  <div className="text-right"><span className="text-xs text-red-400 line-through block">R$ 47,00</span><span className="text-2xl font-bold text-green-600">R$ 24,90</span></div>
                 </div>
                 
                 <div className="bg-green-50 rounded-2xl p-6 border border-green-100 mb-6">
