@@ -71,6 +71,30 @@ const RECIPES_CONTENT = [
     portions: "1 copo grande",
     ing: "• 1 folha de couve manteiga (sem o talo grosso)\n• 1 maçã pequena com casca\n• Suco de 1/2 limão\n• 1 pedaço pequeno de gengibre\n• 200ml de água gelada ou água de coco",
     prep: "1. Higienize bem as folhas de couve e a maçã.\n2. Pique a maçã retirando as sementes.\n3. Coloque todos os ingredientes no liquidificador.\n4. Bata por 2 minutos na potência máxima até ficar homogêneo.\n5. Beba imediatamente sem coar para aproveitar as fibras."
+  },
+  {
+    title: "Panqueca Low Carb de Banana",
+    time: "10 min",
+    temp: "Fogo Baixo",
+    portions: "2 panquecas",
+    ing: "• 1 banana madura amassada\n• 2 ovos inteiros\n• 1 colher (chá) de canela em pó\n• Óleo de coco para untar",
+    prep: "1. Num prato fundo, amasse bem a banana com um garfo.\n2. Adicione os ovos e bata bem com um garfo até misturar tudo.\n3. Misture a canela.\n4. Aqueça uma frigideira antiaderente untada com um pouco de óleo de coco em fogo baixo.\n5. Despeje pequenas porções da massa e deixe dourar (cerca de 2 min de cada lado)."
+  },
+  {
+    title: "Crepioca Fit de Frango",
+    time: "15 min",
+    temp: "Fogo Médio",
+    portions: "1 unidade",
+    ing: "• 1 ovo\n• 2 colheres (sopa) de goma de tapioca\n• 1 pitada de sal\n• 1 colher (sopa) de requeijão light (na massa)\n• Recheio: 3 colheres de frango desfiado temperado",
+    prep: "1. Numa tigela, misture o ovo, a tapioca, o sal e o requeijão. Bata bem até ficar liso.\n2. Aqueça uma frigideira antiaderente levemente untada.\n3. Despeje a massa e espalhe girando a frigideira.\n4. Quando a massa soltar do fundo e firmar, vire.\n5. Coloque o frango em metade da massa, dobre ao meio e deixe dourar mais um pouco."
+  },
+  {
+    title: "Molho de Salada Anti-inflamatório",
+    time: "2 min",
+    temp: "Ambiente",
+    portions: "4 porções",
+    ing: "• 3 colheres (sopa) de azeite extra virgem\n• 1 colher (sopa) de mostarda amarela\n• Suco de 1/2 limão\n• 1 colher (café) de cúrcuma (açafrão)\n• Pimenta do reino a gosto",
+    prep: "1. Coloque todos os ingredientes num pote de vidro pequeno com tampa.\n2. Feche o pote e chacoalhe vigorosamente até o molho ficar cremoso e emulsionado.\n3. Sirva sobre saladas verdes ou legumes cozidos."
   }
 ];
 
@@ -491,17 +515,23 @@ export default function App() {
                     </div>
                     <h1 className="text-xl font-bold text-gray-800 mb-2">Protocolo: {quizAnswers[0] || "Personalizado"}</h1>
                     <p className="text-sm text-gray-500 mb-6">O plano contém cardápio para 7 dias focado em desinflamação.</p>
-                    {/* Tabela Fake Realista (Mobile Look) */}
-                    <div className="space-y-4 blur-[3px]"> 
-                        {[...Array(5)].map((_, i) => (
-                           <div key={i} className="flex gap-3 text-xs border-b border-gray-100 pb-2">
-                              <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center font-bold text-green-600 shrink-0">0{i+1}</div>
-                              <div className="flex-1 space-y-2 py-1">
-                                 <div className="bg-gray-200 h-2.5 w-3/4 rounded-full"></div>
-                                 <div className="bg-gray-100 h-2.5 w-1/2 rounded-full"></div>
-                              </div>
-                           </div>
-                        ))}
+                    
+                    {/* VISUALIZAÇÃO REALISTA DO CONTEÚDO (EFEITO VITRINE) */}
+                    <div className="space-y-4 blur-[1.5px]"> {/* Blur leve para dar vontade de ler */}
+                        {(() => {
+                            const userGoal = quizAnswers[0] || "Secar barriga (Urgente)";
+                            const selectedMenu = DIET_DATABASE[userGoal] || DIET_DATABASE["default"];
+                            return selectedMenu.slice(0, 5).map((day, i) => (
+                               <div key={i} className="flex gap-3 text-xs border-b border-gray-100 pb-2">
+                                  <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center font-bold text-green-600 shrink-0">0{day[0]}</div>
+                                  <div className="flex-1 space-y-1 py-1">
+                                     <p className="font-bold text-gray-800">Café: {day[1]}</p>
+                                     <p className="text-gray-600">Almoço: {day[2]}</p>
+                                     <p className="text-gray-600">Jantar: {day[3]}</p>
+                                  </div>
+                               </div>
+                            ));
+                        })()}
                     </div>
                 </div>
             </div>
