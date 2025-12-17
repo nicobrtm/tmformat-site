@@ -71,30 +71,6 @@ const RECIPES_CONTENT = [
     portions: "1 copo grande",
     ing: "• 1 folha de couve manteiga (sem o talo grosso)\n• 1 maçã pequena com casca\n• Suco de 1/2 limão\n• 1 pedaço pequeno de gengibre\n• 200ml de água gelada ou água de coco",
     prep: "1. Higienize bem as folhas de couve e a maçã.\n2. Pique a maçã retirando as sementes.\n3. Coloque todos os ingredientes no liquidificador.\n4. Bata por 2 minutos na potência máxima até ficar homogêneo.\n5. Beba imediatamente sem coar para aproveitar as fibras."
-  },
-  {
-    title: "Panqueca Low Carb de Banana",
-    time: "10 min",
-    temp: "Fogo Baixo",
-    portions: "2 panquecas",
-    ing: "• 1 banana madura amassada\n• 2 ovos inteiros\n• 1 colher (chá) de canela em pó\n• Óleo de coco para untar",
-    prep: "1. Num prato fundo, amasse bem a banana com um garfo.\n2. Adicione os ovos e bata bem com um garfo até misturar tudo.\n3. Misture a canela.\n4. Aqueça uma frigideira antiaderente untada com um pouco de óleo de coco em fogo baixo.\n5. Despeje pequenas porções da massa e deixe dourar (cerca de 2 min de cada lado)."
-  },
-  {
-    title: "Crepioca Fit de Frango",
-    time: "15 min",
-    temp: "Fogo Médio",
-    portions: "1 unidade",
-    ing: "• 1 ovo\n• 2 colheres (sopa) de goma de tapioca\n• 1 pitada de sal\n• 1 colher (sopa) de requeijão light (na massa)\n• Recheio: 3 colheres de frango desfiado temperado",
-    prep: "1. Numa tigela, misture o ovo, a tapioca, o sal e o requeijão. Bata bem até ficar liso.\n2. Aqueça uma frigideira antiaderente levemente untada.\n3. Despeje a massa e espalhe girando a frigideira.\n4. Quando a massa soltar do fundo e firmar, vire.\n5. Coloque o frango em metade da massa, dobre ao meio e deixe dourar mais um pouco."
-  },
-  {
-    title: "Molho de Salada Anti-inflamatório",
-    time: "2 min",
-    temp: "Ambiente",
-    portions: "4 porções",
-    ing: "• 3 colheres (sopa) de azeite extra virgem\n• 1 colher (sopa) de mostarda amarela\n• Suco de 1/2 limão\n• 1 colher (café) de cúrcuma (açafrão)\n• Pimenta do reino a gosto",
-    prep: "1. Coloque todos os ingredientes num pote de vidro pequeno com tampa.\n2. Feche o pote e chacoalhe vigorosamente até o molho ficar cremoso e emulsionado.\n3. Sirva sobre saladas verdes ou legumes cozidos."
   }
 ];
 
@@ -467,7 +443,7 @@ export default function App() {
               <p className="text-gray-500 mb-8 text-sm">{QUIZ_QUESTIONS[currentQuestion].subtitle}</p>
               <div className="space-y-3">
                 {QUIZ_QUESTIONS[currentQuestion].options.map((opt, i) => (
-                  <motion.button key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} onClick={() => handleAnswer(opt.text)} className="w-full text-left p-4 border border-gray-200 rounded-2xl font-medium text-gray-700 flex items-center gap-4 hover:border-green-500 hover:bg-green-50 transition-all">
+                  <motion.button key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} onClick={() => handleAnswer(opt.text)} className="w-full text-left p-4 border border-gray-200 rounded-2xl font-medium text-gray-700 flex items-center gap-4 hover:border-green-500 hover:bg-green-50 transition-all active:scale-95">
                     <span className={`text-2xl bg-gray-50 w-12 h-12 flex items-center justify-center rounded-2xl ${opt.color} bg-opacity-10`}>{opt.icon}</span>
                     <span className="flex-1 font-semibold">{opt.text}</span>
                     <ChevronRight className="text-gray-300" size={18}/>
@@ -494,23 +470,39 @@ export default function App() {
                     value={userEmail}
                     onChange={(e) => setUserEmail(e.target.value)}
                 />
-                <button onClick={submitEmailAndPay} className="w-full bg-green-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-green-700 transition">IR PARA O PAGAMENTO</button>
+                <button onClick={submitEmailAndPay} className="w-full bg-green-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-green-700 transition active:scale-95">IR PARA O PAGAMENTO</button>
                 <p className="text-xs text-gray-400 mt-4 flex justify-center gap-1"><Lock size={12}/> Seus dados estão seguros e não enviaremos spam.</p>
             </motion.div>
         )}
 
-        {/* 5. CHECKOUT REAL (LOCK SCREEN STYLE) */}
+        {/* 5. CHECKOUT REAL (LOCK SCREEN COM PREVIEW) */}
         {view === 'checkout' && pixData && (
           <motion.div key="checkout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-gray-100 flex flex-col relative overflow-hidden">
             
-            {/* BACKGROUND: BLURRED DIET PREVIEW (O EFEITO DE PROVA) */}
-            <div className="absolute inset-0 p-6 opacity-30 blur-sm pointer-events-none bg-white overflow-hidden">
-                <h1 className="text-2xl font-bold text-gray-300 mb-4">Seu Protocolo Personalizado</h1>
-                <div className="space-y-4">
-                    <div className="p-4 border rounded-xl bg-gray-50"><div className="h-4 w-32 bg-green-200 rounded mb-2"></div><div className="h-3 w-full bg-gray-200 rounded mb-1"></div></div>
-                    <div className="p-4 border rounded-xl bg-gray-50"><div className="h-4 w-40 bg-green-200 rounded mb-2"></div><div className="h-3 w-3/4 bg-gray-200 rounded"></div></div>
-                    <div className="p-4 border rounded-xl bg-gray-50"><div className="h-4 w-32 bg-green-200 rounded mb-2"></div><div className="h-3 w-full bg-gray-200 rounded mb-1"></div></div>
-                    <div className="p-4 border rounded-xl bg-gray-50"><div className="h-4 w-20 bg-green-200 rounded mb-2"></div><div className="h-3 w-full bg-gray-200 rounded"></div></div>
+            {/* BACKGROUND: PREVIEW DA DIETA REALISTA */}
+            <div className="absolute inset-0 pt-16 px-4 opacity-50 pointer-events-none bg-white overflow-hidden flex flex-col items-center">
+                <div className="w-full max-w-lg bg-white shadow-xl border border-gray-200 h-full rounded-t-xl p-6 relative scale-95 origin-top">
+                    <div className="flex justify-between items-center mb-6 border-b pb-4">
+                       <div className="flex items-center gap-2 text-green-700">
+                          <Leaf size={20}/>
+                          <span className="font-bold">TmFormat</span>
+                       </div>
+                       <span className="text-xs text-gray-400">{new Date().toLocaleDateString()}</span>
+                    </div>
+                    <h1 className="text-xl font-bold text-gray-800 mb-2">Protocolo: {quizAnswers[0] || "Personalizado"}</h1>
+                    <p className="text-sm text-gray-500 mb-6">O plano contém cardápio para 7 dias focado em desinflamação.</p>
+                    {/* Tabela Fake Realista (Mobile Look) */}
+                    <div className="space-y-4 blur-[3px]"> 
+                        {[...Array(5)].map((_, i) => (
+                           <div key={i} className="flex gap-3 text-xs border-b border-gray-100 pb-2">
+                              <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center font-bold text-green-600 shrink-0">0{i+1}</div>
+                              <div className="flex-1 space-y-2 py-1">
+                                 <div className="bg-gray-200 h-2.5 w-3/4 rounded-full"></div>
+                                 <div className="bg-gray-100 h-2.5 w-1/2 rounded-full"></div>
+                              </div>
+                           </div>
+                        ))}
+                    </div>
                 </div>
             </div>
 
@@ -522,7 +514,11 @@ export default function App() {
                         <p className="text-xs text-gray-400">Seu plano foi gerado e está aguardando liberação.</p>
                     </div>
                     <div className="p-8">
-                        <div className="text-center mb-8"><h2 className="text-2xl font-bold text-gray-800 mb-2">Desbloqueie seu Protocolo</h2><p className="text-gray-500 text-sm">O acesso completo ao cardápio de 7 dias + receitas está pronto.</p></div>
+                        <div className="text-center mb-8">
+                            <h2 className="text-2xl font-bold text-gray-800 mb-2">Desbloqueie seu Protocolo</h2>
+                            <p className="text-gray-500 text-sm">O acesso completo ao cardápio de 7 dias + receitas está pronto.</p>
+                        </div>
+
                         <div className="flex justify-center items-baseline gap-2 mb-8"><span className="text-gray-400 line-through text-lg">R$ 47,00</span><span className="text-4xl font-extrabold text-green-600">R$ 24,90</span></div>
                         
                         <div className="bg-green-50 rounded-2xl p-6 border border-green-100 mb-6 text-center relative overflow-hidden">
@@ -530,7 +526,7 @@ export default function App() {
                             <div className="bg-white/80 p-2 rounded mb-3 text-[10px] text-gray-500 flex items-center justify-center gap-1 border border-gray-100"><ShieldCheck size={12} className="text-green-600"/><span>Beneficiário: Nicolas Durgante / Repr. Autorizado</span></div>
                             <p className="text-sm font-bold text-green-800 mb-3">Pague via Pix para liberar agora</p>
                             <div className="bg-white p-2 rounded-lg inline-block shadow-sm mb-3"><img src={pixData.qr_code_base64 ? `data:image/jpeg;base64,${pixData.qr_code_base64}` : 'https://placehold.co/200x200?text=QR+Code'} alt="QR Code Pix" className="w-40 h-40 mix-blend-multiply"/></div>
-                            <button onClick={() => navigator.clipboard.writeText(pixData.qr_code)} className="w-full bg-white border border-green-200 text-green-700 py-3 rounded-xl font-bold text-xs flex justify-center gap-2 hover:bg-green-100 transition-colors"><Copy size={14}/> COPIAR CÓDIGO PIX</button>
+                            <button onClick={() => navigator.clipboard.writeText(pixData.qr_code)} className="w-full bg-white border border-green-200 text-green-700 py-3 rounded-xl font-bold text-xs flex justify-center gap-2 hover:bg-green-100 transition-colors active:scale-95"><Copy size={14}/> COPIAR CÓDIGO PIX</button>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4 mb-4">
@@ -538,7 +534,6 @@ export default function App() {
                             <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 p-2 rounded-lg"><Zap size={16} className="text-yellow-500"/> Acesso Imediato</div>
                         </div>
 
-                        {/* AVISO IMPORTANTE ANTI-FECHAMENTO */}
                         <div className="mt-4 p-3 bg-yellow-50 rounded-lg text-xs text-yellow-700 border border-yellow-100 text-center">
                             <strong>Importante:</strong> Se sair desta tela, retorne para confirmar o recebimento do seu acesso.
                         </div>
@@ -562,7 +557,7 @@ export default function App() {
                    {emailStatus === 'success' && "✅ E-mail enviado com sucesso!"}
                    {emailStatus === 'error' && "⚠️ Erro ao enviar e-mail. Baixe abaixo."}
                 </div>
-                <button onClick={downloadManualPDF} className="w-full bg-green-600 text-white font-bold py-4 rounded-xl shadow-lg flex justify-center gap-2 hover:bg-green-700 transition">
+                <button onClick={downloadManualPDF} className="w-full bg-green-600 text-white font-bold py-4 rounded-xl shadow-lg flex justify-center gap-2 hover:bg-green-700 transition active:scale-95">
                     BAIXAR AGORA <Download/>
                 </button>
              </div>
@@ -582,7 +577,7 @@ export default function App() {
                   <AnimatePresence>{loginError && (<motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="bg-red-50 border border-red-100 text-red-600 p-3 rounded-lg text-xs flex items-start gap-2"><AlertCircle size={14} className="shrink-0 mt-0.5" /><span>{loginError}</span></motion.div>)}</AnimatePresence>
                   <div><label className="block text-xs font-bold text-gray-700 uppercase mb-1">E-mail</label><input type="email" placeholder="seu@email.com" className="w-full border border-gray-300 rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-green-500"/></div>
                   <div><label className="block text-xs font-bold text-gray-700 uppercase mb-1">Senha</label><input type="password" placeholder="••••••••" className="w-full border border-gray-300 rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-green-500"/></div>
-                  <button onClick={() => setLoginError("Você ainda não possui um plano ativo. Realize a compra para liberar seu acesso.")} className="w-full bg-green-600 text-white font-bold py-3 rounded-xl hover:bg-green-700 transition">Entrar na Plataforma</button>
+                  <button onClick={() => setLoginError("Você ainda não possui um plano ativo. Realize a compra para liberar seu acesso.")} className="w-full bg-green-600 text-white font-bold py-3 rounded-xl hover:bg-green-700 transition active:scale-95">Entrar na Plataforma</button>
                 </div>
                 <div className="mt-6 text-center text-xs text-gray-400">Ainda não é aluno? <button onClick={() => {setShowLogin(false); setView('quiz');}} className="text-green-600 font-bold hover:underline">Fazer análise gratuita</button></div>
               </div>
