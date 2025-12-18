@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   ArrowRight, CheckCircle, Clock, ShieldCheck, Star, Leaf, Flame, 
-  ChevronRight, Download, Copy, Smartphone, Lock, Activity, AlertCircle, Check, Zap, Menu, User, X, Mail, Send, FileText, CreditCard
+  ChevronRight, Download, Copy, Smartphone, Lock, Activity, AlertCircle, Check, Zap, Menu, User, X, Mail, Send, FileText
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -98,7 +98,7 @@ const RECIPES_CONTENT = [
   }
 ];
 
-// --- COMENTÁRIOS ---
+// --- COMENTÁRIOS ESTILO TIKTOK ---
 const REAL_COMMENTS = [
   { name: "Ana P.", text: "Gente o chá seca msm?? to precisando kkk", time: "há 2 min", likes: 12, img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces" },
   { name: "Bruna Souza", text: "Comecei segunda, hj ja fechei o short jeans q nao entrava 😍 obrigada!!", time: "há 8 min", likes: 45, img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=faces" },
@@ -120,6 +120,9 @@ export default function App() {
   
   const userEmailRef = useRef(userEmail);
   const quizAnswersRef = useRef(quizAnswers);
+  
+  // Estado para recuperar o objetivo da dieta mesmo após refresh
+  const [savedGoal, setSavedGoal] = useState("Secar barriga (Urgente)");
 
   useEffect(() => {
     userEmailRef.current = userEmail;
@@ -134,6 +137,10 @@ export default function App() {
   useEffect(() => {
     const savedEmail = localStorage.getItem('tmformat_email');
     if (savedEmail) setUserEmail(savedEmail);
+
+    // Recupera o objetivo salvo para o PDF não quebrar
+    const goal = localStorage.getItem('tmformat_goal');
+    if (goal) setSavedGoal(goal);
 
     const savedPix = localStorage.getItem('tmformat_pix_data');
     if (savedPix) {
@@ -188,6 +195,12 @@ export default function App() {
   ];
 
   const handleAnswer = (answer) => {
+    // Se for a primeira pergunta (Objetivo), salva no localStorage
+    if (currentQuestion === 0) {
+        localStorage.setItem('tmformat_goal', answer);
+        setSavedGoal(answer);
+    }
+
     setQuizAnswers([...quizAnswers, answer]);
     if (currentQuestion < QUIZ_QUESTIONS.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
@@ -278,7 +291,9 @@ export default function App() {
     }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    const userGoal = quizAnswersRef.current[0] || "Secar barriga (Urgente)";
+    
+    // Usa o objetivo salvo ou o atual
+    const userGoal = savedGoal || quizAnswersRef.current[0] || "Secar barriga (Urgente)";
     const selectedMenu = DIET_DATABASE[userGoal] || DIET_DATABASE["default"];
 
     generatePDFContent(doc, userGoal, selectedMenu);
@@ -292,7 +307,7 @@ export default function App() {
     }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    const userGoal = quizAnswers[0] || "Secar barriga (Urgente)";
+    const userGoal = savedGoal || quizAnswers[0] || "Secar barriga (Urgente)";
     const selectedMenu = DIET_DATABASE[userGoal] || DIET_DATABASE["default"];
     
     generatePDFContent(doc, userGoal, selectedMenu);
@@ -499,7 +514,7 @@ export default function App() {
             </motion.div>
         )}
 
-        {/* 5. CHECKOUT REAL (COM PDF REALISTA AO FUNDO) */}
+        {/* 5. CHECKOUT REAL (COM PREVIEW NA CAIXA) */}
         {view === 'checkout' && pixData && (
           <motion.div key="checkout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-gray-100 flex flex-col relative overflow-hidden">
             
@@ -513,13 +528,13 @@ export default function App() {
                        </div>
                        <span className="text-xs text-gray-400">{new Date().toLocaleDateString()}</span>
                     </div>
-                    <h1 className="text-xl font-bold text-gray-800 mb-2">Protocolo: {quizAnswers[0] || "Personalizado"}</h1>
+                    <h1 className="text-xl font-bold text-gray-800 mb-2">Protocolo: {savedGoal || quizAnswers[0] || "Personalizado"}</h1>
                     <p className="text-sm text-gray-500 mb-6">Plano alimentar oficial de 7 dias para reativação metabólica.</p>
                     
                     {/* CONTEÚDO REAL DA DIETA (PARA DAR VONTADE) */}
                     <div className="space-y-4"> 
                         {(() => {
-                            const userGoal = quizAnswers[0] || "Secar barriga (Urgente)";
+                            const userGoal = savedGoal || quizAnswers[0] || "Secar barriga (Urgente)";
                             const selectedMenu = DIET_DATABASE[userGoal] || DIET_DATABASE["default"];
                             return selectedMenu.slice(0, 5).map((day, i) => (
                                <div key={i} className="flex gap-3 text-xs border-b border-gray-100 pb-2">
@@ -543,14 +558,29 @@ export default function App() {
                         <div className="flex justify-center items-center gap-2 mb-1"><Lock size={20} className="text-green-400" /><span className="font-bold uppercase tracking-widest text-sm">Acesso Restrito</span></div>
                         <p className="text-xs text-gray-400">Seu plano foi gerado e está aguardando liberação.</p>
                     </div>
-                    <div className="p-8">
-                        <div className="text-center mb-8">
+                    
+                    {/* --- NOVA PRÉVIA DO PDF DENTRO DO MODAL --- */}
+                    <div className="px-8 pt-6 pb-2">
+                        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 flex items-center gap-4 shadow-sm relative overflow-hidden group">
+                           <div className="absolute top-0 right-0 bg-green-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-bl-lg uppercase">Pronto</div>
+                           <div className="w-12 h-12 bg-white rounded-lg border border-gray-200 flex items-center justify-center shadow-sm shrink-0">
+                              <FileText size={24} className="text-red-500" />
+                           </div>
+                           <div className="text-left flex-1 min-w-0">
+                              <p className="text-xs text-gray-400 font-medium mb-0.5">Arquivo PDF • 2.4MB</p>
+                              <h3 className="font-bold text-gray-800 text-sm truncate">Protocolo: {savedGoal || quizAnswers[0] || "Personalizado"}</h3>
+                              <p className="text-[10px] text-green-600 flex items-center gap-1 mt-1"><CheckCircle size={10}/> Verificado e Personalizado</p>
+                           </div>
+                        </div>
+                    </div>
+                    {/* ------------------------------------------ */}
+
+                    <div className="p-8 pt-4">
+                        <div className="text-center mb-6">
                             <h2 className="text-2xl font-bold text-gray-800 mb-2">Desbloqueie seu Protocolo</h2>
-                            <p className="text-gray-500 text-sm">O acesso completo ao cardápio de 7 dias + receitas está pronto.</p>
+                            <div className="flex justify-center items-baseline gap-2"><span className="text-gray-400 line-through text-lg">R$ 47,00</span><span className="text-4xl font-extrabold text-green-600">R$ 24,90</span></div>
                         </div>
 
-                        <div className="flex justify-center items-baseline gap-2 mb-8"><span className="text-gray-400 line-through text-lg">R$ 47,00</span><span className="text-4xl font-extrabold text-green-600">R$ 24,90</span></div>
-                        
                         <div className="bg-green-50 rounded-2xl p-6 border border-green-100 mb-6 text-center relative overflow-hidden">
                             <div className="absolute top-0 right-0 bg-green-200 text-green-800 text-[10px] px-2 py-1 rounded-bl-lg font-bold">SSL SEGURO</div>
                             <div className="bg-white/80 p-2 rounded mb-3 text-[10px] text-gray-500 flex items-center justify-center gap-1 border border-gray-100"><ShieldCheck size={12} className="text-green-600"/><span>Beneficiário: Nicolas Durgante / Repr. Autorizado</span></div>
