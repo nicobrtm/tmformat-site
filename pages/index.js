@@ -640,4 +640,4 @@ function AnalysisScreen({ onComplete }) {
       <p className="text-gray-400 text-sm mt-2">Aguarde, não feche a página...</p>
     </div>
   );
-}
+} 
