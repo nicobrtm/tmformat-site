@@ -58,28 +58,19 @@ const DIET_DATABASE = {
 const RECIPES_CONTENT = [
   {
     title: "Sopa Detox de Abóbora com Gengibre",
+    time: "40 min",
+    temp: "Fogo Médio",
+    portions: "2 pratos",
     ing: "• 1/2 abóbora cabotiá descascada\n• 1 pedaço de gengibre (3cm)\n• 1 cebola picada\n• 2 dentes de alho amassados\n• 1 colher (sopa) de azeite\n• Sal e pimenta a gosto\n• 500ml de água fervente",
     prep: "1. Numa panela, aqueça o azeite e refogue a cebola e o alho até dourarem.\n2. Adicione a abóbora em cubos e refogue por 2 minutos.\n3. Cubra com a água fervente e deixe cozinhar até a abóbora desmanchar (aprox. 25 min).\n4. Espere amornar e bata no liquidificador com o gengibre descascado.\n5. Volte para a panela, acerte o sal e aqueça antes de servir."
   },
   {
     title: "Suco Verde Desinchaço Turbo",
+    time: "5 min",
+    temp: "Gelado",
+    portions: "1 copo grande",
     ing: "• 1 folha de couve manteiga (sem o talo grosso)\n• 1 maçã pequena com casca\n• Suco de 1/2 limão\n• 1 pedaço pequeno de gengibre\n• 200ml de água gelada ou água de coco",
     prep: "1. Higienize bem as folhas de couve e a maçã.\n2. Pique a maçã retirando as sementes.\n3. Coloque todos os ingredientes no liquidificador.\n4. Bata por 2 minutos na potência máxima até ficar homogêneo.\n5. Beba imediatamente sem coar para aproveitar as fibras."
-  },
-  {
-    title: "Panqueca Low Carb de Banana",
-    ing: "• 1 banana madura amassada\n• 2 ovos inteiros\n• 1 colher (chá) de canela em pó\n• Óleo de coco para untar",
-    prep: "1. Num prato fundo, amasse bem a banana com um garfo.\n2. Adicione os ovos e bata bem com um garfo até misturar tudo.\n3. Misture a canela.\n4. Aqueça uma frigideira antiaderente untada com um pouco de óleo de coco em fogo baixo.\n5. Despeje pequenas porções da massa e deixe dourar (cerca de 2 min de cada lado)."
-  },
-  {
-    title: "Crepioca Fit de Frango",
-    ing: "• 1 ovo\n• 2 colheres (sopa) de goma de tapioca\n• 1 pitada de sal\n• 1 colher (sopa) de requeijão light (na massa)\n• Recheio: 3 colheres de frango desfiado temperado",
-    prep: "1. Numa tigela, misture o ovo, a tapioca, o sal e o requeijão. Bata bem até ficar liso.\n2. Aqueça uma frigideira antiaderente levemente untada.\n3. Despeje a massa e espalhe girando a frigideira.\n4. Quando a massa soltar do fundo e firmar, vire.\n5. Coloque o frango em metade da massa, dobre ao meio e deixe dourar mais um pouco."
-  },
-  {
-    title: "Molho de Salada Anti-inflamatório",
-    ing: "• 3 colheres (sopa) de azeite extra virgem\n• 1 colher (sopa) de mostarda amarela\n• Suco de 1/2 limão\n• 1 colher (café) de cúrcuma (açafrão)\n• Pimenta do reino a gosto",
-    prep: "1. Coloque todos os ingredientes num pote de vidro pequeno com tampa.\n2. Feche o pote e chacoalhe vigorosamente até o molho ficar cremoso e emulsionado.\n3. Sirva sobre saladas verdes ou legumes cozidos."
   }
 ];
 
@@ -96,8 +87,7 @@ export default function App() {
   const [loginError, setLoginError] = useState('');
   const [quizAnswers, setQuizAnswers] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(600); // 10 min
-  const [pixTimeLeft, setPixTimeLeft] = useState(900); // 15 min para o pix
+  const [timeLeft, setTimeLeft] = useState(600);
   const [pixData, setPixData] = useState(null);
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [userEmail, setUserEmail] = useState('');
@@ -113,20 +103,10 @@ export default function App() {
     quizAnswersRef.current = quizAnswers;
   }, [userEmail, quizAnswers]);
 
-  // Timer de oferta (Topo)
   useEffect(() => {
     const timer = setInterval(() => setTimeLeft((p) => (p > 0 ? p - 1 : 0)), 1000);
     return () => clearInterval(timer);
   }, []);
-
-  // Timer do Pix (Checkout)
-  useEffect(() => {
-    let timer;
-    if (view === 'checkout') {
-      timer = setInterval(() => setPixTimeLeft((p) => (p > 0 ? p - 1 : 0)), 1000);
-    }
-    return () => clearInterval(timer);
-  }, [view]);
 
   useEffect(() => {
     const savedEmail = localStorage.getItem('tmformat_email');
@@ -503,103 +483,92 @@ export default function App() {
             </motion.div>
         )}
 
-        {/* 5. CHECKOUT REAL (COM PDF A4 REALISTA AO FUNDO) */}
+        {/* 5. CHECKOUT REAL (COM PDF REALISTA AO FUNDO) */}
         {view === 'checkout' && pixData && (
-          <motion.div key="checkout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-gray-100 flex flex-col relative overflow-hidden items-center pt-8">
+          <motion.div key="checkout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-gray-100 flex flex-col relative overflow-hidden items-center pt-6">
             
-            {/* --- DOCUMENTO A4 REALISTA AO FUNDO --- */}
-            <div className="w-full max-w-[90%] md:max-w-lg bg-white shadow-2xl h-[85vh] relative scale-100 origin-top p-8 md:p-10 flex flex-col">
+            {/* --- PDF VISUAL AO FUNDO (PREVIEW "VITRINE") --- */}
+            <div className="w-full max-w-2xl bg-white shadow-2xl min-h-[80vh] rounded-t-xl relative transform scale-95 origin-top border border-gray-200">
+                {/* Cabeçalho do Documento */}
+                <div className="p-8 border-b-2 border-green-500">
+                    <div className="flex justify-between items-center mb-4">
+                        <div className="flex items-center gap-2">
+                             <div className="bg-green-600 p-2 rounded-lg text-white"><Leaf size={24}/></div>
+                             <h1 className="text-2xl font-bold text-gray-800">Protocolo Metabólico</h1>
+                        </div>
+                        <div className="flex items-center gap-1 text-green-600 font-bold bg-green-50 px-3 py-1 rounded-full text-xs border border-green-200">
+                            <CheckCircle size={14}/> Verificado
+                        </div>
+                    </div>
+                    <div className="flex justify-between text-sm text-gray-500 font-medium">
+                        <span>Paciente: <strong>Aluna VIP</strong></span>
+                        <span>Objetivo: <strong>{savedGoal || quizAnswers[0]}</strong></span>
+                    </div>
+                </div>
                 
-                {/* Header do Documento */}
-                <div className="border-b-2 border-green-600 pb-4 mb-6 flex justify-between items-end">
-                    <div>
-                        <h1 className="text-2xl font-bold text-gray-800 uppercase tracking-tight">Protocolo<br/>Metabólico</h1>
-                        <p className="text-xs text-gray-500 mt-1">Plano Oficial de 7 Dias • Uso Individual</p>
-                    </div>
-                    <div className="text-right">
-                         <div className="bg-green-600 text-white text-[10px] font-bold px-2 py-1 rounded mb-1 inline-block">APROVADO</div>
-                         <p className="text-xs text-gray-400">{new Date().toLocaleDateString()}</p>
-                    </div>
+                {/* Conteúdo da Dieta (Parte visível e parte borrada) */}
+                <div className="p-8 space-y-6">
+                     {/* Mostra os primeiros dias reais do banco de dados */}
+                     {(() => {
+                         const goal = savedGoal || quizAnswers[0] || "Secar barriga (Urgente)";
+                         const menu = DIET_DATABASE[goal] || DIET_DATABASE["default"];
+                         return menu.slice(0, 4).map((day, i) => (
+                            <div key={i} className={`flex gap-4 border-b border-gray-100 pb-4 ${i >= 2 ? 'blur-[3px] select-none opacity-60' : ''}`}>
+                                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center font-bold text-green-700 shrink-0 text-lg shadow-sm">0{day[0]}</div>
+                                <div className="flex-1 space-y-1">
+                                    <p className="font-bold text-gray-800"><span className="text-green-600 text-xs font-black tracking-wide">CAFÉ:</span> {day[1]}</p>
+                                    <p className="text-gray-600 text-sm"><span className="text-green-600 text-xs font-black tracking-wide">ALMOÇO:</span> {day[2]}</p>
+                                    <p className="text-gray-600 text-sm"><span className="text-green-600 text-xs font-black tracking-wide">JANTAR:</span> {day[3]}</p>
+                                </div>
+                            </div>
+                         ))
+                     })()}
+                     
+                     {/* Linhas falsas para simular o resto do conteúdo */}
+                     <div className="space-y-4 blur-md select-none opacity-40">
+                         <div className="h-4 bg-gray-300 w-full rounded"></div>
+                         <div className="h-4 bg-gray-300 w-3/4 rounded"></div>
+                         <div className="h-4 bg-gray-300 w-5/6 rounded"></div>
+                     </div>
                 </div>
 
-                {/* Dados do Paciente */}
-                <div className="bg-gray-50 p-4 rounded-lg mb-6 border border-gray-100">
-                    <p className="text-xs text-gray-500 uppercase font-bold mb-1">Paciente</p>
-                    <p className="text-sm font-medium text-gray-900">Aluna VIP</p>
-                    <div className="h-px bg-gray-200 my-2"></div>
-                    <p className="text-xs text-gray-500 uppercase font-bold mb-1">Objetivo Clínico</p>
-                    <p className="text-sm font-bold text-green-700 uppercase">{savedGoal || quizAnswers[0] || "Personalizado"}</p>
-                </div>
-
-                {/* Conteúdo da Dieta (A "Amostra Grátis") */}
-                <div className="flex-1 overflow-hidden relative">
-                    <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2"><Leaf size={16} className="text-green-500"/> Cardápio Semanal</h3>
-                    
-                    <div className="space-y-4">
-                        {(() => {
-                            const goal = savedGoal || quizAnswers[0] || "Secar barriga (Urgente)";
-                            const menu = DIET_DATABASE[goal] || DIET_DATABASE["default"];
-                            // Mostramos 3 dias. O 1º é nítido, o 2º levemente borrado, o 3º muito borrado.
-                            return menu.slice(0, 4).map((day, i) => (
-                               <div key={i} className={`border-l-4 border-green-500 pl-4 py-1 ${i === 1 ? 'blur-[1px] opacity-80' : i === 2 ? 'blur-[3px] opacity-50' : i > 2 ? 'blur-[5px] opacity-30' : ''}`}>
-                                  <p className="text-xs font-bold text-gray-400 uppercase mb-1">DIA 0{day[0]}</p>
-                                  <div className="text-sm text-gray-700 space-y-1">
-                                     <p><strong>Café:</strong> {day[1]}</p>
-                                     <p><strong>Almoço:</strong> {day[2]}</p>
-                                     <p><strong>Jantar:</strong> {day[3]}</p>
-                                  </div>
-                               </div>
-                            ));
-                        })()}
-                    </div>
-
-                    {/* Gradient Overlay para "desaparecer" o texto no final */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white pointer-events-none"></div>
-                </div>
+                {/* Camada de "Vidro" (Overlay) */}
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/60 to-white z-10 pointer-events-none"></div>
             </div>
 
             {/* --- MODAL DE PAGAMENTO (FLUTUANDO POR CIMA) --- */}
-            <div className="fixed inset-x-0 bottom-0 md:absolute md:inset-0 z-20 flex items-end md:items-center justify-center pointer-events-none">
-                <div className="w-full md:max-w-sm pointer-events-auto">
-                    <motion.div 
-                        initial={{ y: 100 }} 
-                        animate={{ y: 0 }} 
-                        className="bg-white rounded-t-3xl md:rounded-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.2)] border border-gray-200 overflow-hidden"
-                    >
-                        <div className="bg-gray-900 text-white p-3 text-center flex items-center justify-center gap-2">
-                             <Lock size={14} className="text-green-400"/> 
-                             <span className="text-xs font-bold uppercase tracking-wide">Documento Bloqueado</span>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md px-4 z-20">
+                <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200">
+                    <div className="bg-gray-900 text-white p-4 text-center">
+                        <div className="flex justify-center items-center gap-2 mb-1"><Lock size={20} className="text-green-400" /><span className="font-bold uppercase tracking-widest text-sm">Acesso Bloqueado</span></div>
+                        <p className="text-xs text-gray-400">Finalize o pagamento para liberar o download.</p>
+                    </div>
+
+                    <div className="p-6">
+                        <div className="flex justify-between items-baseline mb-6 border-b border-gray-100 pb-4 border-dashed">
+                            <span className="text-gray-400 line-through text-sm">R$ 47,00</span>
+                            <span className="text-4xl font-extrabold text-green-600 tracking-tight">R$ 24,90</span>
                         </div>
 
-                        <div className="p-6 text-center">
-                            <h2 className="text-lg font-bold text-gray-800 leading-tight mb-1">Libere seu acesso total</h2>
-                            <p className="text-xs text-gray-500 mb-4">Baixe o PDF completo agora mesmo.</p>
-
-                            <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-4 relative overflow-hidden">
-                                <div className="absolute top-0 right-0 bg-green-200 text-green-800 text-[8px] font-bold px-2 py-0.5 rounded-bl">PIX</div>
-                                <div className="text-3xl font-extrabold text-green-600 mb-2">R$ 24,90</div>
-                                <div className="bg-white p-2 rounded-lg inline-block shadow-sm border border-gray-100 mb-3">
-                                    <img src={pixData.qr_code_base64 ? `data:image/jpeg;base64,${pixData.qr_code_base64}` : 'https://placehold.co/200x200?text=QR+Code'} alt="QR Code" className="w-32 h-32 mix-blend-multiply"/>
-                                </div>
-                                <button onClick={() => navigator.clipboard.writeText(pixData.qr_code)} className="w-full bg-white border border-green-300 text-green-700 py-2.5 rounded-lg font-bold text-xs flex justify-center gap-2 hover:bg-green-50 transition active:scale-95">
-                                    <Copy size={14}/> COPIAR CÓDIGO
-                                </button>
-                                <div className="mt-2 text-center text-xs font-bold text-gray-500">Expira em: <span className="font-mono text-red-500">{Math.floor(pixTimeLeft/60)}:{(pixTimeLeft%60).toString().padStart(2,'0')}</span></div>
-                            </div>
-                            
-                            <div className="flex justify-center gap-3 text-[10px] text-gray-400 font-medium mb-3">
-                                <span className="flex items-center gap-1"><ShieldCheck size={10}/> Compra Segura</span>
-                                <span className="flex items-center gap-1"><Zap size={10}/> Acesso Imediato</span>
-                            </div>
-                            
-                            <p className="text-[9px] text-gray-300">Beneficiário: Nicolas Durgante / Repr. Autorizado</p>
-
-                            <div className="mt-3 flex justify-center items-center gap-2 text-green-600 text-[10px] font-bold uppercase animate-pulse bg-green-50 py-1.5 rounded-full">
-                                <Activity size={12}/> Aguardando Pagamento...
-                            </div>
+                        <div className="bg-green-50 rounded-xl p-4 border border-green-100 mb-4 text-center relative overflow-hidden">
+                            <div className="absolute top-0 right-0 bg-green-200 text-green-800 text-[9px] px-2 py-0.5 rounded-bl-lg font-bold">PIX SEGURO</div>
+                            <p className="text-xs font-bold text-green-800 mb-2">Escaneie ou Copie o código abaixo</p>
+                            <div className="bg-white p-2 rounded-lg inline-block shadow-sm mb-3 border border-gray-200"><img src={pixData.qr_code_base64 ? `data:image/jpeg;base64,${pixData.qr_code_base64}` : 'https://placehold.co/200x200?text=QR+Code'} alt="QR Code Pix" className="w-32 h-32 mix-blend-multiply"/></div>
+                            <button onClick={() => navigator.clipboard.writeText(pixData.qr_code)} className="w-full bg-white border border-green-300 text-green-700 py-3 rounded-lg font-bold text-xs flex justify-center gap-2 hover:bg-green-100 transition-colors shadow-sm"><Copy size={14}/> COPIAR CÓDIGO PIX</button>
                         </div>
-                    </motion.div>
-                </div>
+                        
+                        <div className="text-[10px] text-gray-400 text-center mb-4 bg-gray-50 p-2 rounded border border-gray-100">
+                           Beneficiário: Nicolas Durgante / Repr. Autorizado
+                        </div>
+
+                        <div className="text-center">
+                            <div className="flex justify-center items-center gap-2 text-green-600 text-xs font-bold uppercase animate-pulse">
+                                <Activity size={14}/> Aguardando confirmação...
+                            </div>
+                            <p className="text-[10px] text-gray-400 mt-2">Não feche esta tela.</p>
+                        </div>
+                    </div>
+                </motion.div>
             </div>
 
           </motion.div>
@@ -650,6 +619,25 @@ export default function App() {
 }
 
 function AnalysisScreen({ onComplete }) {
-  useEffect(() => { setTimeout(onComplete, 3000); }, []);
-  return <div className="min-h-screen flex items-center justify-center"><div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div></div>;
+  const [step, setStep] = useState(0);
+  const steps = ["Conectando servidor seguro...", "Analisando perfil metabólico...", "Calculando macronutrientes...", "Gerando Protocolo Personalizado..."];
+
+  useEffect(() => {
+    const i = setInterval(() => {
+        setStep(s => s < steps.length - 1 ? s + 1 : s);
+    }, 1200); // Muda o texto a cada 1.2s
+    setTimeout(onComplete, 5000); // Espera total de 5s
+    return () => clearInterval(i);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8 text-center">
+      <div className="relative w-24 h-24 mb-8">
+         <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} className="w-full h-full border-4 border-gray-100 border-t-green-500 rounded-full"/>
+         <Leaf className="absolute inset-0 m-auto text-green-500" size={24}/>
+      </div>
+      <h2 className="text-xl font-bold text-gray-800">{steps[step]}</h2>
+      <p className="text-gray-400 text-sm mt-2">Aguarde, não feche a página...</p>
+    </div>
+  );
 }
