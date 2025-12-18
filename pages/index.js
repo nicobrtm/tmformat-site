@@ -65,7 +65,29 @@ const RECIPES_CONTENT = [
     title: "Suco Verde Desinchaço Turbo",
     ing: "• 1 folha de couve manteiga (sem o talo grosso)\n• 1 maçã pequena com casca\n• Suco de 1/2 limão\n• 1 pedaço pequeno de gengibre\n• 200ml de água gelada ou água de coco",
     prep: "1. Higienize bem as folhas de couve e a maçã.\n2. Pique a maçã retirando as sementes.\n3. Coloque todos os ingredientes no liquidificador.\n4. Bata por 2 minutos na potência máxima até ficar homogêneo.\n5. Beba imediatamente sem coar para aproveitar as fibras."
+  },
+  {
+    title: "Panqueca Low Carb de Banana",
+    ing: "• 1 banana madura amassada\n• 2 ovos inteiros\n• 1 colher (chá) de canela em pó\n• Óleo de coco para untar",
+    prep: "1. Num prato fundo, amasse bem a banana com um garfo.\n2. Adicione os ovos e bata bem com um garfo até misturar tudo.\n3. Misture a canela.\n4. Aqueça uma frigideira antiaderente untada com um pouco de óleo de coco em fogo baixo.\n5. Despeje pequenas porções da massa e deixe dourar (cerca de 2 min de cada lado)."
+  },
+  {
+    title: "Crepioca Fit de Frango",
+    ing: "• 1 ovo\n• 2 colheres (sopa) de goma de tapioca\n• 1 pitada de sal\n• 1 colher (sopa) de requeijão light (na massa)\n• Recheio: 3 colheres de frango desfiado temperado",
+    prep: "1. Numa tigela, misture o ovo, a tapioca, o sal e o requeijão. Bata bem até ficar liso.\n2. Aqueça uma frigideira antiaderente levemente untada.\n3. Despeje a massa e espalhe girando a frigideira.\n4. Quando a massa soltar do fundo e firmar, vire.\n5. Coloque o frango em metade da massa, dobre ao meio e deixe dourar mais um pouco."
+  },
+  {
+    title: "Molho de Salada Anti-inflamatório",
+    ing: "• 3 colheres (sopa) de azeite extra virgem\n• 1 colher (sopa) de mostarda amarela\n• Suco de 1/2 limão\n• 1 colher (café) de cúrcuma (açafrão)\n• Pimenta do reino a gosto",
+    prep: "1. Coloque todos os ingredientes num pote de vidro pequeno com tampa.\n2. Feche o pote e chacoalhe vigorosamente até o molho ficar cremoso e emulsionado.\n3. Sirva sobre saladas verdes ou legumes cozidos."
   }
+];
+
+// --- COMENTÁRIOS ESTILO TIKTOK ---
+const REAL_COMMENTS = [
+  { name: "Ana P.", text: "Gente o chá seca msm?? to precisando kkk", time: "há 2 min", likes: 12, img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces" },
+  { name: "Bruna Souza", text: "Comecei segunda, hj ja fechei o short jeans q nao entrava 😍 obrigada!!", time: "há 8 min", likes: 45, img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=faces" },
+  { name: "Carla_Fitness", text: "Eu tinha mto medo de ser golpe mas chegou certinho no email, ufa 🙏 a dieta é top", time: "há 15 min", likes: 89, img: "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=100&h=100&fit=crop&crop=faces" }
 ];
 
 export default function App() {
@@ -74,7 +96,8 @@ export default function App() {
   const [loginError, setLoginError] = useState('');
   const [quizAnswers, setQuizAnswers] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(600);
+  const [timeLeft, setTimeLeft] = useState(600); // 10 min
+  const [pixTimeLeft, setPixTimeLeft] = useState(900); // 15 min para o pix
   const [pixData, setPixData] = useState(null);
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [userEmail, setUserEmail] = useState('');
@@ -90,10 +113,20 @@ export default function App() {
     quizAnswersRef.current = quizAnswers;
   }, [userEmail, quizAnswers]);
 
+  // Timer de oferta (Topo)
   useEffect(() => {
     const timer = setInterval(() => setTimeLeft((p) => (p > 0 ? p - 1 : 0)), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  // Timer do Pix (Checkout)
+  useEffect(() => {
+    let timer;
+    if (view === 'checkout') {
+      timer = setInterval(() => setPixTimeLeft((p) => (p > 0 ? p - 1 : 0)), 1000);
+    }
+    return () => clearInterval(timer);
+  }, [view]);
 
   useEffect(() => {
     const savedEmail = localStorage.getItem('tmformat_email');
@@ -475,7 +508,6 @@ export default function App() {
           <motion.div key="checkout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-gray-100 flex flex-col relative overflow-hidden items-center pt-8">
             
             {/* --- DOCUMENTO A4 REALISTA AO FUNDO --- */}
-            {/* Simulamos uma folha A4 (aspect-[1/1.41]) com sombra realista */}
             <div className="w-full max-w-[90%] md:max-w-lg bg-white shadow-2xl h-[85vh] relative scale-100 origin-top p-8 md:p-10 flex flex-col">
                 
                 {/* Header do Documento */}
@@ -486,7 +518,7 @@ export default function App() {
                     </div>
                     <div className="text-right">
                          <div className="bg-green-600 text-white text-[10px] font-bold px-2 py-1 rounded mb-1 inline-block">APROVADO</div>
-                         <p className="text-[10px] text-gray-400">{new Date().toLocaleDateString()}</p>
+                         <p className="text-xs text-gray-400">{new Date().toLocaleDateString()}</p>
                     </div>
                 </div>
 
@@ -527,7 +559,6 @@ export default function App() {
             </div>
 
             {/* --- MODAL DE PAGAMENTO (FLUTUANDO POR CIMA) --- */}
-            {/* Posicionado fixo embaixo no mobile, ou centralizado no desktop */}
             <div className="fixed inset-x-0 bottom-0 md:absolute md:inset-0 z-20 flex items-end md:items-center justify-center pointer-events-none">
                 <div className="w-full md:max-w-sm pointer-events-auto">
                     <motion.div 
@@ -553,6 +584,7 @@ export default function App() {
                                 <button onClick={() => navigator.clipboard.writeText(pixData.qr_code)} className="w-full bg-white border border-green-300 text-green-700 py-2.5 rounded-lg font-bold text-xs flex justify-center gap-2 hover:bg-green-50 transition active:scale-95">
                                     <Copy size={14}/> COPIAR CÓDIGO
                                 </button>
+                                <div className="mt-2 text-center text-xs font-bold text-gray-500">Expira em: <span className="font-mono text-red-500">{Math.floor(pixTimeLeft/60)}:{(pixTimeLeft%60).toString().padStart(2,'0')}</span></div>
                             </div>
                             
                             <div className="flex justify-center gap-3 text-[10px] text-gray-400 font-medium mb-3">
@@ -618,25 +650,6 @@ export default function App() {
 }
 
 function AnalysisScreen({ onComplete }) {
-  const [step, setStep] = useState(0);
-  const steps = ["Conectando servidor seguro...", "Analisando perfil metabólico...", "Calculando macronutrientes...", "Gerando Protocolo Personalizado..."];
-
-  useEffect(() => {
-    const i = setInterval(() => {
-        setStep(s => s < steps.length - 1 ? s + 1 : s);
-    }, 1200); // Muda o texto a cada 1.2s
-    setTimeout(onComplete, 5000); // Espera total de 5s
-    return () => clearInterval(i);
-  }, []);
-
-  return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8 text-center">
-      <div className="relative w-24 h-24 mb-8">
-         <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} className="w-full h-full border-4 border-gray-100 border-t-green-500 rounded-full"/>
-         <Leaf className="absolute inset-0 m-auto text-green-500" size={24}/>
-      </div>
-      <h2 className="text-xl font-bold text-gray-800">{steps[step]}</h2>
-      <p className="text-gray-400 text-sm mt-2">Aguarde, não feche a página...</p>
-    </div>
-  );
+  useEffect(() => { setTimeout(onComplete, 3000); }, []);
+  return <div className="min-h-screen flex items-center justify-center"><div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div></div>;
 }
