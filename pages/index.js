@@ -98,7 +98,7 @@ const RECIPES_CONTENT = [
   }
 ];
 
-// --- COMENTÁRIOS ESTILO TIKTOK ---
+// --- COMENTÁRIOS ---
 const REAL_COMMENTS = [
   { name: "Ana P.", text: "Gente o chá seca msm?? to precisando kkk", time: "há 2 min", likes: 12, img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces" },
   { name: "Bruna Souza", text: "Comecei segunda, hj ja fechei o short jeans q nao entrava 😍 obrigada!!", time: "há 8 min", likes: 45, img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=faces" },
@@ -499,13 +499,13 @@ export default function App() {
             </motion.div>
         )}
 
-        {/* 5. CHECKOUT REAL (COM PREVIEW NA CAIXA) */}
+        {/* 5. CHECKOUT REAL (COM PDF REALISTA AO FUNDO) */}
         {view === 'checkout' && pixData && (
           <motion.div key="checkout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-gray-100 flex flex-col relative overflow-hidden">
             
-            {/* BACKGROUND: PREVIEW DA DIETA REALISTA */}
-            <div className="absolute inset-0 pt-16 px-4 opacity-50 pointer-events-none bg-white overflow-hidden flex flex-col items-center">
-                <div className="w-full max-w-lg bg-white shadow-xl border border-gray-200 h-full rounded-t-xl p-6 relative scale-95 origin-top">
+            {/* BACKGROUND: DOCUMENTO REALISTA COM BLUR */}
+            <div className="absolute inset-0 pt-16 px-4 pointer-events-none flex flex-col items-center bg-gray-100">
+                <div className="w-full max-w-lg bg-white shadow-xl border border-gray-200 h-full rounded-t-xl p-6 relative scale-95 origin-top opacity-50 blur-[2px]">
                     <div className="flex justify-between items-center mb-6 border-b pb-4">
                        <div className="flex items-center gap-2 text-green-700">
                           <Leaf size={20}/>
@@ -514,17 +514,17 @@ export default function App() {
                        <span className="text-xs text-gray-400">{new Date().toLocaleDateString()}</span>
                     </div>
                     <h1 className="text-xl font-bold text-gray-800 mb-2">Protocolo: {quizAnswers[0] || "Personalizado"}</h1>
-                    <p className="text-sm text-gray-500 mb-6">O plano contém cardápio para 7 dias focado em desinflamação.</p>
+                    <p className="text-sm text-gray-500 mb-6">Plano alimentar oficial de 7 dias para reativação metabólica.</p>
                     
-                    {/* VISUALIZAÇÃO REALISTA DO CONTEÚDO (EFEITO VITRINE) */}
-                    <div className="space-y-4 blur-[1.5px]"> 
+                    {/* CONTEÚDO REAL DA DIETA (PARA DAR VONTADE) */}
+                    <div className="space-y-4"> 
                         {(() => {
                             const userGoal = quizAnswers[0] || "Secar barriga (Urgente)";
                             const selectedMenu = DIET_DATABASE[userGoal] || DIET_DATABASE["default"];
                             return selectedMenu.slice(0, 5).map((day, i) => (
                                <div key={i} className="flex gap-3 text-xs border-b border-gray-100 pb-2">
-                                  <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center font-bold text-green-600 shrink-0">0{day[0]}</div>
-                                  <div className="flex-1 space-y-1 py-1">
+                                  <div className="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center font-bold text-green-600 shrink-0">0{day[0]}</div>
+                                  <div className="flex-1 space-y-1">
                                      <p className="font-bold text-gray-800">Café: {day[1]}</p>
                                      <p className="text-gray-600">Almoço: {day[2]}</p>
                                      <p className="text-gray-600">Jantar: {day[3]}</p>
