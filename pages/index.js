@@ -5,7 +5,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// --- CONFIGURAÇÃO DA DIETA (MATRIX) ---
+// --- CONFIGURAÇÃO (Mantivemos a lógica inteligente) ---
 const DIET_DATABASE = {
   "Secar barriga (Urgente)": [
     ['01', 'Ovos Mexidos Cremosos + Café', 'Filé de Frango Grelhado + Salada Verde', 'Sopa Detox de Abóbora'], 
@@ -25,24 +25,6 @@ const DIET_DATABASE = {
     ['06', 'Melancia + Queijo Branco', 'Frango Desfiado + Purê de Mandioca', 'Salada Caprese (Tomate e Manjericão)'], 
     ['07', 'Água de Coco + Castanhas', 'Peixe Assado + Tomate Confit', 'Caldo Verde Light (Sem Batata)']
   ],
-  "Melhorar digestão": [
-    ['01', 'Mamão + Psyllium + Chá de Hortelã', 'Frango Grelhado + Quiabo Refogado', 'Sopa de Legumes Batida'],
-    ['02', 'Iogurte Natural + Ameixa Seca', 'Peixe Cozido + Purê de Batata', 'Creme de Aipim com Frango'],
-    ['03', 'Banana Cozida + Canela', 'Carne de Panela + Cenoura Cozida', 'Ovos Mexidos Leves'],
-    ['04', 'Suco de Laranja Lima', 'Arroz Bem Cozido + Frango Desfiado', 'Canja de Galinha (Sem Pele)'],
-    ['05', 'Maçã Cozida sem Casca', 'Peixe Grelhado + Purê de Moranga', 'Caldo de Feijão (Coado)'],
-    ['06', 'Pera Cozida', 'Frango Desfiado + Polenta Mole', 'Creme de Espinafre'],
-    ['07', 'Gelatina Natural', 'Peixe Assado + Batata Cozida', 'Sopa Leve de Legumes']
-  ],
-  "Perder peso na balança": [
-    ['01', 'Pão Integral + Ovos Mexidos', 'Arroz + Feijão + Frango Grelhado', 'Sanduíche Natural de Atum'],
-    ['02', 'Tapioca com Queijo Branco', 'Macarrão Integral + Carne Moída', 'Salada de Frutas com Iogurte'],
-    ['03', 'Cuscuz + Ovos', 'Batata Doce Assada + Peixe', 'Iogurte + Granola sem Açúcar'],
-    ['04', 'Panqueca de Banana e Aveia', 'Escondidinho de Batata + Carne', 'Wrap Integral de Frango'],
-    ['05', 'Vitamina de Frutas Vermelhas', 'Strogonoff Light + Arroz Integral', 'Omelete Recheado com Queijo'],
-    ['06', 'Pão com Ricota Temperada', 'Carne Assada + Mandioca Cozida', 'Sopa de Feijão com Legumes'],
-    ['07', 'Crepioca de Frango', 'Feijoada Light + Couve + Laranja', 'Mingau de Aveia com Cacau']
-  ],
   "default": [
     ['01', 'Mamão + Aveia', 'Frango Grelhado + Quiabo', 'Sopa de Legumes Variados'], 
     ['02', 'Iogurte + Frutas Vermelhas', 'Peixe Cozido + Purê Rústico', 'Creme de Aipim com Carne'], 
@@ -54,31 +36,17 @@ const DIET_DATABASE = {
   ]
 };
 
-// --- RECEITAS DETALHADAS ---
 const RECIPES_CONTENT = [
   {
     title: "Sopa Detox de Abóbora com Gengibre",
-    time: "40 min",
-    temp: "Fogo Médio",
-    portions: "2 pratos",
     ing: "• 1/2 abóbora cabotiá descascada\n• 1 pedaço de gengibre (3cm)\n• 1 cebola picada\n• 2 dentes de alho amassados\n• 1 colher (sopa) de azeite\n• Sal e pimenta a gosto\n• 500ml de água fervente",
     prep: "1. Numa panela, aqueça o azeite e refogue a cebola e o alho até dourarem.\n2. Adicione a abóbora em cubos e refogue por 2 minutos.\n3. Cubra com a água fervente e deixe cozinhar até a abóbora desmanchar (aprox. 25 min).\n4. Espere amornar e bata no liquidificador com o gengibre descascado.\n5. Volte para a panela, acerte o sal e aqueça antes de servir."
   },
   {
     title: "Suco Verde Desinchaço Turbo",
-    time: "5 min",
-    temp: "Gelado",
-    portions: "1 copo grande",
     ing: "• 1 folha de couve manteiga (sem o talo grosso)\n• 1 maçã pequena com casca\n• Suco de 1/2 limão\n• 1 pedaço pequeno de gengibre\n• 200ml de água gelada ou água de coco",
     prep: "1. Higienize bem as folhas de couve e a maçã.\n2. Pique a maçã retirando as sementes.\n3. Coloque todos os ingredientes no liquidificador.\n4. Bata por 2 minutos na potência máxima até ficar homogêneo.\n5. Beba imediatamente sem coar para aproveitar as fibras."
   }
-];
-
-// --- COMENTÁRIOS ESTILO TIKTOK ---
-const REAL_COMMENTS = [
-  { name: "Ana P.", text: "Gente o chá seca msm?? to precisando kkk", time: "há 2 min", likes: 12, img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces" },
-  { name: "Bruna Souza", text: "Comecei segunda, hj ja fechei o short jeans q nao entrava 😍 obrigada!!", time: "há 8 min", likes: 45, img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=faces" },
-  { name: "Carla_Fitness", text: "Eu tinha mto medo de ser golpe mas chegou certinho no email, ufa 🙏 a dieta é top", time: "há 15 min", likes: 89, img: "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=100&h=100&fit=crop&crop=faces" }
 ];
 
 export default function App() {
@@ -87,84 +55,50 @@ export default function App() {
   const [loginError, setLoginError] = useState('');
   const [quizAnswers, setQuizAnswers] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(600);
   const [pixData, setPixData] = useState(null);
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [userEmail, setUserEmail] = useState('');
   const [sendingEmail, setSendingEmail] = useState(false);
   const [emailStatus, setEmailStatus] = useState('idle');
+  const [checkoutStep, setCheckoutStep] = useState('offer'); // offer, email, pix
   
   const userEmailRef = useRef(userEmail);
   const quizAnswersRef = useRef(quizAnswers);
   const [savedGoal, setSavedGoal] = useState("Secar barriga (Urgente)");
 
+  // Persistência
   useEffect(() => {
     userEmailRef.current = userEmail;
     quizAnswersRef.current = quizAnswers;
   }, [userEmail, quizAnswers]);
 
   useEffect(() => {
-    const timer = setInterval(() => setTimeLeft((p) => (p > 0 ? p - 1 : 0)), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
     const savedEmail = localStorage.getItem('tmformat_email');
     if (savedEmail) setUserEmail(savedEmail);
-
     const goal = localStorage.getItem('tmformat_goal');
     if (goal) setSavedGoal(goal);
-
+    
+    // Recupera Pix se existir
     const savedPix = localStorage.getItem('tmformat_pix_data');
     if (savedPix) {
       const parsedPix = JSON.parse(savedPix);
       setPixData(parsedPix);
-      setView('checkout');
+      setView('result');
+      setCheckoutStep('pix');
       verificarStatusIndividual(parsedPix.id);
       iniciarPolling(parsedPix.id); 
     }
   }, []);
 
-  useEffect(() => { if (!showLogin) setLoginError(''); }, [showLogin]);
-
-  // --- QUIZ COMPLETO ---
   const QUIZ_QUESTIONS = [
-    {
-      id: 1, question: "Qual seu objetivo principal?", subtitle: "Vamos personalizar os alimentos para a sua meta.",
-      options: [{ text: "Secar barriga (Urgente)", icon: "🔥", color: "text-orange-500" }, { text: "Desinchar o corpo todo", icon: "💧", color: "text-blue-500" }, { text: "Melhorar digestão", icon: "🍃", color: "text-green-500" }, { text: "Perder peso na balança", icon: "⚖️", color: "text-purple-500" }]
-    },
-    {
-      id: 2, question: "Quantos anos tem?", subtitle: "O metabolismo muda a cada década.",
-      options: [{ text: "18 a 29 anos", icon: "👱‍♀️", color: "text-pink-400" }, { text: "30 a 45 anos", icon: "👩", color: "text-purple-400" }, { text: "45 a 60 anos", icon: "👩‍🦱", color: "text-indigo-400" }, { text: "60+ anos", icon: "👵", color: "text-gray-500" }]
-    },
-    {
-      id: 3, question: "Como é a sua energia à tarde?", subtitle: "Isto indica-nos como está o seu nível de glicose.",
-      options: [{ text: "Muito baixa (sinto sono)", icon: "😴", color: "text-blue-400" }, { text: "Normal, mas canso fácil", icon: "😐", color: "text-gray-500" }, { text: "Tenho picos de energia", icon: "⚡", color: "text-yellow-500" }, { text: "Estável o dia todo", icon: "🚀", color: "text-red-500" }]
-    },
-    {
-      id: 4, question: "Sente a barriga inchada?", subtitle: "Identificando inflamação intestinal...",
-      options: [{ text: "Sempre após comer", icon: "🎈", color: "text-red-400" }, { text: "Às vezes", icon: "🤔", color: "text-orange-400" }, { text: "Raramente", icon: "😌", color: "text-green-400" }, { text: "Nunca", icon: "❌", color: "text-gray-400" }]
-    },
-    {
-      id: 5, question: "Quanta água bebe por dia?", subtitle: "A hidratação é chave para desinchar.",
-      options: [{ text: "Menos de 1 litro", icon: "🌵", color: "text-yellow-600" }, { text: "Entre 1 e 2 litros", icon: "💧", color: "text-blue-400" }, { text: "Mais de 2 litros", icon: "🌊", color: "text-blue-600" }, { text: "Só bebo quando tenho sede", icon: "🤷‍♀️", color: "text-gray-400" }]
-    },
-    {
-      id: 6, question: "Qual o seu maior ponto fraco?", subtitle: "Vamos incluir substitutos saudáveis.",
-      options: [{ text: "Doces e Sobremesas", icon: "🍩", color: "text-pink-500" }, { text: "Pães e Massas", icon: "🥖", color: "text-yellow-500" }, { text: "Salgadinhos e Frituras", icon: "🍟", color: "text-red-500" }, { text: "Refrigerante ou Álcool", icon: "🥤", color: "text-purple-500" }]
-    },
-    {
-      id: 7, question: "Qual o seu nível de atividade física?", subtitle: "Para calcularmos o seu gasto calórico basal.",
-      options: [{ text: "Sedentário (Trabalho sentada)", icon: "🪑", color: "text-gray-500" }, { text: "Leve (Caminhadas ocasionais)", icon: "🚶‍♀️", color: "text-green-500" }, { text: "Moderado (Academia 3x/semana)", icon: "💪", color: "text-orange-500" }, { text: "Intenso (Treino todos os dias)", icon: "🏋️‍♀️", color: "text-red-500" }]
-    },
-    {
-      id: 8, question: "Como é a qualidade do seu sono?", subtitle: "O sono regula as hormonas da fome.",
-      options: [{ text: "Durmo pouco e acordo cansada", icon: "😫", color: "text-gray-600" }, { text: "Demoro a adormecer", icon: "👀", color: "text-blue-400" }, { text: "Durmo bem (7-8 horas)", icon: "😴", color: "text-indigo-500" }, { text: "Sono interrompido", icon: "🌙", color: "text-yellow-600" }]
-    },
-    {
-      id: 9, question: "Quanto tempo tem para cozinhar?", subtitle: "Adaptamos as receitas à sua rotina.",
-      options: [{ text: "Muito pouco (preciso de praticidade)", icon: "⚡", color: "text-orange-500" }, { text: "Consigo fazer o básico", icon: "🍳", color: "text-yellow-500" }, { text: "Gosto de preparar as refeições", icon: "👩‍🍳", color: "text-green-500" }, { text: "Tenho ajuda/como fora", icon: "🍽️", color: "text-blue-500" }]
-    }
+    { text: "Qual seu objetivo principal?", options: ["Secar barriga (Urgente)", "Desinchar o corpo todo", "Melhorar digestão", "Perder peso na balança"] },
+    { text: "Qual sua idade?", options: ["18-29 anos", "30-45 anos", "46-60 anos", "60+ anos"] },
+    { text: "Qual seu maior obstáculo hoje?", options: ["Metabolismo lento", "Vontade de Doces", "Falta de Tempo", "Não gosto de salada"] },
+    { text: "Quanto peso você quer eliminar?", options: ["2 a 3 kg (Em 7 dias)", "3 a 5 kg (Em 15 dias)", "Mais de 5 kg (Longo prazo)"] },
+    { text: "Como é sua digestão?", options: ["Normal", "Me sinto inchada(o) fácil", "Tenho azia/refluxo"] },
+    { text: "Qual horário você sente mais fome?", options: ["Manhã", "Almoço", "Fim de tarde (ansiedade)", "Noite/Madrugada"] },
+    { text: "Já tentou dietas de 7 dias antes?", options: ["Sim, mas recuperei o peso", "Não, é a primeira vez"] },
+    { text: "Você se compromete a seguir o plano por APENAS 7 dias?", options: ["Vou tentar...", "SIM! Consigo focar por 7 dias!"] }
   ];
 
   const handleAnswer = (answer) => {
@@ -176,7 +110,7 @@ export default function App() {
     if (currentQuestion < QUIZ_QUESTIONS.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      setView('analyzing');
+      setView('loading');
     }
   };
 
@@ -197,7 +131,7 @@ export default function App() {
       if (!res.ok) throw new Error(data.error || 'Erro ao criar pix');
       setPixData(data);
       localStorage.setItem('tmformat_pix_data', JSON.stringify(data));
-      setView('checkout');
+      setCheckoutStep('pix');
       iniciarPolling(data.id);
     } catch (error) {
       console.error(error);
@@ -231,413 +165,372 @@ export default function App() {
   const handleAutoSendEmail = async () => {
     const currentEmail = userEmailRef.current || localStorage.getItem('tmformat_email');
     if (!currentEmail) return;
-
     setSendingEmail(true);
     const pdfBlob = await generatePDFBlob(); 
-    
     try {
         const response = await fetch('/api/enviar-email', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: currentEmail, pdfBase64: pdfBlob, nome: "Aluna" })
         });
-        if (response.ok) {
-            setEmailStatus('success');
-        } else {
-            console.error("Falha no envio do email.");
-            setEmailStatus('error');
-        }
-    } catch (e) { 
-        console.error("Erro no envio auto", e);
-        setEmailStatus('error');
-    } finally { 
-        setSendingEmail(false); 
-    }
+        if (response.ok) setEmailStatus('success'); else setEmailStatus('error');
+    } catch (e) { setEmailStatus('error'); } 
+    finally { setSendingEmail(false); }
   };
 
   const generatePDFBlob = async () => {
     if (!window.jspdf) {
-      await new Promise(r => { const s = document.createElement('script'); s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"; s.onload = r; document.body.appendChild(s); });
-      await new Promise(r => { const s = document.createElement('script'); s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js"; s.onload = r; document.body.appendChild(s); });
+        await new Promise(r => { const s = document.createElement('script'); s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"; s.onload = r; document.body.appendChild(s); });
+        await new Promise(r => { const s = document.createElement('script'); s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js"; s.onload = r; document.body.appendChild(s); });
     }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     const userGoal = savedGoal || quizAnswersRef.current[0] || "Secar barriga (Urgente)";
     const selectedMenu = DIET_DATABASE[userGoal] || DIET_DATABASE["default"];
-
     generatePDFContent(doc, userGoal, selectedMenu);
     return doc.output('datauristring');
   };
 
   const downloadManualPDF = async () => {
-    if (!window.jspdf) {
-      await new Promise(r => { const s = document.createElement('script'); s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"; s.onload = r; document.body.appendChild(s); });
-      await new Promise(r => { const s = document.createElement('script'); s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js"; s.onload = r; document.body.appendChild(s); });
-    }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    const userGoal = savedGoal || quizAnswers[0] || "Secar barriga (Urgente)";
+    const userGoal = savedGoal || "Secar barriga (Urgente)";
     const selectedMenu = DIET_DATABASE[userGoal] || DIET_DATABASE["default"];
-    
     generatePDFContent(doc, userGoal, selectedMenu);
-    doc.save("Dieta_TmFormat_Premium.pdf");
+    doc.save("Protocolo_NutriOfficial.pdf");
   };
 
   const generatePDFContent = (doc, userGoal, selectedMenu) => {
-    doc.setFillColor(22, 163, 74); doc.rect(0, 0, 210, 40, 'F');
-    doc.setTextColor(255); doc.setFont('helvetica', 'bold'); doc.setFontSize(22); 
-    doc.text("Protocolo TmFormat", 105, 20, null, null, "center");
+    doc.setFillColor(255, 204, 0); doc.rect(0, 0, 210, 40, 'F');
+    doc.setTextColor(15, 15, 15); doc.setFont('helvetica', 'bold'); doc.setFontSize(22); 
+    doc.text("Protocolo NutriOfficial™", 105, 20, null, null, "center");
     doc.setFontSize(14); doc.setFont('helvetica', 'normal');
-    doc.text("Guia Oficial de 7 Dias", 105, 30, null, null, "center");
+    doc.text("Plano de Ativação Metabólica", 105, 30, null, null, "center");
 
     doc.setTextColor(50); doc.setFontSize(12);
-    doc.text(`Objetivo Selecionado: ${userGoal}`, 14, 55);
-    doc.text("Este plano foi estrategicamente montado para acelerar seu metabolismo.", 14, 62);
+    doc.text(`Objetivo: ${userGoal}`, 14, 55);
     
     doc.autoTable({ 
-      startY: 70, 
-      head: [['Dia', 'Café da Manhã', 'Almoço', 'Jantar']], 
+      startY: 65, 
+      head: [['Dia', 'Café', 'Almoço', 'Jantar']], 
       body: selectedMenu, 
       theme: 'grid', 
-      headStyles: { fillColor: [22, 163, 74] },
+      headStyles: { fillColor: [15, 15, 15], textColor: [255, 204, 0] },
       styles: { cellPadding: 4, fontSize: 10 }
     });
     
-    let finalY = doc.lastAutoTable.finalY + 15;
-    doc.setDrawColor(255, 165, 0); doc.setLineWidth(1.5); doc.rect(14, finalY, 182, 35);
-    doc.setTextColor(255, 140, 0); doc.setFont('helvetica', 'bold'); doc.setFontSize(14); 
-    doc.text("BÔNUS: Chá Secreto (Jejum)", 20, finalY + 10);
-    doc.setTextColor(0); doc.setFont('helvetica', 'normal'); doc.setFontSize(10); 
-    doc.text("Ingredientes: 500ml água, 1 pau de canela, 3 rodelas de gengibre.", 20, finalY + 20);
-    doc.text("Preparo: Ferva a água com especiarias por 5 min. Adicione 1/2 limão no final.", 20, finalY + 26);
-
     doc.addPage();
-    doc.setFillColor(22, 163, 74); doc.rect(0, 0, 210, 30, 'F');
-    doc.setTextColor(255); doc.setFontSize(18); doc.setFont('helvetica', 'bold');
-    doc.text("Guia de Receitas Práticas", 105, 20, null, null, "center");
-
-    let yPos = 45; 
-    
+    let yPos = 20;
     RECIPES_CONTENT.forEach((recipe) => {
-        if (yPos > 250) { doc.addPage(); yPos = 30; }
-
-        doc.setFontSize(14); doc.setFont('helvetica', 'bold'); doc.setTextColor(22, 163, 74);
-        doc.text(recipe.title, 14, yPos);
-        yPos += 7;
-
-        doc.setFontSize(10); doc.setTextColor(100); doc.setFont('helvetica', 'bold');
-        doc.text(`⏱ Tempo: ${recipe.time}  |  🔥 Fogo: ${recipe.temp}  |  🥣 Porções: ${recipe.portions}`, 14, yPos);
-        yPos += 8;
-
-        doc.setFontSize(10); doc.setFont('helvetica', 'bold'); doc.setTextColor(0);
-        doc.text("Ingredientes:", 14, yPos);
-        yPos += 5;
-        doc.setFont('helvetica', 'normal');
-        const splitIng = doc.splitTextToSize(recipe.ing, 180);
-        doc.text(splitIng, 14, yPos);
-        yPos += splitIng.length * 5 + 3;
-
-        doc.setFont('helvetica', 'bold');
-        doc.text("Modo de Preparo:", 14, yPos);
-        yPos += 5;
-        doc.setFont('helvetica', 'normal');
-        const splitPrep = doc.splitTextToSize(recipe.prep, 180);
-        doc.text(splitPrep, 14, yPos);
-        yPos += splitPrep.length * 5 + 15;
+        doc.setFontSize(14); doc.setFont('helvetica', 'bold'); doc.setTextColor(15, 15, 15);
+        doc.text(recipe.title, 14, yPos); yPos += 10;
+        doc.setFontSize(10); doc.setFont('helvetica', 'normal'); 
+        const split = doc.splitTextToSize(recipe.ing + "\n\n" + recipe.prep, 180);
+        doc.text(split, 14, yPos); yPos += split.length * 5 + 15;
     });
   };
 
   return (
-    <div className="min-h-screen bg-white font-sans text-gray-800 selection:bg-green-100 overflow-x-hidden">
+    <div className="min-h-screen bg-[#F8F8F8] font-sans text-[#0F0F0F] selection:bg-[#FFCC00]">
       
-      {/* HEADER CORPORATIVO */}
-      {view === 'landing' && (
-        <div className="border-b border-gray-100 sticky top-0 bg-white/90 backdrop-blur-md z-50">
-          <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div className="flex items-center gap-2 font-bold text-xl text-gray-900 tracking-tight">
-              <Leaf size={24} className="fill-green-600 text-green-600"/>
-              <span>TmFormat<span className="text-green-600">.</span></span>
+      {/* --- HEADER --- */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.location.reload()}>
+                <div className="bg-[#FFCC00] text-black px-2 py-1 rounded-sm font-black text-sm tracking-tighter">NUTRI</div>
+                <span className="font-bold text-lg tracking-tight">OFFICIAL™</span>
             </div>
-            <div className="hidden md:flex gap-8 text-sm font-medium text-gray-500">
-              <span className="hover:text-green-600 cursor-pointer transition">O Método</span>
-              <span className="hover:text-green-600 cursor-pointer transition">Resultados</span>
-              <span className="hover:text-green-600 cursor-pointer transition">Ciência</span>
-            </div>
-            <button 
-              onClick={() => setShowLogin(true)} 
-              className="text-sm font-bold text-gray-900 flex items-center gap-2 hover:bg-gray-50 px-4 py-2 rounded-full transition"
-            >
-              <User size={18} /> Área de Membros
+            <button onClick={() => setShowLogin(true)} className="flex items-center gap-2 text-xs font-semibold text-gray-600 hover:text-black transition duration-300">
+                <span className="hidden sm:inline">Já tem uma conta?</span>
+                <span className="flex items-center gap-1 border border-gray-300 px-3 py-1.5 rounded-md hover:border-black hover:bg-gray-50">
+                    <User size={16} /> Entrar
+                </span>
             </button>
-          </div>
         </div>
-      )}
+      </header>
 
-      <AnimatePresence mode='wait'>
-        
-        {/* 1. LANDING PAGE */}
-        {view === 'landing' && (
-          <motion.div key="landing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: -100 }} className="relative">
-            <div className="max-w-6xl mx-auto px-4 pt-10 md:pt-16 pb-24 text-center md:text-left md:flex items-center gap-12">
-              <div className="md:w-1/2">
-                <div className="inline-flex items-center gap-2 bg-green-50 text-green-800 px-4 py-1.5 rounded-full text-xs font-bold mb-6 border border-green-200 uppercase tracking-wide">
-                  <Check size={14}/> Protocolo Clínico Atualizado 2025
-                </div>
-                <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 leading-[1.1] text-gray-900">
-                  O Plano Nutricional Específico para o <br/>
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-500"><span className="underline decoration-green-400 decoration-4 underline-offset-4">SEU</span> Metabolismo</span>.
-                </h1>
-                <p className="text-gray-500 mb-10 leading-relaxed text-lg md:pr-10">
-                  A única plataforma que utiliza <strong>bio-dados</strong> para gerar um plano alimentar anti-inflamatório compatível com a sua rotina, idade e objetivos. Sem remédios, apenas ciência nutricional.
-                </p>
-                <div className="flex flex-col md:flex-row gap-4">
-                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => setView('quiz')} className="bg-gray-900 text-white text-lg font-bold py-4 px-10 rounded-xl shadow-xl flex items-center justify-center gap-3 hover:bg-black transition-all">
-                    Iniciar Análise de Perfil <ArrowRight size={20} />
-                  </motion.button>
-                  <div className="flex items-center gap-2 justify-center text-sm font-medium text-gray-500 py-4">
-                    <ShieldCheck size={18} className="text-green-600"/> Garantia de Satisfação
-                  </div>
-                </div>
-              </div>
-              
-              <div className="w-full md:w-1/2 relative mt-12 md:mt-0">
-                 <div className="bg-gradient-to-tr from-green-100 to-emerald-50 rounded-[3rem] p-6 md:p-8 relative z-0">
-                    <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&auto=format&fit=crop" className="rounded-3xl shadow-2xl rotate-2 hover:rotate-0 transition-all duration-500 w-full" alt="Prato Saudável" />
-                    <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }} className="absolute -bottom-6 -left-0 md:-left-6 bg-white p-4 rounded-xl shadow-xl border border-gray-100 flex items-center gap-4">
-                       <div className="bg-green-100 p-3 rounded-full text-green-700"><Activity/></div>
-                       <div>
-                         <p className="text-xs text-gray-400 uppercase font-bold">Resultado Médio</p>
-                         <p className="text-xl font-extrabold text-gray-900">-2.4kg <span className="text-sm font-normal text-gray-500">/ semana</span></p>
-                       </div>
-                    </motion.div>
-                 </div>
-              </div>
-            </div>
+      {/* --- CONTEÚDO PRINCIPAL --- */}
+      <main className="flex-grow flex flex-col items-center justify-start pt-8 pb-12 px-4">
 
-            <div className="border-y border-gray-100 bg-gray-50 py-10">
-              <div className="max-w-6xl mx-auto px-4 text-center">
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">Metodologia baseada em estudos de:</p>
-                <div className="flex flex-wrap justify-center gap-8 md:gap-16 opacity-40 grayscale">
-                   <h3 className="text-xl font-serif font-bold">Vogue</h3><h3 className="text-xl font-serif font-bold">Healthline</h3><h3 className="text-xl font-serif font-bold">BoaForma</h3><h3 className="text-xl font-serif font-bold">Women's Health</h3>
-                </div>
-              </div>
-            </div>
-
-            <div className="max-w-2xl mx-auto px-4 py-20">
-               <h3 className="text-2xl font-bold text-center mb-10">O que nossas alunas estão dizendo</h3>
-               <div className="space-y-6">
-                  {REAL_COMMENTS.map((c, i) => (
-                    <div key={i} className="flex gap-4 items-start border-b border-gray-100 pb-6 last:border-0">
-                       <img src={c.img} className="w-12 h-12 rounded-full object-cover" alt={c.name} />
-                       <div>
-                         <h4 className="font-bold text-sm text-gray-900 flex items-center gap-1">{c.name} <span className="text-xs font-normal text-gray-400">• {c.time}</span></h4>
-                         <p className="text-gray-600 mt-1">{c.text}</p>
-                         <div className="flex gap-4 mt-2 text-xs text-gray-400 font-bold cursor-pointer"><span>Curtir</span><span>Responder</span></div>
-                       </div>
-                    </div>
-                  ))}
-               </div>
-            </div>
-          </motion.div>
-        )}
-
-        {/* 2. QUIZ */}
-        {view === 'quiz' && (
-          <motion.div key="quiz" initial={{ x: 100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -100, opacity: 0 }} className="max-w-lg mx-auto bg-white min-h-screen flex flex-col shadow-2xl">
-            <div className="w-full bg-gray-100 h-1.5"><motion.div initial={{ width: 0 }} animate={{ width: `${((currentQuestion + 1) / QUIZ_QUESTIONS.length) * 100}%` }} className="bg-green-500 h-full rounded-r-full"></motion.div></div>
-            <div className="flex-1 p-8 flex flex-col justify-center">
-              <span className="text-green-600 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2"><Activity size={12}/> Etapa {currentQuestion + 1}</span>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2 leading-tight">{QUIZ_QUESTIONS[currentQuestion].question}</h2>
-              <p className="text-gray-500 mb-8 text-sm">{QUIZ_QUESTIONS[currentQuestion].subtitle}</p>
-              <div className="space-y-3">
-                {QUIZ_QUESTIONS[currentQuestion].options.map((opt, i) => (
-                  <motion.button key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} onClick={() => handleAnswer(opt.text)} className="w-full text-left p-4 border border-gray-200 rounded-2xl font-medium text-gray-700 flex items-center gap-4 hover:border-green-500 hover:bg-green-50 transition-all active:scale-95">
-                    <span className={`text-2xl bg-gray-50 w-12 h-12 flex items-center justify-center rounded-2xl ${opt.color} bg-opacity-10`}>{opt.icon}</span>
-                    <span className="flex-1 font-semibold">{opt.text}</span>
-                    <ChevronRight className="text-gray-300" size={18}/>
-                  </motion.button>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        )}
-
-        {/* 3. ANALISANDO */}
-        {view === 'analyzing' && <AnalysisScreen onComplete={() => setView('capture_email')} />}
-
-        {/* 4. CAPTURA DE EMAIL */}
-        {view === 'capture_email' && (
-            <motion.div key="email" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-md mx-auto min-h-screen flex flex-col justify-center p-6 text-center">
-                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"><Mail size={40} className="text-green-600"/></div>
-                <h2 className="text-2xl font-bold mb-2">Onde devemos enviar seu plano?</h2>
-                <p className="text-gray-500 mb-6">Seu protocolo foi gerado com sucesso! Digite seu melhor e-mail para receber a cópia de segurança.</p>
-                <input 
-                    type="email" 
-                    placeholder="seu@email.com" 
-                    className="w-full border border-gray-300 rounded-xl p-4 mb-4 text-lg focus:ring-2 focus:ring-green-500 outline-none"
-                    value={userEmail}
-                    onChange={(e) => setUserEmail(e.target.value)}
-                />
-                <button onClick={submitEmailAndPay} className="w-full bg-green-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-green-700 transition active:scale-95">IR PARA O PAGAMENTO</button>
-                <p className="text-xs text-gray-400 mt-4 flex justify-center gap-1"><Lock size={12}/> Seus dados estão seguros e não enviaremos spam.</p>
-            </motion.div>
-        )}
-
-        {/* 5. CHECKOUT REAL (COM PDF REALISTA AO FUNDO) */}
-        {view === 'checkout' && pixData && (
-          <motion.div key="checkout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-gray-100 flex flex-col relative overflow-hidden items-center pt-6">
+        <AnimatePresence mode='wait'>
             
-            {/* --- PDF VISUAL AO FUNDO (PREVIEW "VITRINE") --- */}
-            <div className="w-full max-w-2xl bg-white shadow-2xl min-h-[80vh] rounded-t-xl relative transform scale-95 origin-top border border-gray-200">
-                {/* Cabeçalho do Documento */}
-                <div className="p-8 border-b-2 border-green-500">
-                    <div className="flex justify-between items-center mb-4">
-                        <div className="flex items-center gap-2">
-                             <div className="bg-green-600 p-2 rounded-lg text-white"><Leaf size={24}/></div>
-                             <h1 className="text-2xl font-bold text-gray-800">Protocolo Metabólico</h1>
+            {/* 1. LANDING PAGE */}
+            {view === 'landing' && (
+                <motion.div key="landing" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="w-full max-w-3xl">
+                    <div className="bg-white shadow-[0_4px_20px_rgba(0,0,0,0.05)] rounded-xl overflow-hidden border border-gray-100 p-8 md:p-16 text-center">
+                        <div className="inline-flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-xs font-bold text-gray-500 mb-6 uppercase tracking-wider">
+                            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                            Análise Nutricional Gratuita
                         </div>
-                        <div className="flex items-center gap-1 text-green-600 font-bold bg-green-50 px-3 py-1 rounded-full text-xs border border-green-200">
-                            <CheckCircle size={14}/> Verificado
-                        </div>
+                        <h1 className="text-4xl md:text-5xl font-black mb-6 leading-tight tracking-tight">
+                            O Plano Nutricional Específico para o <br/>
+                            <span className="bg-[#FFCC00] px-2">SEU Metabolismo.</span>
+                        </h1>
+                        <p className="text-gray-500 text-lg mb-10 max-w-lg mx-auto leading-relaxed">
+                            Descubra os alimentos exatos que o seu corpo precisa para destravar a queima de gordura em apenas <strong>7 dias</strong>.
+                        </p>
+                        <button onClick={() => setView('quiz')} className="w-full md:w-auto bg-[#0F0F0F] text-white hover:bg-gray-900 font-bold text-lg px-10 py-5 rounded-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 transition duration-300 flex items-center justify-center gap-3 group">
+                            INICIAR ANÁLISE DE PERFIL
+                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition" />
+                        </button>
+                        <p className="mt-6 text-xs text-gray-400 flex justify-center items-center gap-1">
+                            <Clock size={12} /> Leva menos de 60 segundos
+                        </p>
                     </div>
-                    <div className="flex justify-between text-sm text-gray-500 font-medium">
-                        <span>Paciente: <strong>Aluna VIP</strong></span>
-                        <span>Objetivo: <strong>{savedGoal || quizAnswers[0]}</strong></span>
+                </motion.div>
+            )}
+
+            {/* 2. QUIZ */}
+            {view === 'quiz' && (
+                <motion.div key="quiz" initial={{ x: 50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -50, opacity: 0 }} className="w-full max-w-2xl bg-white shadow-card rounded-xl overflow-hidden border border-gray-100 min-h-[500px]">
+                    <div className="w-full bg-gray-100 h-1.5">
+                        <motion.div initial={{ width: 0 }} animate={{ width: `${((currentQuestion + 1) / QUIZ_QUESTIONS.length) * 100}%` }} className="bg-[#FFCC00] h-1.5 shadow-[0_0_20px_rgba(255,204,0,0.5)]"></motion.div>
                     </div>
-                </div>
-                
-                {/* Conteúdo da Dieta (Parte visível e parte borrada) */}
-                <div className="p-8 space-y-6">
-                     {/* Mostra os primeiros dias reais do banco de dados */}
-                     {(() => {
-                         const goal = savedGoal || quizAnswers[0] || "Secar barriga (Urgente)";
-                         const menu = DIET_DATABASE[goal] || DIET_DATABASE["default"];
-                         return menu.slice(0, 4).map((day, i) => (
-                            <div key={i} className={`flex gap-4 border-b border-gray-100 pb-4 ${i >= 2 ? 'blur-[3px] select-none opacity-60' : ''}`}>
-                                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center font-bold text-green-700 shrink-0 text-lg shadow-sm">0{day[0]}</div>
-                                <div className="flex-1 space-y-1">
-                                    <p className="font-bold text-gray-800"><span className="text-green-600 text-xs font-black tracking-wide">CAFÉ:</span> {day[1]}</p>
-                                    <p className="text-gray-600 text-sm"><span className="text-green-600 text-xs font-black tracking-wide">ALMOÇO:</span> {day[2]}</p>
-                                    <p className="text-gray-600 text-sm"><span className="text-green-600 text-xs font-black tracking-wide">JANTAR:</span> {day[3]}</p>
-                                </div>
-                            </div>
-                         ))
-                     })()}
-                     
-                     {/* Linhas falsas para simular o resto do conteúdo */}
-                     <div className="space-y-4 blur-md select-none opacity-40">
-                         <div className="h-4 bg-gray-300 w-full rounded"></div>
-                         <div className="h-4 bg-gray-300 w-3/4 rounded"></div>
-                         <div className="h-4 bg-gray-300 w-5/6 rounded"></div>
-                     </div>
-                </div>
-
-                {/* Camada de "Vidro" (Overlay) */}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/60 to-white z-10 pointer-events-none"></div>
-            </div>
-
-            {/* --- MODAL DE PAGAMENTO (FLUTUANDO POR CIMA) --- */}
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md px-4 z-20">
-                <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200">
-                    <div className="bg-gray-900 text-white p-4 text-center">
-                        <div className="flex justify-center items-center gap-2 mb-1"><Lock size={20} className="text-green-400" /><span className="font-bold uppercase tracking-widest text-sm">Acesso Bloqueado</span></div>
-                        <p className="text-xs text-gray-400">Finalize o pagamento para liberar o download.</p>
-                    </div>
-
-                    <div className="p-6">
-                        <div className="flex justify-between items-baseline mb-6 border-b border-gray-100 pb-4 border-dashed">
-                            <span className="text-gray-400 line-through text-sm">R$ 47,00</span>
-                            <span className="text-4xl font-extrabold text-green-600 tracking-tight">R$ 24,90</span>
+                    <div className="p-6 md:p-12">
+                        <div className="flex justify-between items-center mb-6">
+                            <span className="text-xs font-bold text-[#FFCC00] bg-black px-2 py-1 rounded uppercase tracking-wider">Passo {currentQuestion + 1} de {QUIZ_QUESTIONS.length}</span>
+                            <span className="text-xs text-gray-400 font-medium">Análise Metabólica</span>
                         </div>
-
-                        <div className="bg-green-50 rounded-xl p-4 border border-green-100 mb-4 text-center relative overflow-hidden">
-                            <div className="absolute top-0 right-0 bg-green-200 text-green-800 text-[9px] px-2 py-0.5 rounded-bl-lg font-bold">PIX SEGURO</div>
-                            <p className="text-xs font-bold text-green-800 mb-2">Escaneie ou Copie o código abaixo</p>
-                            <div className="bg-white p-2 rounded-lg inline-block shadow-sm mb-3 border border-gray-200"><img src={pixData.qr_code_base64 ? `data:image/jpeg;base64,${pixData.qr_code_base64}` : 'https://placehold.co/200x200?text=QR+Code'} alt="QR Code Pix" className="w-32 h-32 mix-blend-multiply"/></div>
-                            <button onClick={() => navigator.clipboard.writeText(pixData.qr_code)} className="w-full bg-white border border-green-300 text-green-700 py-3 rounded-lg font-bold text-xs flex justify-center gap-2 hover:bg-green-100 transition-colors shadow-sm"><Copy size={14}/> COPIAR CÓDIGO PIX</button>
+                        <h2 className="text-2xl md:text-3xl font-black mb-8 leading-tight">{QUIZ_QUESTIONS[currentQuestion].text}</h2>
+                        <div className="grid gap-3">
+                            {QUIZ_QUESTIONS[currentQuestion].options.map((opt, i) => (
+                                <button key={i} onClick={() => handleAnswer(opt)} className="w-full text-left p-4 md:p-5 rounded-lg border-2 border-gray-100 font-bold text-[#0F0F0F] transition duration-200 bg-gray-50 flex items-center justify-between group hover:border-[#FFCC00] hover:bg-[#fffbe6] hover:-translate-y-0.5">
+                                    <span>{opt}</span>
+                                    <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-[#FFCC00] transition" />
+                                </button>
+                            ))}
                         </div>
-                        
-                        <div className="text-[10px] text-gray-400 text-center mb-4 bg-gray-50 p-2 rounded border border-gray-100">
-                           Beneficiário: Nicolas Durgante / Repr. Autorizado
-                        </div>
-
-                        <div className="text-center">
-                            <div className="flex justify-center items-center gap-2 text-green-600 text-xs font-bold uppercase animate-pulse">
-                                <Activity size={14}/> Aguardando confirmação...
-                            </div>
-                            <p className="text-[10px] text-gray-400 mt-2">Não feche esta tela.</p>
+                        <div className="mt-8 pt-6 border-t border-gray-100 flex justify-center items-center gap-2 text-xs text-gray-400">
+                            <Lock size={12} /> Seus dados são processados anonimamente.
                         </div>
                     </div>
                 </motion.div>
+            )}
+
+            {/* 3. LOADING */}
+            {view === 'loading' && <LoadingScreen onComplete={() => setView('result')} />}
+
+            {/* 4. RESULTADO & CHECKOUT (A "Vitrine") */}
+            {view === 'result' && (
+                <motion.div key="result" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full max-w-4xl relative">
+                    
+                    {/* Fundo: O Documento Real (Blur) */}
+                    <div className="bg-white shadow-2xl rounded-xl border border-gray-200 p-8 md:p-12 relative overflow-hidden min-h-[800px]">
+                        {/* Marca d'água */}
+                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 -rotate-45 text-9xl font-black text-gray-100 opacity-20 pointer-events-none select-none">PREVIEW</div>
+
+                        {/* Cabeçalho do Doc */}
+                        <div className="flex justify-between items-end border-b-4 border-[#FFCC00] pb-6 mb-8">
+                            <div>
+                                <h1 className="text-3xl font-black uppercase tracking-tight text-[#0F0F0F]">Protocolo Oficial</h1>
+                                <p className="text-sm text-gray-500 mt-1 font-medium">Paciente: <span className="text-black bg-[#FFCC00] px-1">VIP MEMBER</span></p>
+                            </div>
+                            <div className="text-right">
+                                <div className="bg-black text-white text-xs font-bold px-3 py-1 rounded mb-1 inline-block">STATUS: PRONTO</div>
+                                <p className="text-xs text-gray-400">{new Date().toLocaleDateString()}</p>
+                            </div>
+                        </div>
+
+                        {/* Conteúdo Realista */}
+                        <div className="space-y-8">
+                            <div className="bg-[#fffbe6] p-4 border-l-4 border-[#FFCC00] rounded-r-md">
+                                <h3 className="font-bold text-lg mb-1 text-black">Objetivo: {savedGoal}</h3>
+                                <p className="text-sm text-gray-600">Este plano foi calculado com base nas suas respostas para acelerar o metabolismo em 7 dias.</p>
+                            </div>
+
+                            {/* Tabela de Dieta (Nitidez gradual) */}
+                            <div>
+                                <h4 className="font-black text-sm uppercase tracking-widest text-gray-400 mb-4">Cronograma Nutricional</h4>
+                                <div className="space-y-4">
+                                    {/* Dia 1 (Visível) */}
+                                    <div className="flex gap-4 border-b border-gray-100 pb-4">
+                                        <div className="w-12 h-12 bg-black text-[#FFCC00] rounded flex items-center justify-center font-black text-xl shrink-0">01</div>
+                                        <div className="flex-1 space-y-1">
+                                            <p className="font-bold text-sm text-black">Café: {DIET_DATABASE[savedGoal]?.[0][1] || "Ovos + Café"}</p>
+                                            <p className="text-xs text-gray-500">Almoço: {DIET_DATABASE[savedGoal]?.[0][2] || "Salada Proteica"}</p>
+                                        </div>
+                                    </div>
+                                    {/* Dia 2 (Meio Blur) */}
+                                    <div className="flex gap-4 border-b border-gray-100 pb-4 opacity-50 blur-[1px]">
+                                        <div className="w-12 h-12 bg-gray-200 text-gray-400 rounded flex items-center justify-center font-black text-xl shrink-0">02</div>
+                                        <div className="flex-1 space-y-1">
+                                            <p className="font-bold text-sm text-black">Café: {DIET_DATABASE[savedGoal]?.[1][1] || "..."}</p>
+                                            <p className="text-xs text-gray-500">Almoço: ...</p>
+                                        </div>
+                                    </div>
+                                    {/* Resto (Blur Total) */}
+                                    <div className="space-y-4 blur-sm opacity-30 select-none">
+                                        <div className="h-12 bg-gray-100 w-full rounded"></div>
+                                        <div className="h-12 bg-gray-100 w-full rounded"></div>
+                                        <div className="h-32 bg-gray-100 w-full rounded"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* OVERLAY DE CHECKOUT (O Bloqueio) */}
+                    <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-10 flex items-center justify-center p-4">
+                        <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} className="bg-white text-[#0F0F0F] rounded-xl shadow-2xl border-2 border-[#FFCC00] max-w-md w-full overflow-hidden">
+                            {/* Header do Card */}
+                            <div className="bg-[#0F0F0F] text-white p-4 text-center relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-16 h-16 bg-[#FFCC00] transform translate-x-8 -translate-y-8 rotate-45"></div>
+                                <div className="flex justify-center items-center gap-2 mb-1 relative z-10">
+                                    <Lock size={18} className="text-[#FFCC00]" />
+                                    <span className="font-black uppercase tracking-widest text-sm">Documento Protegido</span>
+                                </div>
+                                <p className="text-xs text-gray-400 relative z-10">Libere o acesso para baixar o PDF completo.</p>
+                            </div>
+
+                            <div className="p-6">
+                                {/* Estado: OFERTA */}
+                                {checkoutStep === 'offer' && (
+                                    <>
+                                        <div className="text-center mb-6">
+                                            <div className="flex justify-center items-baseline gap-2">
+                                                <span className="text-gray-400 line-through text-sm">R$ 97,00</span>
+                                                <span className="text-4xl font-black tracking-tighter">R$ 24,90</span>
+                                            </div>
+                                            <p className="text-xs text-green-600 font-bold bg-green-50 inline-block px-2 py-0.5 rounded mt-2">OFERTA POR TEMPO LIMITADO</p>
+                                        </div>
+
+                                        <button onClick={() => setCheckoutStep('email')} className="w-full bg-[#FFCC00] hover:bg-[#E5B800] text-black font-black py-4 rounded-lg text-lg uppercase tracking-wide shadow-lg hover:shadow-xl transition transform hover:-translate-y-1 mb-4 flex items-center justify-center gap-2">
+                                            QUERO EMAGRECER AGORA <ArrowRight size={20}/>
+                                        </button>
+
+                                        <div className="flex justify-center gap-4 text-[10px] text-gray-400 font-bold uppercase tracking-wide">
+                                            <span className="flex items-center gap-1"><ShieldCheck size={12}/> Compra Segura</span>
+                                            <span className="flex items-center gap-1"><Zap size={12}/> Entrega Imediata</span>
+                                        </div>
+                                    </>
+                                )}
+
+                                {/* Estado: EMAIL */}
+                                {checkoutStep === 'email' && (
+                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                                        <h3 className="font-bold text-center mb-4">Para onde enviamos o arquivo?</h3>
+                                        <input 
+                                            type="email" 
+                                            placeholder="Seu melhor e-mail" 
+                                            className="w-full bg-gray-50 border-2 border-gray-200 rounded-lg p-4 mb-4 font-medium focus:border-[#FFCC00] outline-none transition"
+                                            value={userEmail}
+                                            onChange={(e) => setUserEmail(e.target.value)}
+                                        />
+                                        <button onClick={submitEmailAndPay} className="w-full bg-black text-white font-bold py-4 rounded-lg uppercase tracking-wide hover:bg-gray-800 transition flex items-center justify-center gap-2">
+                                            {paymentLoading ? 'Gerando...' : 'Ir para Pagamento'} <ChevronRight size={16}/>
+                                        </button>
+                                    </motion.div>
+                                )}
+
+                                {/* Estado: PIX */}
+                                {checkoutStep === 'pix' && pixData && (
+                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center">
+                                        <p className="text-sm font-bold mb-3">Escaneie o QR Code abaixo</p>
+                                        <div className="bg-white p-2 border-2 border-black inline-block shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-4">
+                                            <img src={pixData.qr_code_base64 ? `data:image/jpeg;base64,${pixData.qr_code_base64}` : 'https://placehold.co/200x200?text=QR+Code'} alt="QR Code Pix" className="w-32 h-32"/>
+                                        </div>
+                                        <button onClick={() => navigator.clipboard.writeText(pixData.qr_code)} className="w-full bg-gray-100 border border-gray-300 text-black py-3 rounded-lg font-bold text-xs flex justify-center gap-2 hover:bg-gray-200 transition mb-4">
+                                            <Copy size={14}/> COPIAR CÓDIGO PIX
+                                        </button>
+                                        <div className="flex justify-center items-center gap-2 text-[#FFCC00] text-xs font-bold uppercase animate-pulse">
+                                            <Activity size={14}/> Aguardando banco...
+                                        </div>
+                                        <p className="text-[10px] text-gray-400 mt-2">Beneficiário: Nicolas Durgante / Repr.</p>
+                                    </motion.div>
+                                )}
+                            </div>
+                        </motion.div>
+                    </div>
+
+                </motion.div>
+            )}
+
+            {/* 5. SUCESSO */}
+            {view === 'success' && (
+                <motion.div key="success" initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="bg-white border-2 border-[#FFCC00] p-8 rounded-xl text-center max-w-md shadow-2xl relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-2 bg-[#FFCC00]"></div>
+                    <div className="w-20 h-20 bg-black rounded-full flex items-center justify-center mx-auto mb-6 text-[#FFCC00]"><CheckCircle size={40} /></div>
+                    <h2 className="text-3xl font-black mb-2 uppercase">Aprovado!</h2>
+                    <p className="text-gray-500 mb-6 font-medium">Seu protocolo foi liberado e enviado para <strong>{userEmail}</strong>.</p>
+                    <button onClick={downloadManualPDF} className="w-full bg-[#FFCC00] text-black font-black py-4 rounded-lg shadow-lg hover:bg-[#E5B800] transition flex justify-center gap-2 uppercase tracking-wide">
+                        BAIXAR AGORA <Download/>
+                    </button>
+                </motion.div>
+            )}
+
+        </AnimatePresence>
+
+        {/* LOGIN MODAL */}
+        <AnimatePresence>
+            {showLogin && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && setShowLogin(false)}>
+                    <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} className="bg-white w-full max-w-sm overflow-hidden border-t-4 border-[#FFCC00] rounded-lg shadow-2xl">
+                        <div className="p-8 relative">
+                            <button onClick={() => setShowLogin(false)} className="absolute top-4 right-4 text-black hover:text-gray-600"><X size={24} /></button>
+                            <h2 className="text-2xl font-black text-black uppercase mb-1">Login</h2>
+                            <p className="text-sm text-gray-500 mb-6">Acesse sua área exclusiva.</p>
+                            
+                            <div className="space-y-4">
+                                {loginError && <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-3 text-xs font-bold">{loginError}</div>}
+                                <div><label className="block text-xs font-bold text-gray-900 uppercase mb-1">E-mail</label><input type="email" className="w-full bg-gray-50 border-2 border-gray-200 p-3 rounded font-medium focus:border-[#FFCC00] outline-none"/></div>
+                                <div><label className="block text-xs font-bold text-gray-900 uppercase mb-1">Senha</label><input type="password" className="w-full bg-gray-50 border-2 border-gray-200 p-3 rounded font-medium focus:border-[#FFCC00] outline-none"/></div>
+                                <button onClick={() => setLoginError("Você ainda não possui um plano ativo.")} className="w-full bg-black text-white font-black py-4 rounded hover:bg-gray-800 transition uppercase tracking-wide">Entrar</button>
+                            </div>
+                        </div>
+                    </motion.div>
+                </motion.div>
+            )}
+        </AnimatePresence>
+
+    </main>
+
+    {/* Footer */}
+    <footer className="bg-white text-gray-500 py-10 text-sm border-t border-gray-200 mt-auto">
+        <div className="max-w-6xl mx-auto px-4 text-center">
+            <div className="flex items-center justify-center gap-2 mb-4">
+                <span className="font-bold tracking-tight text-black">NUTRI OFFICIAL™</span>
             </div>
-
-          </motion.div>
-        )}
-
-        {/* 6. SUCESSO */}
-        {view === 'success' && (
-          <motion.div key="success" initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="max-w-md mx-auto min-h-screen flex flex-col justify-center p-6 text-center">
-             <div className="bg-white rounded-[2.5rem] shadow-2xl p-8">
-                <CheckCircle size={60} className="text-green-600 mx-auto mb-4"/>
-                <h2 className="text-2xl font-bold mb-2">Tudo Pronto!</h2>
-                <p className="text-gray-500 mb-6">Uma cópia também foi enviada para <strong>{userEmail}</strong>.</p>
-                <div className={`text-xs mb-6 bg-gray-50 p-2 rounded ${emailStatus === 'error' ? 'text-red-500' : 'text-gray-400'}`}>
-                   {emailStatus === 'sending' && "Enviando e-mail automaticamente..."}
-                   {emailStatus === 'success' && "✅ E-mail enviado com sucesso!"}
-                   {emailStatus === 'error' && "⚠️ Erro ao enviar e-mail. Baixe abaixo."}
-                </div>
-                <button onClick={downloadManualPDF} className="w-full bg-green-600 text-white font-bold py-4 rounded-xl shadow-lg flex justify-center gap-2 hover:bg-green-700 transition active:scale-95">
-                    BAIXAR AGORA <Download/>
-                </button>
-             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* LOGIN MODAL */}
-      <AnimatePresence>
-        {showLogin && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && setShowLogin(false)}>
-            <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
-              <div className="p-6 relative">
-                <button onClick={() => setShowLogin(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><X size={20} /></button>
-                <div className="text-center mb-6"><h2 className="text-xl font-bold text-gray-900">Área do Aluno</h2><p className="text-sm text-gray-500">Digite seus dados para entrar.</p></div>
-                <div className="space-y-4">
-                  <AnimatePresence>{loginError && (<motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="bg-red-50 border border-red-100 text-red-600 p-3 rounded-lg text-xs flex items-start gap-2"><AlertCircle size={14} className="shrink-0 mt-0.5" /><span>{loginError}</span></motion.div>)}</AnimatePresence>
-                  <div><label className="block text-xs font-bold text-gray-700 uppercase mb-1">E-mail</label><input type="email" placeholder="seu@email.com" className="w-full border border-gray-300 rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-green-500"/></div>
-                  <div><label className="block text-xs font-bold text-gray-700 uppercase mb-1">Senha</label><input type="password" placeholder="••••••••" className="w-full border border-gray-300 rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-green-500"/></div>
-                  <button onClick={() => setLoginError("Você ainda não possui um plano ativo. Realize a compra para liberar seu acesso.")} className="w-full bg-green-600 text-white font-bold py-3 rounded-xl hover:bg-green-700 transition active:scale-95">Entrar na Plataforma</button>
-                </div>
-                <div className="mt-6 text-center text-xs text-gray-400">Ainda não é aluno? <button onClick={() => {setShowLogin(false); setView('quiz');}} className="text-green-600 font-bold hover:underline">Fazer análise gratuita</button></div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <p className="text-[10px] text-gray-400">© 2025 Todos os direitos reservados.</p>
+        </div>
+    </footer>
     </div>
   );
 }
 
-function AnalysisScreen({ onComplete }) {
-  const [step, setStep] = useState(0);
-  const steps = ["Conectando servidor seguro...", "Analisando perfil metabólico...", "Calculando macronutrientes...", "Gerando Protocolo Personalizado..."];
+function LoadingScreen({ onComplete }) {
+    const [progress, setProgress] = useState(0);
+    const [text, setText] = useState("Iniciando conexão segura...");
 
-  useEffect(() => {
-    const i = setInterval(() => {
-        setStep(s => s < steps.length - 1 ? s + 1 : s);
-    }, 1200); // Muda o texto a cada 1.2s
-    setTimeout(onComplete, 5000); // Espera total de 5s
-    return () => clearInterval(i);
-  }, []);
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setProgress(prev => {
+                if (prev >= 100) {
+                    clearInterval(interval);
+                    setTimeout(onComplete, 500);
+                    return 100;
+                }
+                // Lógica de textos baseada no progresso
+                if (prev === 20) setText("Analisando perfil metabólico...");
+                if (prev === 50) setText("Calculando macronutrientes...");
+                if (prev === 80) setText("Gerando arquivo PDF...");
+                return prev + 1;
+            });
+        }, 50); // 50ms * 100 = 5 segundos totais
+        return () => clearInterval(interval);
+    }, []);
 
-  return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8 text-center">
-      <div className="relative w-24 h-24 mb-8">
-         <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} className="w-full h-full border-4 border-gray-100 border-t-green-500 rounded-full"/>
-         <Leaf className="absolute inset-0 m-auto text-green-500" size={24}/>
-      </div>
-      <h2 className="text-xl font-bold text-gray-800">{steps[step]}</h2>
-      <p className="text-gray-400 text-sm mt-2">Aguarde, não feche a página...</p>
-    </div>
-  );
-} 
+    return (
+        <div className="w-full max-w-md bg-white p-10 text-center rounded-xl shadow-card border border-gray-100">
+            <div className="relative w-24 h-24 mx-auto mb-8">
+                <div className="w-24 h-24 border-4 border-gray-100 rounded-full"></div>
+                <div className="w-24 h-24 border-4 border-transparent border-t-[#FFCC00] rounded-full absolute top-0 left-0 animate-spin"></div>
+                <FileText className="absolute inset-0 m-auto text-gray-300" size={32}/>
+            </div>
+            <h3 className="text-xl font-black text-black mb-2 uppercase">Processando...</h3>
+            <p className="text-sm text-gray-500 mb-8 font-medium h-6">{text}</p>
+            <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                <div className="bg-[#FFCC00] h-full transition-all duration-100" style={{ width: `${progress}%` }}></div>
+            </div>
+        </div>
+    );
+}
