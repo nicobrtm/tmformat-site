@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   ArrowRight, CheckCircle, Clock, ShieldCheck, Star, Leaf, Flame, 
-  ChevronRight, Download, Copy, Smartphone, Lock, Activity, AlertCircle, Check, Zap, Menu, User, X, Mail, Send, FileText
+  ChevronRight, Download, Copy, Smartphone, Lock, Activity, AlertCircle, Check, Zap, Menu, User, X, Mail, Send, FileText, CreditCard
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -58,6 +58,9 @@ const DIET_DATABASE = {
 const RECIPES_CONTENT = [
   {
     title: "Sopa Detox de Abóbora com Gengibre",
+    time: "40 min",
+    temp: "Fogo Médio",
+    portions: "2 pratos",
     ing: "• 1/2 abóbora cabotiá descascada\n• 1 pedaço de gengibre (3cm)\n• 1 cebola picada\n• 2 dentes de alho amassados\n• 1 colher (sopa) de azeite\n• Sal e pimenta a gosto\n• 500ml de água fervente",
     prep: "1. Numa panela, aqueça o azeite e refogue a cebola e o alho até dourarem.\n2. Adicione a abóbora em cubos e refogue por 2 minutos.\n3. Cubra com a água fervente e deixe cozinhar até a abóbora desmanchar (aprox. 25 min).\n4. Espere amornar e bata no liquidificador com o gengibre descascado.\n5. Volte para a panela, acerte o sal e aqueça antes de servir."
   },
@@ -496,70 +499,79 @@ export default function App() {
             </motion.div>
         )}
 
-        {/* 5. CHECKOUT REAL (COM PREVIEW NA CAIXA) */}
+        {/* 5. CHECKOUT REAL (COM CARD PROFISSIONAL) */}
         {view === 'checkout' && pixData && (
           <motion.div key="checkout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-gray-100 flex flex-col relative overflow-hidden">
             
-            {/* BACKGROUND DECORATIVO (SEM PREVIEW AQUI PARA NÃO FICAR CONFUSO) */}
+            {/* BACKGROUND DECORATIVO (NEUTRO) */}
             <div className="absolute inset-0 bg-gradient-to-b from-green-50 to-gray-100 z-0"></div>
 
             <div className="z-10 flex-1 flex items-center justify-center p-4">
                 <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
                     
-                    {/* CABEÇALHO DO PRODUTO (NOVA PREVIEW DENTRO DO MODAL) */}
-                    <div className="bg-white p-6 border-b border-gray-100 text-left relative overflow-hidden">
-                        <div className="absolute top-0 right-0 bg-green-100 text-green-800 text-[10px] font-bold px-3 py-1 rounded-bl-xl">PRONTO PARA DOWNLOAD</div>
-                        <div className="flex gap-4 items-center">
-                            <div className="w-14 h-14 bg-red-100 rounded-xl flex items-center justify-center text-red-500 shadow-sm border border-red-50">
-                                <FileText size={28} />
-                            </div>
-                            <div>
-                                <h3 className="font-bold text-gray-800 text-sm">Protocolo: {quizAnswers[0] || "Personalizado"}</h3>
-                                <div className="text-xs text-gray-500 mt-1 space-y-1">
-                                    <p className="flex items-center gap-1"><Check size={10} className="text-green-500"/> Cardápio 7 Dias</p>
-                                    <p className="flex items-center gap-1"><Check size={10} className="text-green-500"/> Receitas Passo a Passo</p>
-                                </div>
-                            </div>
-                        </div>
-                        {/* LISTA BORRADA PARA DAR VONTADE */}
-                        <div className="mt-4 pt-3 border-t border-gray-50 flex flex-col gap-2 blur-[1.5px] opacity-60 select-none">
-                            <div className="h-2 bg-gray-200 rounded w-3/4"></div>
-                            <div className="h-2 bg-gray-200 rounded w-1/2"></div>
-                            <div className="h-2 bg-gray-200 rounded w-2/3"></div>
-                        </div>
+                    {/* CABEÇALHO DE SEGURANÇA */}
+                    <div className="bg-slate-900 text-white p-4 flex items-center justify-between">
+                       <div className="flex items-center gap-2 text-sm font-semibold"><Lock size={16} className="text-green-400"/> Checkout Seguro</div>
+                       <div className="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Protocolo VIP</div>
                     </div>
 
-                    {/* ÁREA DE PAGAMENTO BLOQUEADA */}
-                    <div className="p-6 bg-gray-50">
-                        <div className="text-center mb-6">
-                            <div className="inline-flex items-center gap-2 bg-white px-3 py-1 rounded-full shadow-sm text-xs font-bold text-gray-600 mb-2 border border-gray-200">
-                                <Lock size={12} className="text-green-500"/> Pagamento Único
+                    <div className="p-6">
+                        {/* RESUMO DO PEDIDO VISUAL */}
+                        <div className="mb-8 border border-gray-100 rounded-2xl p-4 shadow-sm bg-white">
+                           <h3 className="text-xs font-bold text-gray-400 uppercase mb-3 tracking-wide">Resumo do Pedido</h3>
+                           <div className="flex items-start gap-4">
+                              <div className="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center text-green-600 shadow-inner">
+                                 <FileText size={32} />
+                              </div>
+                              <div className="flex-1">
+                                 <h4 className="font-bold text-gray-800 text-sm leading-tight">Protocolo: {quizAnswers[0] || "Personalizado"}</h4>
+                                 <div className="mt-2 space-y-1">
+                                    <div className="flex items-center gap-1 text-xs text-gray-500"><CheckCircle size={10} className="text-green-500 fill-green-500"/> Plano de 7 Dias</div>
+                                    <div className="flex items-center gap-1 text-xs text-gray-500"><CheckCircle size={10} className="text-green-500 fill-green-500"/> Livro de Receitas</div>
+                                    <div className="flex items-center gap-1 text-xs text-gray-500"><CheckCircle size={10} className="text-green-500 fill-green-500"/> Bônus: Chás Seca Barriga</div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+
+                        {/* PREÇO */}
+                        <div className="flex justify-between items-end mb-6 px-2">
+                            <div className="text-left">
+                                <p className="text-xs text-gray-400 line-through">De R$ 47,00</p>
+                                <div className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full inline-block font-bold mt-1">-50% OFF</div>
                             </div>
-                            <div className="flex justify-center items-baseline gap-2">
-                                <span className="text-gray-400 line-through text-sm">R$ 47,00</span>
-                                <span className="text-3xl font-extrabold text-green-600">R$ 24,90</span>
+                            <div className="text-right">
+                                <p className="text-gray-500 text-xs mb-0.5">Por apenas:</p>
+                                <p className="text-3xl font-extrabold text-green-600 leading-none">R$ 24,90</p>
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-xl p-4 border border-green-200 text-center shadow-sm">
-                            <div className="flex justify-between items-center text-[10px] text-gray-400 mb-3 border-b border-gray-50 pb-2">
-                                <span className="flex items-center gap-1"><ShieldCheck size={10}/> Pagamento Seguro</span>
-                                <span>Expira em: 10:00</span>
+                        {/* ÁREA PIX (DESIGN BANKING) */}
+                        <div className="bg-gray-50 rounded-2xl p-5 border border-gray-200 text-center relative mb-4">
+                            <div className="flex items-center justify-center gap-2 mb-4 text-gray-700 font-medium text-sm">
+                                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                Pagamento via Pix (Aprovação Imediata)
                             </div>
-                            
-                            <img src={pixData.qr_code_base64 ? `data:image/jpeg;base64,${pixData.qr_code_base64}` : 'https://placehold.co/200x200?text=QR+Code'} alt="QR Code Pix" className="w-48 h-48 mx-auto mix-blend-multiply mb-3"/>
-                            
-                            <button onClick={() => navigator.clipboard.writeText(pixData.qr_code)} className="w-full bg-green-50 border border-green-200 text-green-700 py-3 rounded-lg font-bold text-xs flex justify-center gap-2 hover:bg-green-100 transition-colors active:scale-95">
-                                <Copy size={14}/> COPIAR CÓDIGO PIX
+
+                            <div className="bg-white p-2 rounded-xl inline-block shadow-sm border border-gray-100 mb-4">
+                                <img src={pixData.qr_code_base64 ? `data:image/jpeg;base64,${pixData.qr_code_base64}` : 'https://placehold.co/200x200?text=QR+Code'} alt="QR Code Pix" className="w-40 h-40 mix-blend-multiply"/>
+                            </div>
+
+                            <div className="text-[10px] text-gray-400 mb-4">Expira em: <span className="font-mono text-gray-600">10:00</span></div>
+
+                            <button onClick={() => navigator.clipboard.writeText(pixData.qr_code)} className="w-full bg-green-600 hover:bg-green-700 text-white py-3.5 rounded-xl font-bold text-sm flex justify-center gap-2 transition-all shadow-lg shadow-green-200 active:scale-95">
+                                <Copy size={16}/> COPIAR CÓDIGO PIX
                             </button>
                         </div>
                         
-                        <div className="text-center mt-4">
-                            <div className="flex justify-center items-center gap-2 text-green-600 text-xs font-medium animate-pulse">
-                                <Activity size={14}/> Aguardando confirmação do banco...
-                            </div>
-                            <p className="text-[10px] text-gray-400 mt-2">Beneficiário: Nicolas Durgante / Repr. Autorizado</p>
+                        <div className="text-center text-[10px] text-gray-400 mb-2">
+                           <div className="flex justify-center items-center gap-1"><ShieldCheck size={10}/> Ambiente Criptografado de Ponta a Ponta</div>
+                           <div className="mt-1">Beneficiário: Nicolas Durgante / Repr. Autorizado</div>
                         </div>
+                    </div>
+                    {/* BARRA DE PROGRESSO FAKE */}
+                    <div className="h-1 w-full bg-gray-100">
+                        <motion.div initial={{width: "80%"}} animate={{width: "95%"}} transition={{duration: 2, repeat: Infinity, repeatType: "reverse"}} className="h-full bg-green-500"></motion.div>
                     </div>
                 </motion.div>
             </div>
