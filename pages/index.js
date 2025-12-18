@@ -58,14 +58,51 @@ const DIET_DATABASE = {
 const RECIPES_CONTENT = [
   {
     title: "Sopa Detox de Abóbora com Gengibre",
+    time: "40 min",
+    temp: "Fogo Médio",
+    portions: "2 pratos",
     ing: "• 1/2 abóbora cabotiá descascada\n• 1 pedaço de gengibre (3cm)\n• 1 cebola picada\n• 2 dentes de alho amassados\n• 1 colher (sopa) de azeite\n• Sal e pimenta a gosto\n• 500ml de água fervente",
     prep: "1. Numa panela, aqueça o azeite e refogue a cebola e o alho até dourarem.\n2. Adicione a abóbora em cubos e refogue por 2 minutos.\n3. Cubra com a água fervente e deixe cozinhar até a abóbora desmanchar (aprox. 25 min).\n4. Espere amornar e bata no liquidificador com o gengibre descascado.\n5. Volte para a panela, acerte o sal e aqueça antes de servir."
   },
   {
     title: "Suco Verde Desinchaço Turbo",
+    time: "5 min",
+    temp: "Gelado",
+    portions: "1 copo grande",
     ing: "• 1 folha de couve manteiga (sem o talo grosso)\n• 1 maçã pequena com casca\n• Suco de 1/2 limão\n• 1 pedaço pequeno de gengibre\n• 200ml de água gelada ou água de coco",
     prep: "1. Higienize bem as folhas de couve e a maçã.\n2. Pique a maçã retirando as sementes.\n3. Coloque todos os ingredientes no liquidificador.\n4. Bata por 2 minutos na potência máxima até ficar homogêneo.\n5. Beba imediatamente sem coar para aproveitar as fibras."
+  },
+  {
+    title: "Panqueca Low Carb de Banana",
+    time: "10 min",
+    temp: "Fogo Baixo",
+    portions: "2 panquecas",
+    ing: "• 1 banana madura amassada\n• 2 ovos inteiros\n• 1 colher (chá) de canela em pó\n• Óleo de coco para untar",
+    prep: "1. Num prato fundo, amasse bem a banana com um garfo.\n2. Adicione os ovos e bata bem com um garfo até misturar tudo.\n3. Misture a canela.\n4. Aqueça uma frigideira antiaderente untada com um pouco de óleo de coco em fogo baixo.\n5. Despeje pequenas porções da massa e deixe dourar (cerca de 2 min de cada lado)."
+  },
+  {
+    title: "Crepioca Fit de Frango",
+    time: "15 min",
+    temp: "Fogo Médio",
+    portions: "1 unidade",
+    ing: "• 1 ovo\n• 2 colheres (sopa) de goma de tapioca\n• 1 pitada de sal\n• 1 colher (sopa) de requeijão light (na massa)\n• Recheio: 3 colheres de frango desfiado temperado",
+    prep: "1. Numa tigela, misture o ovo, a tapioca, o sal e o requeijão. Bata bem até ficar liso.\n2. Aqueça uma frigideira antiaderente levemente untada.\n3. Despeje a massa e espalhe girando a frigideira.\n4. Quando a massa soltar do fundo e firmar, vire.\n5. Coloque o frango em metade da massa, dobre ao meio e deixe dourar mais um pouco."
+  },
+  {
+    title: "Molho de Salada Anti-inflamatório",
+    time: "2 min",
+    temp: "Ambiente",
+    portions: "4 porções",
+    ing: "• 3 colheres (sopa) de azeite extra virgem\n• 1 colher (sopa) de mostarda amarela\n• Suco de 1/2 limão\n• 1 colher (café) de cúrcuma (açafrão)\n• Pimenta do reino a gosto",
+    prep: "1. Coloque todos os ingredientes num pote de vidro pequeno com tampa.\n2. Feche o pote e chacoalhe vigorosamente até o molho ficar cremoso e emulsionado.\n3. Sirva sobre saladas verdes ou legumes cozidos."
   }
+];
+
+// --- COMENTÁRIOS ESTILO TIKTOK ---
+const REAL_COMMENTS = [
+  { name: "Ana P.", text: "Gente o chá seca msm?? to precisando kkk", time: "há 2 min", likes: 12, img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces" },
+  { name: "Bruna Souza", text: "Comecei segunda, hj ja fechei o short jeans q nao entrava 😍 obrigada!!", time: "há 8 min", likes: 45, img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=faces" },
+  { name: "Carla_Fitness", text: "Eu tinha mto medo de ser golpe mas chegou certinho no email, ufa 🙏 a dieta é top", time: "há 15 min", likes: 89, img: "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=100&h=100&fit=crop&crop=faces" }
 ];
 
 export default function App() {
@@ -83,6 +120,8 @@ export default function App() {
   
   const userEmailRef = useRef(userEmail);
   const quizAnswersRef = useRef(quizAnswers);
+  
+  // Estado para recuperar o objetivo da dieta mesmo após refresh
   const [savedGoal, setSavedGoal] = useState("Secar barriga (Urgente)");
 
   useEffect(() => {
@@ -98,8 +137,10 @@ export default function App() {
   useEffect(() => {
     const savedEmail = localStorage.getItem('tmformat_email');
     if (savedEmail) setUserEmail(savedEmail);
+
     const goal = localStorage.getItem('tmformat_goal');
     if (goal) setSavedGoal(goal);
+
     const savedPix = localStorage.getItem('tmformat_pix_data');
     if (savedPix) {
       const parsedPix = JSON.parse(savedPix);
@@ -616,6 +657,25 @@ export default function App() {
 }
 
 function AnalysisScreen({ onComplete }) {
-  useEffect(() => { setTimeout(onComplete, 3000); }, []);
-  return <div className="min-h-screen flex items-center justify-center"><div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div></div>;
+  const [step, setStep] = useState(0);
+  const steps = ["Conectando servidor seguro...", "Analisando perfil metabólico...", "Calculando macronutrientes...", "Gerando Protocolo Personalizado..."];
+
+  useEffect(() => {
+    const i = setInterval(() => {
+        setStep(s => s < steps.length - 1 ? s + 1 : s);
+    }, 1200); // Muda o texto a cada 1.2s
+    setTimeout(onComplete, 5000); // Espera total de 5s
+    return () => clearInterval(i);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8 text-center">
+      <div className="relative w-24 h-24 mb-8">
+         <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} className="w-full h-full border-4 border-gray-100 border-t-green-500 rounded-full"/>
+         <Leaf className="absolute inset-0 m-auto text-green-500" size={24}/>
+      </div>
+      <h2 className="text-xl font-bold text-gray-800">{steps[step]}</h2>
+      <p className="text-gray-400 text-sm mt-2">Aguarde, não feche a página...</p>
+    </div>
+  );
 }
