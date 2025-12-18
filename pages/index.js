@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   ArrowRight, CheckCircle, Clock, ShieldCheck, Star, Leaf, Flame, 
-  ChevronRight, Download, Copy, Smartphone, Lock, Activity, AlertCircle, Check, Zap, Menu, User, X, Mail, Send, FileText, CreditCard
+  ChevronRight, Download, Copy, Smartphone, Lock, Activity, AlertCircle, Check, Zap, Menu, User, X, Mail, Send, FileText, CreditCard, PieChart, BarChart
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -94,6 +94,9 @@ export default function App() {
   const [sendingEmail, setSendingEmail] = useState(false);
   const [emailStatus, setEmailStatus] = useState('idle');
   
+  // Referência para rolar a tela até o pagamento
+  const paymentSectionRef = useRef(null);
+
   const userEmailRef = useRef(userEmail);
   const quizAnswersRef = useRef(quizAnswers);
   const [savedGoal, setSavedGoal] = useState("Secar barriga (Urgente)");
@@ -126,6 +129,11 @@ export default function App() {
   }, []);
 
   useEffect(() => { if (!showLogin) setLoginError(''); }, [showLogin]);
+
+  // Função para rolar até o pagamento quando clicar em Desbloquear
+  const scrollToPayment = () => {
+    paymentSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   // --- QUIZ COMPLETO ---
   const QUIZ_QUESTIONS = [
@@ -483,89 +491,102 @@ export default function App() {
             </motion.div>
         )}
 
-        {/* 5. CHECKOUT REAL (COM PDF REALISTA AO FUNDO) */}
+        {/* 5. CHECKOUT REAL COM PDF VITRINE */}
         {view === 'checkout' && pixData && (
-          <motion.div key="checkout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-gray-100 flex flex-col relative overflow-hidden items-center pt-6">
+          <motion.div key="checkout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-gray-100 flex flex-col relative overflow-hidden items-center">
             
-            {/* --- PDF VISUAL AO FUNDO (PREVIEW "VITRINE") --- */}
-            <div className="w-full max-w-2xl bg-white shadow-2xl min-h-[80vh] rounded-t-xl relative transform scale-95 origin-top border border-gray-200">
-                {/* Cabeçalho do Documento */}
-                <div className="p-8 border-b-2 border-green-500">
-                    <div className="flex justify-between items-center mb-4">
-                        <div className="flex items-center gap-2">
-                             <div className="bg-green-600 p-2 rounded-lg text-white"><Leaf size={24}/></div>
-                             <h1 className="text-2xl font-bold text-gray-800">Protocolo Metabólico</h1>
-                        </div>
-                        <div className="flex items-center gap-1 text-green-600 font-bold bg-green-50 px-3 py-1 rounded-full text-xs border border-green-200">
-                            <CheckCircle size={14}/> Verificado
-                        </div>
+            {/* BACKGROUND SCROLLABLE COM BLUR */}
+            <div className="w-full max-w-2xl bg-white shadow-xl min-h-[120vh] relative p-6 pt-12 pb-48 opacity-60">
+                 {/* CABEÇALHO DO DOCUMENTO (LEGÍVEL) */}
+                 <div className="border-b-2 border-green-500 pb-4 mb-6">
+                    <div className="flex justify-between items-center mb-2">
+                       <h1 className="text-2xl font-bold text-gray-800">Protocolo: {savedGoal || quizAnswers[0]}</h1>
+                       <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Aprovado</div>
                     </div>
-                    <div className="flex justify-between text-sm text-gray-500 font-medium">
-                        <span>Paciente: <strong>Aluna VIP</strong></span>
-                        <span>Objetivo: <strong>{savedGoal || quizAnswers[0]}</strong></span>
-                    </div>
-                </div>
-                
-                {/* Conteúdo da Dieta (Parte visível e parte borrada) */}
-                <div className="p-8 space-y-6">
-                     {/* Mostra os primeiros dias reais do banco de dados */}
-                     {(() => {
-                         const goal = savedGoal || quizAnswers[0] || "Secar barriga (Urgente)";
-                         const menu = DIET_DATABASE[goal] || DIET_DATABASE["default"];
-                         return menu.slice(0, 4).map((day, i) => (
-                            <div key={i} className={`flex gap-4 border-b border-gray-100 pb-4 ${i >= 2 ? 'blur-[3px] select-none opacity-60' : ''}`}>
-                                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center font-bold text-green-700 shrink-0 text-lg shadow-sm">0{day[0]}</div>
-                                <div className="flex-1 space-y-1">
-                                    <p className="font-bold text-gray-800"><span className="text-green-600 text-xs font-black tracking-wide">CAFÉ:</span> {day[1]}</p>
-                                    <p className="text-gray-600 text-sm"><span className="text-green-600 text-xs font-black tracking-wide">ALMOÇO:</span> {day[2]}</p>
-                                    <p className="text-gray-600 text-sm"><span className="text-green-600 text-xs font-black tracking-wide">JANTAR:</span> {day[3]}</p>
-                                </div>
-                            </div>
-                         ))
-                     })()}
-                     
-                     {/* Linhas falsas para simular o resto do conteúdo */}
-                     <div className="space-y-4 blur-md select-none opacity-40">
-                         <div className="h-4 bg-gray-300 w-full rounded"></div>
-                         <div className="h-4 bg-gray-300 w-3/4 rounded"></div>
-                         <div className="h-4 bg-gray-300 w-5/6 rounded"></div>
-                     </div>
-                </div>
+                    <p className="text-sm text-gray-500">Paciente: <span className="font-bold text-gray-700">Aluna VIP</span> • Data: {new Date().toLocaleDateString()}</p>
+                 </div>
 
-                {/* Camada de "Vidro" (Overlay) */}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/60 to-white z-10 pointer-events-none"></div>
+                 {/* CONTEÚDO (PARTE LEGÍVEL) */}
+                 <div className="space-y-6">
+                     <div className="flex gap-4 items-start p-4 bg-green-50 rounded-xl border border-green-100">
+                        <div className="w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-lg">1</div>
+                        <div>
+                           <h3 className="font-bold text-green-800">Fase de Desintoxicação</h3>
+                           <p className="text-sm text-green-700 leading-tight">Nos primeiros 2 dias, vamos focar em eliminar a retenção líquida com alimentos diuréticos naturais.</p>
+                        </div>
+                     </div>
+
+                     {/* CONTEÚDO (COMEÇA O BLUR) */}
+                     <div className="space-y-4 blur-[2px] select-none">
+                        {(() => {
+                            const goal = savedGoal || quizAnswers[0] || "Secar barriga (Urgente)";
+                            const menu = DIET_DATABASE[goal] || DIET_DATABASE["default"];
+                            return menu.slice(0, 3).map((day, i) => (
+                               <div key={i} className="border-b border-gray-100 pb-4">
+                                  <div className="flex justify-between items-center mb-2">
+                                     <span className="font-bold text-gray-700">Dia 0{day[0]} - Cardápio</span>
+                                     <span className="text-xs text-gray-400">1200 kcal</span>
+                                  </div>
+                                  <div className="text-xs text-gray-500 space-y-1">
+                                     <p>☕ Café: {day[1]}</p>
+                                     <p>🥗 Almoço: {day[2]}</p>
+                                     <p>🍲 Jantar: {day[3]}</p>
+                                  </div>
+                               </div>
+                            ));
+                        })()}
+                     </div>
+                     
+                     {/* CONTEÚDO (BLUR FORTE - ILEGÍVEL) */}
+                     <div className="space-y-6 blur-md select-none opacity-50">
+                        <div className="h-4 bg-gray-300 w-3/4 rounded"></div>
+                        <div className="h-32 bg-gray-100 rounded-xl"></div>
+                        <div className="h-4 bg-gray-300 w-1/2 rounded"></div>
+                        <div className="h-4 bg-gray-300 w-full rounded"></div>
+                     </div>
+                 </div>
             </div>
 
-            {/* --- MODAL DE PAGAMENTO (FLUTUANDO POR CIMA) --- */}
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md px-4 z-20">
-                <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200">
-                    <div className="bg-gray-900 text-white p-4 text-center">
-                        <div className="flex justify-center items-center gap-2 mb-1"><Lock size={20} className="text-green-400" /><span className="font-bold uppercase tracking-widest text-sm">Acesso Bloqueado</span></div>
-                        <p className="text-xs text-gray-400">Finalize o pagamento para liberar o download.</p>
+            {/* OVERLAY DE PAGAMENTO (FIXO NO BOTTOM OU CENTRAL) */}
+            <div className="fixed bottom-0 left-0 w-full z-20 p-4 bg-gradient-to-t from-white via-white to-transparent pt-20">
+                <motion.div initial={{ y: 100 }} animate={{ y: 0 }} className="bg-white rounded-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] border border-gray-200 overflow-hidden max-w-md mx-auto">
+                    {/* Botão de Desbloqueio Visual */}
+                    <div className="bg-gray-900 text-white p-3 text-center flex items-center justify-center gap-2 cursor-pointer" onClick={scrollToPayment}>
+                        <Lock size={16} className="text-green-400" />
+                        <span className="font-bold text-sm uppercase tracking-wider">Conteúdo Bloqueado</span>
                     </div>
 
-                    <div className="p-6">
-                        <div className="flex justify-between items-baseline mb-6 border-b border-gray-100 pb-4 border-dashed">
-                            <span className="text-gray-400 line-through text-sm">R$ 47,00</span>
-                            <span className="text-4xl font-extrabold text-green-600 tracking-tight">R$ 24,90</span>
+                    <div className="p-6" ref={paymentSectionRef}>
+                        <div className="text-center mb-4">
+                            <p className="text-sm text-gray-500 mb-1">Para baixar seu protocolo completo,</p>
+                            <h2 className="text-xl font-bold text-gray-800">Finalize sua inscrição</h2>
                         </div>
 
-                        <div className="bg-green-50 rounded-xl p-4 border border-green-100 mb-4 text-center relative overflow-hidden">
-                            <div className="absolute top-0 right-0 bg-green-200 text-green-800 text-[9px] px-2 py-0.5 rounded-bl-lg font-bold">PIX SEGURO</div>
-                            <p className="text-xs font-bold text-green-800 mb-2">Escaneie ou Copie o código abaixo</p>
-                            <div className="bg-white p-2 rounded-lg inline-block shadow-sm mb-3 border border-gray-200"><img src={pixData.qr_code_base64 ? `data:image/jpeg;base64,${pixData.qr_code_base64}` : 'https://placehold.co/200x200?text=QR+Code'} alt="QR Code Pix" className="w-32 h-32 mix-blend-multiply"/></div>
-                            <button onClick={() => navigator.clipboard.writeText(pixData.qr_code)} className="w-full bg-white border border-green-300 text-green-700 py-3 rounded-lg font-bold text-xs flex justify-center gap-2 hover:bg-green-100 transition-colors shadow-sm"><Copy size={14}/> COPIAR CÓDIGO PIX</button>
+                        {/* Card do Pix */}
+                        <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex flex-col items-center">
+                            <div className="flex justify-between w-full items-center mb-4">
+                                <span className="text-xs font-bold text-green-700 bg-green-200 px-2 py-0.5 rounded">PIX</span>
+                                <span className="text-lg font-black text-gray-800">R$ 24,90</span>
+                            </div>
+                            
+                            <div className="bg-white p-2 rounded-lg border border-gray-200 shadow-sm mb-4">
+                                <img src={pixData.qr_code_base64 ? `data:image/jpeg;base64,${pixData.qr_code_base64}` : 'https://placehold.co/200x200?text=QR+Code'} alt="QR Code Pix" className="w-32 h-32 mix-blend-multiply"/>
+                            </div>
+
+                            <button onClick={() => navigator.clipboard.writeText(pixData.qr_code)} className="w-full bg-green-600 text-white font-bold py-3 rounded-lg text-sm flex justify-center gap-2 shadow-lg shadow-green-200 hover:bg-green-700 transition active:scale-95">
+                                <Copy size={16}/> COPIAR CÓDIGO PIX
+                            </button>
                         </div>
                         
-                        <div className="text-[10px] text-gray-400 text-center mb-4 bg-gray-50 p-2 rounded border border-gray-100">
-                           Beneficiário: Nicolas Durgante / Repr. Autorizado
+                        <div className="mt-4 flex justify-center gap-4 text-[10px] text-gray-400 font-medium">
+                            <span className="flex items-center gap-1"><ShieldCheck size={12}/> Dados Protegidos</span>
+                            <span className="flex items-center gap-1"><Zap size={12}/> Acesso Imediato</span>
                         </div>
+                        <div className="text-[9px] text-gray-300 text-center mt-2">Beneficiário: Nicolas Durgante</div>
 
-                        <div className="text-center">
-                            <div className="flex justify-center items-center gap-2 text-green-600 text-xs font-bold uppercase animate-pulse">
-                                <Activity size={14}/> Aguardando confirmação...
-                            </div>
-                            <p className="text-[10px] text-gray-400 mt-2">Não feche esta tela.</p>
+                        {/* Status de Espera */}
+                        <div className="mt-4 flex justify-center items-center gap-2 text-green-600 text-xs font-bold uppercase animate-pulse bg-green-50 py-2 rounded-lg">
+                             <Activity size={14}/> Aguardando Pagamento...
                         </div>
                     </div>
                 </motion.div>
@@ -619,25 +640,6 @@ export default function App() {
 }
 
 function AnalysisScreen({ onComplete }) {
-  const [step, setStep] = useState(0);
-  const steps = ["Conectando servidor seguro...", "Analisando perfil metabólico...", "Calculando macronutrientes...", "Gerando Protocolo Personalizado..."];
-
-  useEffect(() => {
-    const i = setInterval(() => {
-        setStep(s => s < steps.length - 1 ? s + 1 : s);
-    }, 1200); // Muda o texto a cada 1.2s
-    setTimeout(onComplete, 5000); // Espera total de 5s
-    return () => clearInterval(i);
-  }, []);
-
-  return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8 text-center">
-      <div className="relative w-24 h-24 mb-8">
-         <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} className="w-full h-full border-4 border-gray-100 border-t-green-500 rounded-full"/>
-         <Leaf className="absolute inset-0 m-auto text-green-500" size={24}/>
-      </div>
-      <h2 className="text-xl font-bold text-gray-800">{steps[step]}</h2>
-      <p className="text-gray-400 text-sm mt-2">Aguarde, não feche a página...</p>
-    </div>
-  );
+  useEffect(() => { setTimeout(onComplete, 3000); }, []);
+  return <div className="min-h-screen flex items-center justify-center"><div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div></div>;
 }
