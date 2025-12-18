@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   ArrowRight, CheckCircle, Clock, ShieldCheck, Star, Leaf, Flame, 
-  ChevronRight, Download, Copy, Smartphone, Lock, Activity, AlertCircle, Check, Zap, Menu, User, X, Mail, Send, FileText, CreditCard, ShoppingBag, Heart
+  ChevronRight, Download, Copy, Smartphone, Lock, Activity, AlertCircle, Check, Zap, Menu, User, X, Mail, Send, FileText, CreditCard
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -98,7 +98,7 @@ const RECIPES_CONTENT = [
   }
 ];
 
-// --- COMENTÁRIOS ESTILO TIKTOK ---
+// --- COMENTÁRIOS ---
 const REAL_COMMENTS = [
   { name: "Ana P.", text: "Gente o chá seca msm?? to precisando kkk", time: "há 2 min", likes: 12, img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces" },
   { name: "Bruna Souza", text: "Comecei segunda, hj ja fechei o short jeans q nao entrava 😍 obrigada!!", time: "há 8 min", likes: 45, img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=faces" },
@@ -120,7 +120,6 @@ export default function App() {
   
   const userEmailRef = useRef(userEmail);
   const quizAnswersRef = useRef(quizAnswers);
-  const [savedGoal, setSavedGoal] = useState("Secar barriga (Urgente)");
 
   useEffect(() => {
     userEmailRef.current = userEmail;
@@ -135,8 +134,7 @@ export default function App() {
   useEffect(() => {
     const savedEmail = localStorage.getItem('tmformat_email');
     if (savedEmail) setUserEmail(savedEmail);
-    const goal = localStorage.getItem('tmformat_goal');
-    if (goal) setSavedGoal(goal);
+
     const savedPix = localStorage.getItem('tmformat_pix_data');
     if (savedPix) {
       const parsedPix = JSON.parse(savedPix);
@@ -190,10 +188,6 @@ export default function App() {
   ];
 
   const handleAnswer = (answer) => {
-    if (currentQuestion === 0) {
-        localStorage.setItem('tmformat_goal', answer);
-        setSavedGoal(answer);
-    }
     setQuizAnswers([...quizAnswers, answer]);
     if (currentQuestion < QUIZ_QUESTIONS.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
@@ -284,7 +278,7 @@ export default function App() {
     }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    const userGoal = savedGoal || quizAnswersRef.current[0] || "Secar barriga (Urgente)";
+    const userGoal = quizAnswersRef.current[0] || "Secar barriga (Urgente)";
     const selectedMenu = DIET_DATABASE[userGoal] || DIET_DATABASE["default"];
 
     generatePDFContent(doc, userGoal, selectedMenu);
@@ -298,7 +292,7 @@ export default function App() {
     }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    const userGoal = savedGoal || quizAnswers[0] || "Secar barriga (Urgente)";
+    const userGoal = quizAnswers[0] || "Secar barriga (Urgente)";
     const selectedMenu = DIET_DATABASE[userGoal] || DIET_DATABASE["default"];
     
     generatePDFContent(doc, userGoal, selectedMenu);
@@ -370,26 +364,26 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white font-sans text-gray-800 selection:bg-emerald-100 overflow-x-hidden">
+    <div className="min-h-screen bg-white font-sans text-gray-800 selection:bg-green-100 overflow-x-hidden">
       
-      {/* HEADER TIPO SAÚDE (BRANCO + VERDE) */}
+      {/* HEADER CORPORATIVO */}
       {view === 'landing' && (
-        <div className="bg-white sticky top-0 z-50 shadow-sm border-b border-gray-100">
+        <div className="border-b border-gray-100 sticky top-0 bg-white/90 backdrop-blur-md z-50">
           <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div className="flex items-center gap-2 font-bold text-2xl tracking-tighter text-emerald-600">
-              <Leaf size={28} className="fill-emerald-600 text-emerald-600"/>
-              <span>TmFormat<span className="text-gray-800">.</span></span>
+            <div className="flex items-center gap-2 font-bold text-xl text-gray-900 tracking-tight">
+              <Leaf size={24} className="fill-green-600 text-green-600"/>
+              <span>TmFormat<span className="text-green-600">.</span></span>
             </div>
             <div className="hidden md:flex gap-8 text-sm font-medium text-gray-500">
-              <span className="hover:text-emerald-600 cursor-pointer transition">Método</span>
-              <span className="hover:text-emerald-600 cursor-pointer transition">Resultados</span>
-              <span className="hover:text-emerald-600 cursor-pointer transition">Sobre</span>
+              <span className="hover:text-green-600 cursor-pointer transition">O Método</span>
+              <span className="hover:text-green-600 cursor-pointer transition">Resultados</span>
+              <span className="hover:text-green-600 cursor-pointer transition">Ciência</span>
             </div>
             <button 
               onClick={() => setShowLogin(true)} 
-              className="text-xs font-bold bg-emerald-50 text-emerald-700 flex items-center gap-2 hover:bg-emerald-100 px-4 py-2 rounded-full transition uppercase tracking-wide border border-emerald-100"
+              className="text-sm font-bold text-gray-900 flex items-center gap-2 hover:bg-gray-50 px-4 py-2 rounded-full transition"
             >
-              <User size={16} /> Área de Membros
+              <User size={18} /> Área de Membros
             </button>
           </div>
         </div>
@@ -397,84 +391,86 @@ export default function App() {
 
       <AnimatePresence mode='wait'>
         
-        {/* 1. LANDING PAGE ESTILO SAÚDE */}
+        {/* 1. LANDING PAGE */}
         {view === 'landing' && (
           <motion.div key="landing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: -100 }} className="relative">
-            <div className="max-w-6xl mx-auto px-4 pt-12 pb-24 flex flex-col-reverse md:flex-row items-center gap-12">
-              <div className="md:w-1/2 text-center md:text-left">
-                <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-bold mb-6 uppercase tracking-wider border border-emerald-100">
-                  <CheckCircle size={14}/> Protocolo Clínico 2025
+            <div className="max-w-6xl mx-auto px-4 pt-10 md:pt-16 pb-24 text-center md:text-left md:flex items-center gap-12">
+              <div className="md:w-1/2">
+                <div className="inline-flex items-center gap-2 bg-green-50 text-green-800 px-4 py-1.5 rounded-full text-xs font-bold mb-6 border border-green-200 uppercase tracking-wide">
+                  <Check size={14}/> Protocolo Clínico Atualizado 2025
                 </div>
-                <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-[1.1] text-gray-900">
-                  Reative o seu <br/>
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-400">Metabolismo</span>.
+                <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 leading-[1.1] text-gray-900">
+                  O Plano Nutricional Específico para o <br/>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-500"><span className="underline decoration-green-400 decoration-4 underline-offset-4">SEU</span> Metabolismo</span>.
                 </h1>
-                <p className="text-gray-500 mb-10 leading-relaxed text-lg md:pr-10 font-normal">
-                  A única plataforma que utiliza <strong>bio-dados</strong> para gerar um plano alimentar anti-inflamatório compatível com a sua rotina.
+                <p className="text-gray-500 mb-10 leading-relaxed text-lg md:pr-10">
+                  A única plataforma que utiliza <strong>bio-dados</strong> para gerar um plano alimentar anti-inflamatório compatível com a sua rotina, idade e objetivos. Sem remédios, apenas ciência nutricional.
                 </p>
                 <div className="flex flex-col md:flex-row gap-4">
-                  <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setView('quiz')} className="bg-emerald-600 text-white text-xl font-bold py-4 px-12 rounded-full shadow-xl shadow-emerald-200 flex items-center justify-center gap-3 hover:bg-emerald-700 transition-all">
-                    Iniciar Análise Gratuita <ArrowRight size={24} />
+                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => setView('quiz')} className="bg-gray-900 text-white text-lg font-bold py-4 px-10 rounded-xl shadow-xl flex items-center justify-center gap-3 hover:bg-black transition-all">
+                    Iniciar Análise de Perfil <ArrowRight size={20} />
                   </motion.button>
-                </div>
-                <div className="mt-8 flex items-center gap-6 justify-center md:justify-start text-xs font-medium text-gray-400">
-                    <span className="flex items-center gap-2"><ShieldCheck className="text-emerald-500"/> Garantia de Satisfação</span>
-                    <span className="flex items-center gap-2"><Zap className="text-emerald-500"/> Acesso Imediato</span>
+                  <div className="flex items-center gap-2 justify-center text-sm font-medium text-gray-500 py-4">
+                    <ShieldCheck size={18} className="text-green-600"/> Garantia de Satisfação
+                  </div>
                 </div>
               </div>
               
-              <div className="w-full md:w-1/2 relative">
-                 <div className="relative z-0">
-                    <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&auto=format&fit=crop" className="rounded-3xl shadow-2xl w-full rotate-2 hover:rotate-0 transition-all duration-700 border-4 border-white" alt="Prato Saudável" />
-                    
-                    <motion.div initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.5 }} className="absolute -bottom-6 right-0 bg-white p-6 rounded-2xl shadow-xl border border-gray-100 flex items-center gap-4">
-                       <div className="bg-emerald-100 p-3 rounded-full text-emerald-600"><Activity/></div>
+              <div className="w-full md:w-1/2 relative mt-12 md:mt-0">
+                 <div className="bg-gradient-to-tr from-green-100 to-emerald-50 rounded-[3rem] p-6 md:p-8 relative z-0">
+                    <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&auto=format&fit=crop" className="rounded-3xl shadow-2xl rotate-2 hover:rotate-0 transition-all duration-500 w-full" alt="Prato Saudável" />
+                    <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }} className="absolute -bottom-6 -left-0 md:-left-6 bg-white p-4 rounded-xl shadow-xl border border-gray-100 flex items-center gap-4">
+                       <div className="bg-green-100 p-3 rounded-full text-green-700"><Activity/></div>
                        <div>
-                         <p className="text-xs text-gray-400 uppercase font-bold tracking-widest">Resultado Médio</p>
-                         <p className="text-2xl font-bold text-gray-900">-2.4kg <span className="text-sm font-normal text-gray-500">/ semana</span></p>
+                         <p className="text-xs text-gray-400 uppercase font-bold">Resultado Médio</p>
+                         <p className="text-xl font-extrabold text-gray-900">-2.4kg <span className="text-sm font-normal text-gray-500">/ semana</span></p>
                        </div>
                     </motion.div>
                  </div>
               </div>
             </div>
 
-            {/* SEÇÃO DE PROVA SOCIAL */}
-            <div className="bg-gray-50 py-16 border-t border-gray-100">
-               <div className="max-w-2xl mx-auto px-4">
-                  <h3 className="text-xl font-bold text-center mb-12 text-gray-800">Quem usa aprova</h3>
-                  <div className="grid gap-6">
-                      {REAL_COMMENTS.map((c, i) => (
-                        <div key={i} className="bg-white p-6 rounded-2xl shadow-sm flex gap-4 items-start border border-gray-100">
-                          <img src={c.img} className="w-12 h-12 rounded-full object-cover" alt={c.name} />
-                          <div>
-                            <div className="flex justify-between items-center w-full mb-1">
-                                <h4 className="font-bold text-sm text-gray-900">{c.name}</h4>
-                                <div className="flex text-yellow-400"><Star size={12} fill="currentColor"/><Star size={12} fill="currentColor"/><Star size={12} fill="currentColor"/><Star size={12} fill="currentColor"/><Star size={12} fill="currentColor"/></div>
-                            </div>
-                            <p className="text-gray-600 text-sm leading-relaxed">"{c.text}"</p>
-                          </div>
-                        </div>
-                      ))}
-                  </div>
+            <div className="border-y border-gray-100 bg-gray-50 py-10">
+              <div className="max-w-6xl mx-auto px-4 text-center">
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">Metodologia baseada em estudos de:</p>
+                <div className="flex flex-wrap justify-center gap-8 md:gap-16 opacity-40 grayscale">
+                   <h3 className="text-xl font-serif font-bold">Vogue</h3><h3 className="text-xl font-serif font-bold">Healthline</h3><h3 className="text-xl font-serif font-bold">BoaForma</h3><h3 className="text-xl font-serif font-bold">Women's Health</h3>
+                </div>
+              </div>
+            </div>
+
+            <div className="max-w-2xl mx-auto px-4 py-20">
+               <h3 className="text-2xl font-bold text-center mb-10">O que nossas alunas estão dizendo</h3>
+               <div className="space-y-6">
+                  {REAL_COMMENTS.map((c, i) => (
+                    <div key={i} className="flex gap-4 items-start border-b border-gray-100 pb-6 last:border-0">
+                       <img src={c.img} className="w-12 h-12 rounded-full object-cover" alt={c.name} />
+                       <div>
+                         <h4 className="font-bold text-sm text-gray-900 flex items-center gap-1">{c.name} <span className="text-xs font-normal text-gray-400">• {c.time}</span></h4>
+                         <p className="text-gray-600 mt-1">{c.text}</p>
+                         <div className="flex gap-4 mt-2 text-xs text-gray-400 font-bold cursor-pointer"><span>Curtir</span><span>Responder</span></div>
+                       </div>
+                    </div>
+                  ))}
                </div>
             </div>
           </motion.div>
         )}
 
-        {/* 2. QUIZ ESTILO SAÚDE */}
+        {/* 2. QUIZ */}
         {view === 'quiz' && (
-          <motion.div key="quiz" initial={{ x: 100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -100, opacity: 0 }} className="max-w-lg mx-auto bg-white min-h-screen flex flex-col">
-            <div className="w-full bg-gray-100 h-2"><motion.div initial={{ width: 0 }} animate={{ width: `${((currentQuestion + 1) / QUIZ_QUESTIONS.length) * 100}%` }} className="bg-emerald-500 h-full rounded-r-full"></motion.div></div>
+          <motion.div key="quiz" initial={{ x: 100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -100, opacity: 0 }} className="max-w-lg mx-auto bg-white min-h-screen flex flex-col shadow-2xl">
+            <div className="w-full bg-gray-100 h-1.5"><motion.div initial={{ width: 0 }} animate={{ width: `${((currentQuestion + 1) / QUIZ_QUESTIONS.length) * 100}%` }} className="bg-green-500 h-full rounded-r-full"></motion.div></div>
             <div className="flex-1 p-8 flex flex-col justify-center">
-              <span className="text-emerald-600 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2"><Activity size={12}/> Passo {currentQuestion + 1}</span>
+              <span className="text-green-600 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2"><Activity size={12}/> Etapa {currentQuestion + 1}</span>
               <h2 className="text-2xl font-bold text-gray-900 mb-2 leading-tight">{QUIZ_QUESTIONS[currentQuestion].question}</h2>
               <p className="text-gray-500 mb-8 text-sm">{QUIZ_QUESTIONS[currentQuestion].subtitle}</p>
               <div className="space-y-3">
                 {QUIZ_QUESTIONS[currentQuestion].options.map((opt, i) => (
-                  <motion.button key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} onClick={() => handleAnswer(opt.text)} className="w-full text-left p-5 border border-gray-100 rounded-2xl font-medium text-gray-700 flex items-center gap-4 hover:border-emerald-500 hover:bg-emerald-50 transition-all active:scale-95 group shadow-sm bg-white">
-                    <span className={`text-2xl bg-gray-50 w-12 h-12 flex items-center justify-center rounded-xl group-hover:bg-white transition-colors ${opt.color} bg-opacity-20`}>{opt.icon}</span>
-                    <span className="flex-1">{opt.text}</span>
-                    <ChevronRight className="text-gray-300 group-hover:text-emerald-500" size={20}/>
+                  <motion.button key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} onClick={() => handleAnswer(opt.text)} className="w-full text-left p-4 border border-gray-200 rounded-2xl font-medium text-gray-700 flex items-center gap-4 hover:border-green-500 hover:bg-green-50 transition-all active:scale-95">
+                    <span className={`text-2xl bg-gray-50 w-12 h-12 flex items-center justify-center rounded-2xl ${opt.color} bg-opacity-10`}>{opt.icon}</span>
+                    <span className="flex-1 font-semibold">{opt.text}</span>
+                    <ChevronRight className="text-gray-300" size={18}/>
                   </motion.button>
                 ))}
               </div>
@@ -487,50 +483,51 @@ export default function App() {
 
         {/* 4. CAPTURA DE EMAIL */}
         {view === 'capture_email' && (
-            <motion.div key="email" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-md mx-auto min-h-screen flex flex-col justify-center p-6 text-center bg-white">
-                <div className="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-8 text-emerald-600"><Mail size={40}/></div>
-                <h2 className="text-2xl font-bold mb-4 text-gray-900">Para onde enviamos?</h2>
-                <p className="text-gray-500 mb-8">Seu protocolo foi gerado. Digite seu e-mail para receber o acesso seguro.</p>
+            <motion.div key="email" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-md mx-auto min-h-screen flex flex-col justify-center p-6 text-center">
+                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"><Mail size={40} className="text-green-600"/></div>
+                <h2 className="text-2xl font-bold mb-2">Onde devemos enviar seu plano?</h2>
+                <p className="text-gray-500 mb-6">Seu protocolo foi gerado com sucesso! Digite seu melhor e-mail para receber a cópia de segurança.</p>
                 <input 
                     type="email" 
                     placeholder="seu@email.com" 
-                    className="w-full border border-gray-200 rounded-xl p-5 mb-4 text-lg focus:ring-2 focus:ring-emerald-500 outline-none text-gray-900 placeholder-gray-400 bg-gray-50"
+                    className="w-full border border-gray-300 rounded-xl p-4 mb-4 text-lg focus:ring-2 focus:ring-green-500 outline-none"
                     value={userEmail}
                     onChange={(e) => setUserEmail(e.target.value)}
                 />
-                <button onClick={submitEmailAndPay} className="w-full bg-emerald-600 text-white font-bold py-5 rounded-xl shadow-lg hover:bg-emerald-700 transition active:scale-95">IR PARA O PAGAMENTO</button>
-                <p className="text-xs text-gray-400 mt-6 flex justify-center gap-2"><Lock size={12}/> Seus dados estão seguros.</p>
+                <button onClick={submitEmailAndPay} className="w-full bg-green-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-green-700 transition active:scale-95">IR PARA O PAGAMENTO</button>
+                <p className="text-xs text-gray-400 mt-4 flex justify-center gap-1"><Lock size={12}/> Seus dados estão seguros e não enviaremos spam.</p>
             </motion.div>
         )}
 
         {/* 5. CHECKOUT REAL (COM PDF REALISTA AO FUNDO) */}
         {view === 'checkout' && pixData && (
-          <motion.div key="checkout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-gray-50 flex flex-col relative overflow-hidden">
+          <motion.div key="checkout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-gray-100 flex flex-col relative overflow-hidden">
             
             {/* BACKGROUND: DOCUMENTO REALISTA COM BLUR */}
             <div className="absolute inset-0 pt-16 px-4 pointer-events-none flex flex-col items-center bg-gray-100">
                 <div className="w-full max-w-lg bg-white shadow-xl border border-gray-200 h-full rounded-t-xl p-6 relative scale-95 origin-top opacity-50 blur-[2px]">
                     <div className="flex justify-between items-center mb-6 border-b pb-4">
-                       <div className="flex items-center gap-2 text-emerald-700">
+                       <div className="flex items-center gap-2 text-green-700">
                           <Leaf size={20}/>
                           <span className="font-bold">TmFormat</span>
                        </div>
                        <span className="text-xs text-gray-400">{new Date().toLocaleDateString()}</span>
                     </div>
-                    <h1 className="text-xl font-bold text-gray-800 mb-2">Protocolo: {savedGoal || quizAnswers[0] || "Personalizado"}</h1>
-                    <p className="text-sm text-gray-500 mb-6">Plano alimentar oficial de 7 dias.</p>
+                    <h1 className="text-xl font-bold text-gray-800 mb-2">Protocolo: {quizAnswers[0] || "Personalizado"}</h1>
+                    <p className="text-sm text-gray-500 mb-6">Plano alimentar oficial de 7 dias para reativação metabólica.</p>
                     
-                    <div className="space-y-6"> 
+                    {/* CONTEÚDO REAL DA DIETA (PARA DAR VONTADE) */}
+                    <div className="space-y-4"> 
                         {(() => {
-                            const userGoal = savedGoal || quizAnswers[0] || "Secar barriga (Urgente)";
+                            const userGoal = quizAnswers[0] || "Secar barriga (Urgente)";
                             const selectedMenu = DIET_DATABASE[userGoal] || DIET_DATABASE["default"];
                             return selectedMenu.slice(0, 5).map((day, i) => (
-                               <div key={i} className="flex gap-4 text-sm border-b border-gray-100 pb-4">
-                                  <div className="w-10 h-10 bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-sm shrink-0 rounded-lg">0{day[0]}</div>
-                                  <div className="flex-1 space-y-2">
-                                     <p className="font-bold text-gray-900"><span className="text-emerald-600 text-xs uppercase font-bold mr-2">Manhã</span> {day[1]}</p>
-                                     <p className="font-bold text-gray-900"><span className="text-emerald-600 text-xs uppercase font-bold mr-2">Almoço</span> {day[2]}</p>
-                                     <p className="font-bold text-gray-900"><span className="text-emerald-600 text-xs uppercase font-bold mr-2">Jantar</span> {day[3]}</p>
+                               <div key={i} className="flex gap-3 text-xs border-b border-gray-100 pb-2">
+                                  <div className="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center font-bold text-green-600 shrink-0">0{day[0]}</div>
+                                  <div className="flex-1 space-y-1">
+                                     <p className="font-bold text-gray-800">Café: {day[1]}</p>
+                                     <p className="text-gray-600">Almoço: {day[2]}</p>
+                                     <p className="text-gray-600">Jantar: {day[3]}</p>
                                   </div>
                                </div>
                             ));
@@ -539,46 +536,39 @@ export default function App() {
                 </div>
             </div>
 
-            {/* FOREGROUND: LOCK MODAL CLEAN */}
+            {/* FOREGROUND: LOCK MODAL */}
             <div className="z-10 flex-1 flex items-center justify-center p-4">
-                <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} className="bg-white w-full max-w-md shadow-2xl overflow-hidden rounded-3xl border border-gray-100">
-                    <div className="bg-gray-900 text-white p-5 text-center relative overflow-hidden">
-                        <div className="flex justify-center items-center gap-2 mb-1 relative z-10"><Lock size={18} className="text-emerald-400" /><span className="font-bold uppercase tracking-widest text-sm">Acesso Bloqueado</span></div>
-                        <p className="text-xs text-gray-400 relative z-10">Finalize para liberar o download imediato.</p>
+                <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
+                    <div className="bg-gray-900 text-white p-4 text-center">
+                        <div className="flex justify-center items-center gap-2 mb-1"><Lock size={20} className="text-green-400" /><span className="font-bold uppercase tracking-widest text-sm">Acesso Restrito</span></div>
+                        <p className="text-xs text-gray-400">Seu plano foi gerado e está aguardando liberação.</p>
                     </div>
-                    
-                    {/* --- PRÉVIA DO ARQUIVO --- */}
-                    <div className="px-6 pt-6">
-                        <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-4 flex items-center gap-4 shadow-sm relative overflow-hidden group">
-                           <div className="absolute top-0 right-0 bg-emerald-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-bl-lg uppercase">Pronto</div>
-                           <div className="w-12 h-12 bg-white flex items-center justify-center shadow-sm shrink-0 border border-emerald-100 rounded-lg">
-                              <FileText size={24} className="text-red-500" />
-                           </div>
-                           <div className="text-left flex-1 min-w-0">
-                              <h3 className="font-bold text-gray-900 text-sm truncate">{savedGoal || quizAnswers[0] || "Personalizado"}</h3>
-                              <p className="text-[10px] text-gray-500 font-medium mt-1 uppercase tracking-wide">PDF • 2.4MB</p>
-                           </div>
-                        </div>
-                    </div>
-
-                    <div className="p-6">
-                        <div className="flex justify-between items-center mb-6 border-b border-gray-100 pb-4 border-dashed">
-                            <span className="text-gray-400 font-bold text-sm line-through">R$ 47,00</span>
-                            <span className="text-4xl font-extrabold text-emerald-600 tracking-tight">R$ 24,90</span>
+                    <div className="p-8">
+                        <div className="text-center mb-8">
+                            <h2 className="text-2xl font-bold text-gray-800 mb-2">Desbloqueie seu Protocolo</h2>
+                            <p className="text-gray-500 text-sm">O acesso completo ao cardápio de 7 dias + receitas está pronto.</p>
                         </div>
 
-                        <div className="text-center mb-6">
-                            <div className="bg-white p-3 border border-gray-200 rounded-xl inline-block shadow-sm mb-4">
-                                <img src={pixData.qr_code_base64 ? `data:image/jpeg;base64,${pixData.qr_code_base64}` : 'https://placehold.co/200x200?text=QR+Code'} alt="QR Code Pix" className="w-40 h-40 mix-blend-multiply"/>
-                            </div>
-                            <button onClick={() => navigator.clipboard.writeText(pixData.qr_code)} className="w-full bg-emerald-600 text-white py-4 rounded-xl font-bold text-sm flex justify-center gap-2 hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-200 active:scale-95"><Copy size={16}/> Copiar Código Pix</button>
+                        <div className="flex justify-center items-baseline gap-2 mb-8"><span className="text-gray-400 line-through text-lg">R$ 47,00</span><span className="text-4xl font-extrabold text-green-600">R$ 24,90</span></div>
+                        
+                        <div className="bg-green-50 rounded-2xl p-6 border border-green-100 mb-6 text-center relative overflow-hidden">
+                            <div className="absolute top-0 right-0 bg-green-200 text-green-800 text-[10px] px-2 py-1 rounded-bl-lg font-bold">SSL SEGURO</div>
+                            <div className="bg-white/80 p-2 rounded mb-3 text-[10px] text-gray-500 flex items-center justify-center gap-1 border border-gray-100"><ShieldCheck size={12} className="text-green-600"/><span>Beneficiário: Nicolas Durgante / Repr. Autorizado</span></div>
+                            <p className="text-sm font-bold text-green-800 mb-3">Pague via Pix para liberar agora</p>
+                            <div className="bg-white p-2 rounded-lg inline-block shadow-sm mb-3"><img src={pixData.qr_code_base64 ? `data:image/jpeg;base64,${pixData.qr_code_base64}` : 'https://placehold.co/200x200?text=QR+Code'} alt="QR Code Pix" className="w-40 h-40 mix-blend-multiply"/></div>
+                            <button onClick={() => navigator.clipboard.writeText(pixData.qr_code)} className="w-full bg-white border border-green-200 text-green-700 py-3 rounded-xl font-bold text-xs flex justify-center gap-2 hover:bg-green-100 transition-colors active:scale-95"><Copy size={14}/> COPIAR CÓDIGO PIX</button>
                         </div>
 
-                        <div className="bg-gray-50 p-3 text-[10px] text-gray-500 text-center font-medium border border-gray-100 rounded-lg">
-                            Beneficiário: Nicolas Durgante / Repr. Autorizado
+                        <div className="grid grid-cols-2 gap-4 mb-4">
+                            <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 p-2 rounded-lg"><ShieldCheck size={16} className="text-green-500"/> Compra Segura</div>
+                            <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 p-2 rounded-lg"><Zap size={16} className="text-yellow-500"/> Acesso Imediato</div>
                         </div>
 
-                        <div className="text-center mt-4"><div className="flex justify-center items-center gap-2 text-emerald-600 text-xs font-bold uppercase animate-pulse"><Activity size={14}/> Aguardando banco...</div></div>
+                        <div className="mt-4 p-3 bg-yellow-50 rounded-lg text-xs text-yellow-700 border border-yellow-100 text-center">
+                            <strong>Importante:</strong> Se sair desta tela, retorne para confirmar o recebimento do seu acesso.
+                        </div>
+
+                        <div className="text-center mt-4"><div className="flex justify-center items-center gap-2 text-green-600 text-sm animate-pulse font-medium"><div className="w-2 h-2 bg-green-600 rounded-full"></div> Aguardando confirmação do banco...</div></div>
                     </div>
                 </motion.div>
             </div>
@@ -587,12 +577,17 @@ export default function App() {
 
         {/* 6. SUCESSO */}
         {view === 'success' && (
-          <motion.div key="success" initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="max-w-md mx-auto min-h-screen flex flex-col justify-center p-6 text-center bg-white text-gray-900">
-             <div className="bg-white border border-gray-100 p-8 shadow-2xl relative overflow-hidden rounded-3xl">
-                <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 text-emerald-600"><CheckCircle size={40} /></div>
-                <h2 className="text-3xl font-bold mb-2">Compra Aprovada!</h2>
-                <p className="text-gray-500 mb-8 text-sm">Enviamos uma cópia para <strong>{userEmail}</strong>.</p>
-                <button onClick={downloadManualPDF} className="w-full bg-emerald-600 text-white font-bold py-5 rounded-xl shadow-lg hover:bg-emerald-700 transition flex justify-center gap-2">
+          <motion.div key="success" initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="max-w-md mx-auto min-h-screen flex flex-col justify-center p-6 text-center">
+             <div className="bg-white rounded-[2.5rem] shadow-2xl p-8">
+                <CheckCircle size={60} className="text-green-600 mx-auto mb-4"/>
+                <h2 className="text-2xl font-bold mb-2">Tudo Pronto!</h2>
+                <p className="text-gray-500 mb-6">Uma cópia também foi enviada para <strong>{userEmail}</strong>.</p>
+                <div className={`text-xs mb-6 bg-gray-50 p-2 rounded ${emailStatus === 'error' ? 'text-red-500' : 'text-gray-400'}`}>
+                   {emailStatus === 'sending' && "Enviando e-mail automaticamente..."}
+                   {emailStatus === 'success' && "✅ E-mail enviado com sucesso!"}
+                   {emailStatus === 'error' && "⚠️ Erro ao enviar e-mail. Baixe abaixo."}
+                </div>
+                <button onClick={downloadManualPDF} className="w-full bg-green-600 text-white font-bold py-4 rounded-xl shadow-lg flex justify-center gap-2 hover:bg-green-700 transition active:scale-95">
                     BAIXAR AGORA <Download/>
                 </button>
              </div>
@@ -600,21 +595,21 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* LOGIN MODAL CLEAN */}
+      {/* LOGIN MODAL */}
       <AnimatePresence>
         {showLogin && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && setShowLogin(false)}>
-            <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} className="bg-white w-full max-w-sm overflow-hidden rounded-3xl shadow-2xl">
-              <div className="p-8 relative">
-                <button onClick={() => setShowLogin(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><X size={24} /></button>
-                <div className="text-center mb-8"><h2 className="text-2xl font-bold text-gray-900">Área do Aluno</h2><p className="text-xs text-gray-500 mt-1">Acesso Restrito</p></div>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && setShowLogin(false)}>
+            <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
+              <div className="p-6 relative">
+                <button onClick={() => setShowLogin(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><X size={20} /></button>
+                <div className="text-center mb-6"><h2 className="text-xl font-bold text-gray-900">Área do Aluno</h2><p className="text-sm text-gray-500">Digite seus dados para entrar.</p></div>
                 <div className="space-y-4">
-                  <AnimatePresence>{loginError && (<motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="bg-red-50 border-l-4 border-red-500 text-red-700 p-3 text-xs font-bold flex items-start gap-2"><AlertCircle size={14} className="shrink-0 mt-0.5" /><span>{loginError}</span></motion.div>)}</AnimatePresence>
-                  <div><label className="block text-xs font-bold text-gray-700 uppercase mb-1 ml-1">E-mail</label><input type="email" placeholder="seu@email.com" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none transition-all"/></div>
-                  <div><label className="block text-xs font-bold text-gray-700 uppercase mb-1 ml-1">Senha</label><input type="password" placeholder="••••••••" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm font-medium focus:ring-2 focus:ring-emerald-500 outline-none transition-all"/></div>
-                  <button onClick={() => setLoginError("Você ainda não possui um plano ativo. Realize a compra para liberar seu acesso.")} className="w-full bg-emerald-600 text-white font-bold py-4 rounded-xl hover:bg-emerald-700 transition shadow-lg">Entrar</button>
+                  <AnimatePresence>{loginError && (<motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="bg-red-50 border border-red-100 text-red-600 p-3 rounded-lg text-xs flex items-start gap-2"><AlertCircle size={14} className="shrink-0 mt-0.5" /><span>{loginError}</span></motion.div>)}</AnimatePresence>
+                  <div><label className="block text-xs font-bold text-gray-700 uppercase mb-1">E-mail</label><input type="email" placeholder="seu@email.com" className="w-full border border-gray-300 rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-green-500"/></div>
+                  <div><label className="block text-xs font-bold text-gray-700 uppercase mb-1">Senha</label><input type="password" placeholder="••••••••" className="w-full border border-gray-300 rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-green-500"/></div>
+                  <button onClick={() => setLoginError("Você ainda não possui um plano ativo. Realize a compra para liberar seu acesso.")} className="w-full bg-green-600 text-white font-bold py-3 rounded-xl hover:bg-green-700 transition active:scale-95">Entrar na Plataforma</button>
                 </div>
-                <div className="mt-8 text-center text-xs font-bold text-gray-400">Ainda não tem acesso? <button onClick={() => {setShowLogin(false); setView('quiz');}} className="text-emerald-600 hover:underline ml-1">Começar agora</button></div>
+                <div className="mt-6 text-center text-xs text-gray-400">Ainda não é aluno? <button onClick={() => {setShowLogin(false); setView('quiz');}} className="text-green-600 font-bold hover:underline">Fazer análise gratuita</button></div>
               </div>
             </motion.div>
           </motion.div>
@@ -625,20 +620,6 @@ export default function App() {
 }
 
 function AnalysisScreen({ onComplete }) {
-  const [step, setStep] = useState(0);
-  const steps = ["Conectando servidor seguro...", "Calculando metabolismo...", "Gerando PDF personalizado..."];
-  useEffect(() => {
-    const i = setInterval(() => setStep(s => (s < 2 ? s + 1 : s)), 1500);
-    setTimeout(onComplete, 5000); 
-    return () => clearInterval(i);
-  }, []);
-  return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8 text-center">
-      <div className="relative w-24 h-24 mb-8">
-         <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} className="w-full h-full border-4 border-gray-100 border-t-emerald-500 rounded-full"/>
-         <Heart className="absolute inset-0 m-auto text-emerald-500 fill-emerald-500" size={32}/>
-      </div>
-      <h2 className="text-xl font-bold text-gray-800">{steps[step]}</h2>
-    </div>
-  );
+  useEffect(() => { setTimeout(onComplete, 3000); }, []);
+  return <div className="min-h-screen flex items-center justify-center"><div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div></div>;
 }
